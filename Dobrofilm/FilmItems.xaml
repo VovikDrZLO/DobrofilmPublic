@@ -1,0 +1,95 @@
+﻿<Window x:Class="Dobrofilm.FilmItem"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="FilmItem" Loaded="Window_Loaded" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" MinHeight="559.667" MinWidth="915"  Height="559.667" Width="915" KeyDown="FilmItemWindow_KeyDown" Icon="Resources/MainIcon.ico" SizeChanged="FilmItemsWnd_SizeChanged">
+    <Window.Resources>       
+        <Style x:Key="MySlider" TargetType="{x:Type Slider}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Slider}">                        
+                        <Grid x:Name="HorizontalTemplate">
+                            <Polygon Points="360,1 360,25 1,25" Grid.Column="20" Grid.ColumnSpan="5" Height="Auto">
+                                <Polygon.Fill>
+                                    <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">                                        
+                                        <GradientStop Color="#FFFF0050" Offset="0" />                                        
+                                        <GradientStop Color="Lime" Offset="1.2" />
+                                    </LinearGradientBrush>
+                                </Polygon.Fill>
+                            </Polygon>
+                            <Track x:Name="PART_Track" Grid.Column="5">                                
+                                <Track.Thumb>
+                                    <Thumb Height="30" Width="15" x:Name="HorizontalThumb">
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="{x:Type Thumb}">
+                                                <Polygon Points="2,24 2,10 6,1 12,10 12,24" StrokeThickness="1" Stroke="GoldenRod" Fill="Gold" x:Name="Thumb"/>
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>                       
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>    
+    <Canvas x:Name="MainCanvas" Margin="2,2,2,2">
+        <TabControl x:Name="MainTabControl" Canvas.Left="1" Canvas.Top="1" SelectionChanged="TabSel_Change" Height="526.667" Width="900">
+            <TabItem Header="Main">
+                <Canvas Margin="2,2,2,2" x:Name="MainTabCanvas">
+                    <Border x:Name="MovieBorder" BorderBrush="Black" BorderThickness="1" Canvas.Left="498" Canvas.Top="40" Width="388" Height="344">
+                        
+                    </Border>
+                    <Slider x:Name="FilmRate" Minimum="0" Maximum="12" Canvas.Left="196" Canvas.Top="431" Height="25" Width="360" Orientation="Horizontal" Style="{DynamicResource MySlider}"/>
+                    <TextBox x:Name="FilmName" Height="23" Canvas.Left="10" TextWrapping="Wrap" Text="TextBox" Canvas.Top="10" Width="675" GotFocus="FilmName_GotFocus" GotKeyboardFocus="FilmName_GotFocus" GotMouseCapture="FilmName_GotFocus"/>
+                    <Button x:Name="ChangePathBtn" Content="ChangePath" Canvas.Left="803" Canvas.Top="11" Width="75" Click="ChangePathBtn_Click"/>
+                    <Button x:Name="MoveToBtn" Content="Move To"  Canvas.Left="705" Canvas.Top="11" Width="75" Click="MoveToBtn_Click"/>
+                    <Grid x:Name="CategoryGrid" Height="325" Canvas.Left="10" Canvas.Top="48" Width="325">
+                        <!--Grid.RowDefinitions>
+                            <RowDefinition Height="65"/>
+                            <RowDefinition Height="65"/>
+                            <RowDefinition Height="65"/>
+                            <RowDefinition Height="65"/>
+                            <RowDefinition Height="65"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="65"/>
+                            <ColumnDefinition Width="65"/>
+                            <ColumnDefinition Width="65"/>
+                            <ColumnDefinition Width="65"/>
+                            <ColumnDefinition Width="65"/>
+                        </Grid.ColumnDefinitions-->
+                    </Grid>
+                    <ListBox x:Name="SellCategoris" Height="325" Canvas.Left="382" Canvas.Top="48" Width="100" ItemsSource="{Binding SelectedCategoris}" SelectedValuePath="ID" DisplayMemberPath="Name" IsEnabled="False"/>
+                    <CheckBox x:Name="DelChb" Content="Delete" Canvas.Left="593" Canvas.Top="434" Width="55"/>
+                    <MediaElement x:Name="FilmPlayer" Height="289" Canvas.Left="507" Canvas.Top="48" Width="362" LoadedBehavior="Manual" MediaOpened="Film_Opened"/>
+                    <TextBox x:Name="FilmHint" Height="36" Canvas.Left="10" TextWrapping="Wrap" Text="Hint" Canvas.Top="389" Width="868"/>
+                    <Button x:Name="Btn_Ok" Content="Ok" Canvas.Left="705" Canvas.Top="434" Width="75" Click="FilmItemOk_Click"/>
+                    <Button x:Name="Btn_Cancel" Content="Calcel" Canvas.Left="803" Canvas.Top="434" Width="75" Click="FilmItemCancel_Click"/>
+                    <Button x:Name="Btn_Play" Content="Play" Canvas.Left="507" Canvas.Top="351" Width="40" Click="PlayBtn_Click"/>
+                    <Button x:Name="Btn_Screen" Content="Screen" Canvas.Left="560" Canvas.Top="351" Click="btnScreenShot_Click"/>
+                    <Slider x:Name="SeekBar" Canvas.Left="612" Canvas.Top="351" Width="257" Thumb.DragStarted ="seekBar_DragStarted" Thumb.DragCompleted="seekBar_DragComplite"/>
+                    <StatusBar x:Name="FilmItemStatusBar" Height="25" Canvas.Top="464" Width="888"/>
+                    <Button x:Name="CryptFile" Height="22" Width="75" Canvas.Left="10" Canvas.Top="434" Content="CryptFile" Click="CryptFile_Click"/>
+                </Canvas>
+            </TabItem>
+            <TabItem Header="Links" x:Name="Links">
+                <StackPanel>                    
+                    <DataGrid x:Name="LinkedFilmDataGrid" CanUserAddRows="False" AutoGenerateColumns="False" SelectionMode="Extended"
+                              SelectionUnit="FullRow" MouseDoubleClick="LinkedFilmDataGrid_MouseDoubleClick">
+                    <DataGrid.Columns>
+                            <DataGridTextColumn Header="Name" Width="*" IsReadOnly="True" Binding="{Binding Path=Name}"/>
+                            <DataGridTextColumn Header="Hint" Width="*" IsReadOnly="True" Binding="{Binding Path=Hint}"/>
+                            <DataGridTextColumn Header="Rate" Width="*" IsReadOnly="True" Binding="{Binding Path=Rate}"/>
+                    </DataGrid.Columns>
+                    </DataGrid>
+                    <Border BorderBrush="Black" BorderThickness="2"  Height="170" x:Name="FilmScreensBorder" VerticalAlignment="Top">
+                        <!--Margin="0,295"-->
+                        <Canvas x:Name="FilmScreens" Height="170" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    </Border>
+                </StackPanel>
+            </TabItem>            
+        </TabControl>
+    </Canvas>
+</Window>

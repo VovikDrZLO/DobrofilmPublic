@@ -1,0 +1,446 @@
+﻿<Window x:Name="MainWindow1" x:Class="Dobrofilm.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Dobrofilm" Height="500" Width="800" Margin="3,3,3,3" SizeChanged="MainWindow_Resize" MinHeight="500" MinWidth="800"
+        KeyDown="MainWindow1_KeyDown" ResizeMode="CanResize" Icon="Resources/MainIcon.ico">
+    <!--Icon="pack://siteoforigin:,,,/Resources/MainIcon.ico"sources/MainIcon.ico"-->
+    <Window.Resources>
+           
+        
+
+        <LinearGradientBrush x:Key="Brush_DataGridHeaderBackground" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#FF1C7CB1" Offset="0" />
+            <GradientStop Color="#FF004A83" Offset="1" />
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="Brush_DataGridHeaderMouseOverBackground" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#FF1C7CAF" Offset="0" />
+            <GradientStop Color="#FF042A68" Offset="1" />
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="Brush_DataGridHeaderBorder" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#FF1B577E" Offset="0" />
+            <GradientStop Color="#FF083258" Offset="1" />
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="Brush_DataGridHeaderSortedBorder" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#B58801" Offset="0" />
+            <GradientStop Color="#681900" Offset="1" />
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="Brush_DataGridHeaderSortedBackground" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#C46007" Offset="0" />
+            <GradientStop Color="#AF2600" Offset="1" />
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="Brush_DataGridSelected" EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FF3E4854" Offset="1"/>
+            <GradientStop Color="#FF5D6670"/>
+        </LinearGradientBrush>
+
+        <SolidColorBrush x:Key="Brush_DataGridSelectedForeground" Color="#FFFFFF" />
+
+        <LinearGradientBrush x:Key="Brush_DataGridAltRowBackground" EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FFE1FFEE" Offset="0"/>
+            <GradientStop Color="#FFC3F9DA" Offset="0.992"/>
+        </LinearGradientBrush>
+
+        <Style x:Key="Style_HeaderGripper" TargetType="{x:Type Thumb}">
+            <Setter Property="Width" Value="8"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Cursor" Value="SizeWE"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>        
+
+        <Style TargetType="{x:Type DataGridColumnHeader}">
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="MinHeight" Value="28" />            
+            <Setter Property="Foreground" Value="White" />
+            <!--Setter Property="Cursor" Value="Hand" /-->
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
+                        <Grid>                           
+                            <Border x:Name="BackgroundBorder" BorderThickness="0,1,0,1" Background="{StaticResource Brush_DataGridHeaderSortedBackground}" BorderBrush="{StaticResource Brush_DataGridHeaderSortedBorder}" Grid.ColumnSpan="2" />
+                            <ContentPresenter Margin="6,3,6,3" VerticalAlignment="Center"/>
+                            <Path x:Name="SortArrow" Visibility="Collapsed" Data="M0,0 L1,0 0.5,1 z" Stretch="Fill" Grid.Column="1" Width="8" Height="6" Fill="White" Margin="0,0,8,0" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.4" HorizontalAlignment="Right"/>
+                            <Rectangle Width="1" Fill="#AAC377" HorizontalAlignment="Right" Grid.ColumnSpan="2" />
+                            <Rectangle Width="1" Margin="0,0,1,0" Fill="#425B10" HorizontalAlignment="Right" Grid.ColumnSpan="2" />
+                            <!--Thumb x:Name="PART_LeftHeaderGripper" HorizontalAlignment="Left" Style="{StaticResource Style_HeaderGripper}"/>
+                            <Thumb x:Name="PART_RightHeaderGripper" HorizontalAlignment="Right" Style="{StaticResource Style_HeaderGripper}"/-->
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="SortDirection" Value="{x:Null}">
+                                <!--Setter TargetName="BackgroundBorder" Property="Background" Value="Transparent" />
+                                <Setter TargetName="BackgroundBorder" Property="BorderBrush"  Value="Transparent" /-->
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="BackgroundBorder" Property="Background" Value="{StaticResource Brush_DataGridHeaderMouseOverBackground}" />
+                                <Setter TargetName="BackgroundBorder" Property="BorderBrush" Value="{StaticResource Brush_DataGridHeaderBorder}" />
+                            </Trigger>                            
+                            <Trigger Property="SortDirection" Value="Ascending">
+                                <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
+                                <Setter TargetName="SortArrow" Property="RenderTransform">
+                                    <Setter.Value>
+                                        <RotateTransform Angle="180" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="SortDirection" Value="Descending">
+                                <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
+                            </Trigger>                            
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type DataGridCell}">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DataGridCell}">
+                        <Border x:Name="BackgroundBorder" Background="Transparent">
+                            <ContentPresenter VerticalAlignment="Center" Margin="4,0,6,0" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="BorderBrush" Value="{x:Null}"/>
+        </Style>
+
+        <Style TargetType="{x:Type DataGridRow}">
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
+            <Setter Property="SnapsToDevicePixels" Value="true"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DataGridRow}">
+                        <Border x:Name="DGR_Border" Background="{TemplateBinding Background}" SnapsToDevicePixels="True"
+                          BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                        <SelectiveScrollingGrid x:Name="selectiveScrollingGrid">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <DataGridCellsPresenter x:Name="dataGridCellsPresenter" Grid.Column="1" ItemsPanel="{TemplateBinding ItemsPanel}" 
+                             SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                             <DataGridRowHeader x:Name="dataGridRowHeader" 
+                                  SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical" Grid.RowSpan="2"
+                                  Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, 
+                                  Path=HeadersVisibility, Converter={x:Static DataGrid.HeadersVisibilityConverter}, 
+                                  ConverterParameter={x:Static DataGridHeadersVisibility.Row}}"/>
+                                <Grid Grid.Column="1" Grid.Row="1" Name="Details" Visibility="Collapsed" Background="Gray">
+                                <DataGridDetailsPresenter x:Name="dataGridDetailsPresenter" />
+                                </Grid>
+                             <DataGridDetailsPresenter Grid.Row="1" Grid.Column="1" SelectiveScrollingGrid.SelectiveScrollingOrientation="{Binding 
+                                 AreRowDetailsFrozen, ConverterParameter={x:Static SelectiveScrollingOrientation.Vertical},
+			                     Converter={x:Static DataGrid.RowDetailsScrollingConverter},
+			                     RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+			                     Visibility="{TemplateBinding DetailsVisibility}" />
+                            </SelectiveScrollingGrid>                            
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <!--Setter Property="Background" TargetName="DGR_Border" Value="{DynamicResource BlueWindow}"/-->
+                                <Setter Property="Background" TargetName="DGR_Border" Value="#FFA1E6A1"/>
+                                <Setter Property="Foreground" TargetName="dataGridCellsPresenter" Value="White"/>
+                                <Setter Property="Foreground" TargetName="dataGridRowHeader" Value="White"/>
+                                <Setter Property="FontSize" TargetName="dataGridRowHeader" Value="13.333"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="DGR_Border" Property="TextElement.Foreground" Value="{StaticResource Brush_DataGridSelectedForeground}" />
+                                <Setter Property="Visibility" TargetName="dataGridDetailsPresenter" Value="Hidden"/>
+                                <Setter Property="FontSize" TargetName="dataGridCellsPresenter" Value="14.667"/>
+                                <Setter Property="Background" TargetName="DGR_Border" Value="{DynamicResource Brush_DataGridSelected}"/>
+                            </Trigger>                             
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsCrypted}" Value="True">
+                    <Setter Property="Background" Value="#FFF7D5D5"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="{x:Type DataGrid}" x:Key="DataGridStyle">
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="RowDetailsVisibilityMode" Value="VisibleWhenSelected" />
+            <Setter Property="Background" Value="#FF8CDE9B"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="AlternationCount" Value="2"/>
+            <Setter Property="GridLinesVisibility" Value="Vertical"/>
+            <Setter Property="SelectionMode" Value="Extended"/>
+            <Setter Property="ClipboardCopyMode" Value="IncludeHeader"/>
+            <Setter Property="VerticalGridLinesBrush" Value="#C6D7C5"/>
+            <Setter Property="SelectionUnit" Value="FullRow"/>
+            <Setter Property="CanUserResizeColumns" Value="True"/>
+            <Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
+            <Setter Property="SnapsToDevicePixels" Value="True" />            
+            <Setter Property="AlternatingRowBackground" Value="{StaticResource Brush_DataGridAltRowBackground}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DataGrid}">
+                        <Border Background="{TemplateBinding Background}">
+                            <ScrollViewer Focusable="false" Name="DG_ScrollViewer">
+                                <ScrollViewer.Template>
+                                    <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.ColumnSpan="3" Background="{StaticResource Brush_DataGridHeaderBackground}" BorderBrush="{StaticResource Brush_DataGridHeaderBorder}" BorderThickness="0,1" />
+                                            <Button 
+                                                Command="{x:Static DataGrid.SelectAllCommand}" 
+                                                Width="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=RowHeaderActualWidth}"
+                                                Focusable="false"
+                                                OverridesDefaultStyle="True">
+                                                <Button.Template>
+                                                    <ControlTemplate TargetType="{x:Type Button}">
+                                                        <Grid>
+                                                            <Border Background="{StaticResource Brush_DataGridHeaderBackground}" BorderBrush="{StaticResource Brush_DataGridHeaderBorder}" BorderThickness="0,1">
+                                                                <Path x:Name="Arrow" VerticalAlignment="Bottom" Margin="4" Fill="#3000" Width="11" Height="11" Stretch="Fill" Data="M1,0 L1,1 0,1 z"/>
+                                                            </Border>
+                                                            <Rectangle Width="1" Fill="#AAC377" HorizontalAlignment="Right" />
+                                                            <Rectangle Width="1" Margin="0,0,1,0" Fill="#425B10" HorizontalAlignment="Right" />
+                                                        </Grid>
+                                                    </ControlTemplate>
+                                                </Button.Template>
+                                            </Button>
+                                            <DataGridColumnHeadersPresenter Grid.Column="1"                         
+                                                Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=HeadersVisibility, Converter={x:Static DataGrid.HeadersVisibilityConverter}, ConverterParameter={x:Static DataGridHeadersVisibility.Column}}"/>    
+                                            <ScrollContentPresenter Grid.Row="1" Grid.ColumnSpan="2" 
+                                                CanContentScroll="{TemplateBinding CanContentScroll}" />
+                                            <!--ScrollBar 
+                                                Name="PART_VerticalScrollBar"
+                                                Grid.Row="1" 
+                                                Grid.Column="2" 
+                                                 Orientation="Vertical"
+                                                 Maximum="{TemplateBinding ScrollableHeight}"
+                                                 ViewportSize="{TemplateBinding ViewportHeight}"
+                                                 Value="{Binding Path=VerticalOffset, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"
+                                                 Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"/-->
+                                                 <Grid Grid.Row="2" Grid.Column="1">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=NonFrozenColumnsViewportHorizontalOffset}"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <!--ScrollBar 
+                                                  Grid.Column="1"
+                                                  Name="PART_HorizontalScrollBar"
+                                                  Orientation="Horizontal"
+                                                  Maximum="{TemplateBinding ScrollableWidth}"
+                                                  ViewportSize="{TemplateBinding ViewportWidth}"
+                                                  Value="{Binding Path=HorizontalOffset, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"
+                                                  Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"/-->
+                                            </Grid>
+                                        </Grid>
+                                    </ControlTemplate>
+                                </ScrollViewer.Template>
+                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                            </ScrollViewer>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsGrouping" Value="true">
+                    <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#FF91E4A0" Offset="0" />
+                        <GradientStop Color="#FF73AFDE" Offset="0.6" />
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Name="ListBoxStyle" TargetType="ListBoxItem">
+            <!--Setter Property="OverridesDefaultStyle" Value="True" /-->
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="White" Offset="0" />
+                        <GradientStop Color="#FFEEFF46" Offset="0.9" />
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="Black" />
+        </Style>
+    </Window.Resources>
+    <Canvas Margin="0,94,0,0" x:Name="MainCanvas">
+        <Canvas.Background>
+            <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                <GradientStop Color="#FFD1DEF0" Offset="0.522"/>
+                <GradientStop Color="#FF91E4A0" Offset="0.283"/>
+            </LinearGradientBrush>
+        </Canvas.Background>
+        <DataGrid x:Name="MainGridData" Canvas.Left="208" Canvas.Top="1" Width="581"
+                   AutoGenerateColumns ="False" CanUserAddRows="False" ItemsSource="{Binding FilmFiles}"
+                  MouseDoubleClick="FileBtn_DbClick" 
+                   LoadingRowDetails="MainGridData_LoadingRowDetails">
+            <!--RowDetailsTemplate="{DynamicResource RowDetailTemplate}" RowDetailsVisibilityChanged="MainDataGrid_RowDetailsVisibilityChanged" -->
+            <DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                <Grid x:Name="RowDetailGrid"	                
+	                 Height="Auto"
+	                 Margin="5">
+                    <Border HorizontalAlignment="Left"
+		            VerticalAlignment="Top"
+		            CornerRadius="5">
+                        <!--<Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Offset="0" Color="WhiteSmoke" />
+                                <GradientStop Offset="0.75" Color="#AAFFFFAA" />
+                                <GradientStop Offset="1" Color="#AAFFD455" />
+                            </LinearGradientBrush>
+                        </Border.Background>-->
+                        <Canvas x:Name="DetailCanvas"/>                        
+                    </Border>                    
+                </Grid>
+              </DataTemplate>
+            </DataGrid.RowDetailsTemplate>
+            <!--<VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="CheckStates">
+                    <VisualState x:Name="Checked">
+                        <Storyboard>
+                            <ObjectAnimationUsingKeyFrames Duration="0"
+	                              Storyboard.TargetName="DefaultPath"
+	                               Storyboard.TargetProperty="Visibility">
+                                <DiscreteObjectKeyFrame KeyTime="0">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <Visibility>Collapsed</Visibility>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Duration="0"
+                               Storyboard.TargetName="CheckedPath"
+                               Storyboard.TargetProperty="Visibility">
+                                <DiscreteObjectKeyFrame KeyTime="0">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <Visibility>Visible</Visibility>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ColorAnimationUsingKeyFrames Storyboard.TargetName="CheckedPath" Storyboard.TargetProperty="(Path.Fill).(SolidColorBrush.Color)">
+                                <SplineColorKeyFrame KeyTime="0:0:0.2" Value="#CCAA0000" />
+                            </ColorAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </VisualState>
+                    <VisualState x:Name="Unchecked" />
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>-->
+            <DataGrid.Columns>                
+                <DataGridCheckBoxColumn Header="IsCheked" Binding="{Binding Path=IsCheked}" IsReadOnly="False"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}" Width="*" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Hint" Binding="{Binding Path=Hint}" Width="*" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Rate" Binding="{Binding Path=Rate}" Width="50" IsReadOnly="True"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <ListBox x:Name="CategoryListBox" Canvas.Left="10" Canvas.Top="1" Width="193"
+                 SelectedValuePath="ID" DisplayMemberPath="Name" ItemsSource="{Binding Category}"
+                 MouseDoubleClick="ListBox1_MouseDoubleClick" SelectionChanged="CategoryListBox_SelectionChange" 
+                 Background="Transparent" BorderBrush="Transparent"/>
+        <Menu Height="95" Canvas.Top="-94" x:Name="MenuBar">
+            <Menu.Background>
+                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                    <GradientStop Color="#FF91E4A0" Offset="0.522"/>
+                    <GradientStop Color="#FFD1DEF0" Offset="0.283"/>  
+                </LinearGradientBrush>
+            </Menu.Background>
+            <!--MenuItem Header="File">
+                <MenuItem Header="Open File"/>
+                <Separator/>
+                <MenuItem Header="Reset Data"/>
+                <MenuItem Header="Exit"/>
+            </MenuItem>
+            <MenuItem Header="Add">
+                <MenuItem Header="Add Category"/>
+                <MenuItem Header="Add Films"/>
+            </MenuItem>
+            <MenuItem Header="Del">
+                <MenuItem Header="Del Category"/>
+                <MenuItem Header="Del Film"/>
+            </MenuItem-->            
+            <!--Button Content="Add Files" Width="80" Click="AddFilesClick" Margin="0,5,0,5" Height="70"/>                            
+            <Button Content="Add Category" Width="80" Click="OpenCategoryWindow_Click"  Margin="0,5,0,5"/-->
+            <!--Button Content="Delete Film" Width="80"  Margin="0,5,0,5" Click="DelFilm_Click"/>
+            <Button Content="Del Category" Width="80" Margin="0,5,0,5" Click="DelCategory_Click"/>
+            <Button Content="OpenFile" Click="OpenFileBtn_Click" Width="80"  Margin="0,5,0,5"/-->
+            <Button Height="70" Width="80" Click="FilmBtn_Click" Margin="0,5,0,5">
+                <Button.ContextMenu>
+                    <ContextMenu>
+                        <!--MenuItem Foreground="Black" Header="Open File" Click="OpenFileBtn_Click"/-->
+                        <MenuItem Foreground="Black" Header="Add cheked files to playlist" Click="AddToPL_Click"/>
+                        <!--MenuItem Foreground="Black" Header="Decrypt cheked files" Click="DecodeAllSelectedFiles_Click"/-->
+                        <!--MenuItem Foreground="Black" Header="Open film settings" Click="FilmGridData_DbClick"/-->
+                        <MenuItem Foreground="Black" Header="Encrypt cheked files" Click="EncodeAllSelectedFiles_Click"/>
+                    </ContextMenu>
+                </Button.ContextMenu>
+                <StackPanel Orientation="Horizontal">
+                    <Label>Film</Label>
+                    <Path x:Name="FilmBtnArrow" Margin="4" VerticalAlignment="Center" Width="10" Fill="#FFF7F70D" Stretch="Uniform" HorizontalAlignment="Right" Data="F1 M 301.14,-189.041L 311.57,-189.041L 306.355,-182.942L 301.14,-189.041 Z "/>
+                </StackPanel>
+            </Button>
+            <Button  Height="70" HorizontalAlignment="Left"  x:Name="button1" Width="80" Click="AddBtn_Click" Margin="0,5,0,5">
+                <Button.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Foreground="Black" Header="Add Files" Click="AddFilesClick" />
+                        <MenuItem Foreground="Black" Header="Add File Link" Click="OpenAddLinkBtn_Click"/>
+                        <MenuItem Foreground="Black" Header="Add Category" Click="OpenCategoryWindow_Click"/>                        
+                    </ContextMenu>
+                </Button.ContextMenu>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Add"/>
+                    <Path x:Name="AddBtnArrow" Margin="4" VerticalAlignment="Center" Width="10" Fill="#FFF7F70D" Stretch="Uniform" HorizontalAlignment="Right" Data="F1 M 301.14,-189.041L 311.57,-189.041L 306.355,-182.942L 301.14,-189.041 Z "/>
+                </StackPanel>
+            </Button>
+            <Button Height="70" Width="80" Click="DelBtn_Click" Margin="0,5,0,5">
+                <Button.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Foreground="Black" Header="Delete Category" Click="DelCategory_Click"/>
+                        <MenuItem Foreground="Black" Header="Delete Film" Click="DelFilm_Click"/>
+                    </ContextMenu>
+                </Button.ContextMenu>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Delete"/>
+                    <Path x:Name="DelBtnArrow" Margin="4" VerticalAlignment="Center" Width="10" Fill="#FFF7F70D" Stretch="Uniform" HorizontalAlignment="Right" Data="F1 M 301.14,-189.041L 311.57,-189.041L 306.355,-182.942L 301.14,-189.041 Z "/>
+                </StackPanel>
+            </Button>
+            <Button Content="Filter" Width="80" Click="FilterButton_Click" Margin="0,5,0,5"/>
+            <Button Content="Bad FilePath" Click="BadFilePathBtn_Click" Width="80"  Margin="0,4,0,6"/>
+            <Button Content="Settings" Click="SettingsBtn_Click" Width="80"  Margin="0,5,0,5"/>
+            <Button Content="Link" Click="LinkBtn_Click" Width="80"  Margin="0,5,0,5"/>
+            <Button Content="Exit App" Click="ExitApp_Click" Width="80"  Margin="0,5,0,5"/>
+        </Menu>
+       
+
+    </Canvas>
+</Window>

@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema 
+    xmlns:mstns="http://tempuri.org/XMLSchema.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+  <xs:element name="FilmsScr">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Screen" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:simpleContent>
+              <xs:extension base="xs:string">
+                <xs:attribute name="id" type ="xs:integer"/>
+                <xs:attribute name="filmGuid" type="xs:string"/>
+                <xs:attribute name="base64Data" type="xs:base64Binary"/>
+              </xs:extension>
+            </xs:simpleContent>
+          </xs:complexType>          
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="nextid" type ="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

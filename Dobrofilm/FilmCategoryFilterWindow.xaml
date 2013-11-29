@@ -1,0 +1,30 @@
+﻿<Window x:Name="FilmCategoryFilterWindow1" x:Class="Dobrofilm.FilmCategoryFilterWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="FilmCategoryFilterWindow" Height="447" Width="350" KeyDown="FilmCategoryFilterWindow1_KeyDown" Icon="Resources/MainIcon.ico" ResizeMode="NoResize">
+    <Canvas>
+        <StackPanel Orientation="Horizontal" Canvas.Left="10" Canvas.Top="10" Width="325">
+            <RadioButton x:Name="OrRadioButton" Content="OR" Margin="10" IsChecked="True"/>
+            <RadioButton x:Name="AndRaioButton" Content="AND" Margin="10"/>
+        </StackPanel>
+        <Grid x:Name="CategoryIconsGrid" Canvas.Left="10" Canvas.Top="50" Width="325" Height="325">            
+            <Grid.RowDefinitions>
+                <RowDefinition Height="65"/>
+                <RowDefinition Height="65"/>
+                <RowDefinition Height="65"/>
+                <RowDefinition Height="65"/>
+                <RowDefinition Height="65"/>
+                <RowDefinition Height="65"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="65"/>
+                <ColumnDefinition Width="65"/>
+                <ColumnDefinition Width="65"/>
+                <ColumnDefinition Width="65"/>
+                <ColumnDefinition Width="65"/>                
+            </Grid.ColumnDefinitions>
+        </Grid>
+        <Button Content="Cancel" Canvas.Left="257" Canvas.Top="385" Width="75" Click="ButtonCancel_Click"/>
+        <Button Content="OK" Canvas.Left="165" Canvas.Top="385" Width="75" Click="ButtonOk_Click"/>
+    </Canvas>        
+</Window>

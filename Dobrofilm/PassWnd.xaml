@@ -1,0 +1,12 @@
+﻿<Window x:Class="Dobrofilm.PassWnd"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ctr="clr-namespace:Dobrofilm.Controls"
+        Title="Enter Password" Height="120" Width="300" Icon="Resources/MainIcon.ico" KeyDown="PswWnd_KeyDown_1" ResizeMode="NoResize">
+    <Grid x:Name="PswWinGrid">     
+        <PasswordBox HorizontalAlignment="Left" Margin="108,12,0,0" VerticalAlignment="Top" Width="174" Height="25" x:Name="Password_Box" KeyDown="Password_Box_KeyDown"/>
+        <Label Content="You Password" HorizontalAlignment="Left" Margin="20,12,0,0" VerticalAlignment="Top" Height="25" Width="83"/>
+        <Button Content="Ok" HorizontalAlignment="Left" Margin="108,53,0,0" VerticalAlignment="Top" Width="75" x:Name="OkBtn" Click="OkBtn_Click"/>
+        <Button Content="Cancel" HorizontalAlignment="Left" Margin="207,53,0,0" VerticalAlignment="Top" Width="75" x:Name="CancelBtn_Click" Click="CancelBtn_Click_Click"/>
+    </Grid>
+</Window>
