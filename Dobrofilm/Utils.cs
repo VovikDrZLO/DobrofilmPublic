@@ -250,30 +250,10 @@ namespace Dobrofilm
          }
 
          public static void ValidateSettings()
-         {
-             string Categoris = Dobrofilm.Properties.Settings.Default.CategoryListXMLFile;
-             string Films = Dobrofilm.Properties.Settings.Default.FilmListXMLFile;
-             string MPC = Dobrofilm.Properties.Settings.Default.MPCPath;
-             string Links = Dobrofilm.Properties.Settings.Default.LinksListXMLFile;
-             string DefBrowser = Dobrofilm.Properties.Settings.Default.DefaultBrowser;
-             string Screens =  Dobrofilm.Properties.Settings.Default.ScreenShotXMLFile;
-             //Dobrofilm.Properties.Settings.Default.Save();
-             FilmFilesList filmFilesList = new FilmFilesList();
-             
-             XmlDocument FilmXml = new XmlDocument();
-             FilmXml.Load(filmFilesList.FileListPath);
-
-             XmlReaderSettings settings = new XmlReaderSettings();
-             settings.Schemas.Add(null, "Resources/FilmList.xsd");
-             settings.ValidationType = ValidationType.Schema;
-             XmlReader reader1 = XmlReader.Create(filmFilesList.FileListPath, settings);
-             try
-             {
-                 FilmXml.Load(reader1);
-             }
-             catch
-             {
-             }
+         {             
+             string MPC = Dobrofilm.Properties.Settings.Default.MPCPath;          
+             string DefBrowser = Dobrofilm.Properties.Settings.Default.DefaultBrowser;             
+             //Dobrofilm.Properties.Settings.Default.Save();             
              
          }
 
