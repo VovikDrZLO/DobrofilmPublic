@@ -15,7 +15,7 @@
 
         <LinearGradientBrush x:Key="Brush_DataGridHeaderMouseOverBackground" StartPoint="0,0" EndPoint="0,1">
             <GradientStop Color="#FF1C7CAF" Offset="0" />
-            <GradientStop Color="#FF042A68" Offset="1" />
+            <GradientStop Color="#FF576E93" Offset="1" />
         </LinearGradientBrush>
 
         <LinearGradientBrush x:Key="Brush_DataGridHeaderBorder" StartPoint="0,0" EndPoint="0,1">
@@ -25,12 +25,12 @@
 
         <LinearGradientBrush x:Key="Brush_DataGridHeaderSortedBorder" StartPoint="0,0" EndPoint="0,1">
             <GradientStop Color="#B58801" Offset="0" />
-            <GradientStop Color="#681900" Offset="1" />
+            <GradientStop Color="#FFA45239" Offset="1" />
         </LinearGradientBrush>
 
         <LinearGradientBrush x:Key="Brush_DataGridHeaderSortedBackground" StartPoint="0,0" EndPoint="0,1">
-            <GradientStop Color="#C46007" Offset="0" />
-            <GradientStop Color="#AF2600" Offset="1" />
+            <GradientStop Color="#FFDA8938" Offset="0" />
+            <GradientStop Color="#FFD1ADA4" Offset="1" />
         </LinearGradientBrush>
 
         <LinearGradientBrush x:Key="Brush_DataGridSelected" EndPoint="0.5,1" StartPoint="0.5,0">
@@ -299,7 +299,7 @@
         <Canvas.Background>
             <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
                 <GradientStop Color="#FFD1DEF0" Offset="0.522"/>
-                <GradientStop Color="#FF91E4A0" Offset="0.283"/>
+                <GradientStop Color="#FFC7EECE" Offset="0.283"/>
             </LinearGradientBrush>
         </Canvas.Background>
         <DataGrid x:Name="MainGridData" Canvas.Left="208" Canvas.Top="1" Width="581"
@@ -371,66 +371,47 @@
         <Menu Height="95" Canvas.Top="-94" x:Name="MenuBar">
             <Menu.Background>
                 <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                    <GradientStop Color="#FF91E4A0" Offset="0.522"/>
+                    <GradientStop Color="#FFC7EECE" Offset="0.522"/>
                     <GradientStop Color="#FFD1DEF0" Offset="0.283"/>  
                 </LinearGradientBrush>
-            </Menu.Background>
-            <!--MenuItem Header="File">
-                <MenuItem Header="Open File"/>
-                <Separator/>
-                <MenuItem Header="Reset Data"/>
-                <MenuItem Header="Exit"/>
-            </MenuItem>
-            <MenuItem Header="Add">
-                <MenuItem Header="Add Category"/>
-                <MenuItem Header="Add Films"/>
-            </MenuItem>
-            <MenuItem Header="Del">
-                <MenuItem Header="Del Category"/>
-                <MenuItem Header="Del Film"/>
-            </MenuItem-->            
-            <!--Button Content="Add Files" Width="80" Click="AddFilesClick" Margin="0,5,0,5" Height="70"/>                            
-            <Button Content="Add Category" Width="80" Click="OpenCategoryWindow_Click"  Margin="0,5,0,5"/-->
-            <!--Button Content="Delete Film" Width="80"  Margin="0,5,0,5" Click="DelFilm_Click"/>
-            <Button Content="Del Category" Width="80" Margin="0,5,0,5" Click="DelCategory_Click"/>
-            <Button Content="OpenFile" Click="OpenFileBtn_Click" Width="80"  Margin="0,5,0,5"/-->
+            </Menu.Background>            
             <Button Height="70" Width="80" Click="FilmBtn_Click" Margin="0,5,0,5">
                 <Button.ContextMenu>
                     <ContextMenu>
+                        <MenuItem Foreground="Black" Header="Add Files" Click="AddFilesClick" />
                         <!--MenuItem Foreground="Black" Header="Open File" Click="OpenFileBtn_Click"/-->
-                        <MenuItem Foreground="Black" Header="Add cheked files to playlist" Click="AddToPL_Click"/>
-                        <!--MenuItem Foreground="Black" Header="Decrypt cheked files" Click="DecodeAllSelectedFiles_Click"/-->
-                        <!--MenuItem Foreground="Black" Header="Open film settings" Click="FilmGridData_DbClick"/-->
-                        <MenuItem Foreground="Black" Header="Encrypt cheked files" Click="EncodeAllSelectedFiles_Click"/>
+                        <MenuItem Foreground="Black" Header="Add cheked files to playlist" Click="AddToPL_Click"/>                        
+                        <!--MenuItem Foreground="Black" Header="Open film settings" Click="FilmGridData_DbClick"/-->                        
+                        <MenuItem Foreground="Black" Header="Add Online Film Link" Click="OpenAddLinkBtn_Click"/>
+                        <MenuItem Foreground="Black" Header="Delete Film" Click="DelFilm_Click"/>
                     </ContextMenu>
                 </Button.ContextMenu>
                 <StackPanel Orientation="Horizontal">
-                    <Label>Film</Label>
+                    <Label>Films</Label>
                     <Path x:Name="FilmBtnArrow" Margin="4" VerticalAlignment="Center" Width="10" Fill="#FFF7F70D" Stretch="Uniform" HorizontalAlignment="Right" Data="F1 M 301.14,-189.041L 311.57,-189.041L 306.355,-182.942L 301.14,-189.041 Z "/>
                 </StackPanel>
             </Button>
             <Button  Height="70" HorizontalAlignment="Left"  x:Name="button1" Width="80" Click="AddBtn_Click" Margin="0,5,0,5">
                 <Button.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Foreground="Black" Header="Add Files" Click="AddFilesClick" />
-                        <MenuItem Foreground="Black" Header="Add File Link" Click="OpenAddLinkBtn_Click"/>
-                        <MenuItem Foreground="Black" Header="Add Category" Click="OpenCategoryWindow_Click"/>                        
+                    <ContextMenu>                                                
+                        <MenuItem Foreground="Black" Header="Add Category" Click="OpenCategoryWindow_Click"/>
+                        <MenuItem Foreground="Black" Header="Delete Category" Click="DelCategory_Click"/>
                     </ContextMenu>
                 </Button.ContextMenu>
                 <StackPanel Orientation="Horizontal">
-                    <Label Content="Add"/>
+                    <Label Content="Category"/>
                     <Path x:Name="AddBtnArrow" Margin="4" VerticalAlignment="Center" Width="10" Fill="#FFF7F70D" Stretch="Uniform" HorizontalAlignment="Right" Data="F1 M 301.14,-189.041L 311.57,-189.041L 306.355,-182.942L 301.14,-189.041 Z "/>
                 </StackPanel>
             </Button>
             <Button Height="70" Width="80" Click="DelBtn_Click" Margin="0,5,0,5">
                 <Button.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Foreground="Black" Header="Delete Category" Click="DelCategory_Click"/>
-                        <MenuItem Foreground="Black" Header="Delete Film" Click="DelFilm_Click"/>
+                        <MenuItem Foreground="Black" Header="Decrypt cheked files" Click="DecodeAllSelectedFiles_Click"/>                        
+                        <MenuItem Foreground="Black" Header="Encrypt cheked files" Click="EncodeAllSelectedFiles_Click"/>
                     </ContextMenu>
                 </Button.ContextMenu>
                 <StackPanel Orientation="Horizontal">
-                    <Label Content="Delete"/>
+                    <Label Content="Crypt"/>
                     <Path x:Name="DelBtnArrow" Margin="4" VerticalAlignment="Center" Width="10" Fill="#FFF7F70D" Stretch="Uniform" HorizontalAlignment="Right" Data="F1 M 301.14,-189.041L 311.57,-189.041L 306.355,-182.942L 301.14,-189.041 Z "/>
                 </StackPanel>
             </Button>

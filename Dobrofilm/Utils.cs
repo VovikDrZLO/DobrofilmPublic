@@ -197,6 +197,12 @@ namespace Dobrofilm
                  {
                      CopyStream(input, decryptedStream);
                  }
+                 if (MainWindow.OpenedCryptedFiles == null)
+                 {
+                     MainWindow.OpenedCryptedFiles = new List<string>();
+                 }
+                 MainWindow.OpenedCryptedFiles.Add(outputPath);                    
+                 
              }
              catch (CryptographicException err)
              {
@@ -249,12 +255,13 @@ namespace Dobrofilm
              
          }
 
-         public static void ValidateSettings()
+         public static bool ValidateSettings()
          {             
              string MPC = Dobrofilm.Properties.Settings.Default.MPCPath;          
-             string DefBrowser = Dobrofilm.Properties.Settings.Default.DefaultBrowser;             
-             //Dobrofilm.Properties.Settings.Default.Save();             
+             string DefBrowser = Dobrofilm.Properties.Settings.Default.DefaultBrowser;
              
+             //Dobrofilm.Properties.Settings.Default.Save();             
+             return true;
          }
 
          public static bool ValidateSettings(string FileName, XMLFile FileType)

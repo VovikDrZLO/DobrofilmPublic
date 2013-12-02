@@ -24,7 +24,7 @@ namespace Dobrofilm
             CategoryListBox.DataContext = new CategoryList();            
         }
 
-        public List<string> OpenedCryptedFiles { get; set; }
+        public static List<string> OpenedCryptedFiles { get; set; }
 
         private void AddFilesClick(object sender, RoutedEventArgs e)
         {
@@ -98,10 +98,17 @@ namespace Dobrofilm
             }
             FilmFile SelectedFilm = (FilmFile)MainGridData.SelectedItem;
             if (e.ChangedButton == MouseButton.Left)
-            {
+            {                
                 if (SelectedFilm.IsOnline)
                 {
-                    System.Diagnostics.Process.Start(Dobrofilm.Properties.Settings.Default.DefaultBrowser, SelectedFilm.Path);
+                    try
+                    {
+                        System.Diagnostics.Process.Start(Dobrofilm.Properties.Settings.Default.DefaultBrowser, SelectedFilm.Path);
+                    }
+                    catch
+                    {
+                        Utils.ShowErrorDialog("Error occurred while trying to open browser, default browser may be not correct.");
+                    }
                 }
                 else if (Utils.IsFileExists(SelectedFilm.Path))
                 {
@@ -121,12 +128,12 @@ namespace Dobrofilm
                             System.Diagnostics.Process.Start(NewFilePath);
                         }
                         else
-                        {
-                            OpenedCryptedFiles.Add(NewFilePath);
+                        {                            
                             PassWnd passWnd = new PassWnd(SelectedFilm.Path, NewFilePath);
                             passWnd.ShowDialog();                            
                             if (Utils.IsFileExists(NewFilePath))
                             {
+                                //OpenedCryptedFiles.Add(NewFilePath);
                                 System.Diagnostics.Process.Start(NewFilePath);
                             }
                         }
@@ -209,8 +216,8 @@ namespace Dobrofilm
         
         public bool IsBadFile(object de)
         {
-            FilmFile File = de as FilmFile;         
-            return !Utils.IsFileExists(File.Path);            
+            FilmFile File = de as FilmFile;
+            return !Utils.IsFileExists(File.Path) && !File.IsOnline;            
         }
 
         private void SettingsBtn_Click(object sender, RoutedEventArgs e)
