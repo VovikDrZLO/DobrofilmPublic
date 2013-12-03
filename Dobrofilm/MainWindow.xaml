@@ -378,12 +378,13 @@
             <Button Height="70" Width="80" Click="FilmBtn_Click" Margin="0,5,0,5">
                 <Button.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Foreground="Black" Header="Add Files" Click="AddFilesClick" />
+                        <MenuItem Foreground="Black" Header="Add Films" Click="AddFilesClick" />
                         <!--MenuItem Foreground="Black" Header="Open File" Click="OpenFileBtn_Click"/-->
-                        <MenuItem Foreground="Black" Header="Add cheked files to playlist" Click="AddToPL_Click"/>                        
+                        <MenuItem Foreground="Black" Header="Add Cheked Films to Playlist" Click="AddToPL_Click"/>                        
                         <!--MenuItem Foreground="Black" Header="Open film settings" Click="FilmGridData_DbClick"/-->                        
                         <MenuItem Foreground="Black" Header="Add Online Film Link" Click="OpenAddLinkBtn_Click"/>
                         <MenuItem Foreground="Black" Header="Delete Film" Click="DelFilm_Click"/>
+                        <MenuItem Foreground="Black" Header="Move Cheked Films" Click="MoveChekedFilms_Click"/>
                     </ContextMenu>
                 </Button.ContextMenu>
                 <StackPanel Orientation="Horizontal">
@@ -406,8 +407,9 @@
             <Button Height="70" Width="80" Click="DelBtn_Click" Margin="0,5,0,5">
                 <Button.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Foreground="Black" Header="Decrypt cheked files" Click="DecodeAllSelectedFiles_Click"/>                        
-                        <MenuItem Foreground="Black" Header="Encrypt cheked files" Click="EncodeAllSelectedFiles_Click"/>
+                        <MenuItem Foreground="Black" Header="Show Encripted Films" Click="ShowEncriptedFilms_Click"/>
+                        <MenuItem Foreground="Black" Header="Decrypt Cheked Films" Click="DecodeAllSelectedFiles_Click"/>                        
+                        <MenuItem Foreground="Black" Header="Encrypt Cheked Films" Click="EncodeAllSelectedFiles_Click"/>                        
                     </ContextMenu>
                 </Button.ContextMenu>
                 <StackPanel Orientation="Horizontal">

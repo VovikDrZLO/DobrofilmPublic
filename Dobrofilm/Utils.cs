@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Windows.Data;
 using System.IO;
 using System.Windows.Media.Imaging;
 using System.Security;
@@ -307,6 +308,36 @@ namespace Dobrofilm
                      ValidDoc = null;
                  }
                  return true;                 
+         }
+
+         public static string SelectFolderDlg
+         {
+             get
+             {
+                 System.Windows.Forms.FolderBrowserDialog DirDialog = new System.Windows.Forms.FolderBrowserDialog();
+                 DirDialog.ShowDialog();
+                 return DirDialog.SelectedPath;
+             }
+         }
+
+
+         public static long TotalFilmsLength
+         {
+             get
+             {
+                 FilmFilesList filmFilesList = new FilmFilesList();
+                 ListCollectionView filmFiles = filmFilesList.FilmFiles;
+                 long TotalLength = 0;
+                 foreach (FilmFile Film in filmFiles)
+                 {
+                     if (!Film.IsOnline && Utils.IsFileExists(Film.Path))
+                     {
+                         FileInfo FileInfo = new FileInfo(Film.Path);
+                         TotalLength = TotalLength + FileInfo.Length;
+                     }
+                 }
+                 return TotalLength;
+             }
          }
     }
 }

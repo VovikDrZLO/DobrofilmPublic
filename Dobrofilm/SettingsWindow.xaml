@@ -5,11 +5,11 @@
     <Window.Resources>
         <Style x:Key="SecretButtonStyle" TargetType="Button">
             <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="Background" Value="White">                
+            <Setter Property="Background" Value="White">
             </Setter>
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="Button">                        
+                    <ControlTemplate TargetType="Button">
                         <Border Name="border" 
                             BorderThickness="0"
                             Padding="0" 
@@ -22,7 +22,7 @@
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="border" Property="BorderBrush" Value="Black"/>
                                 <Setter TargetName="border" Property="BorderThickness" Value="1"/>
-                            </Trigger>                           
+                            </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -38,7 +38,7 @@
         <TextBox x:Name="FilmMaskTB" Height="24" Canvas.Left="171" TextWrapping="Wrap" Text="FilmMask" Canvas.Top="319" Width="120"/>
         <TextBox x:Name="LinkPath" Height="24" Canvas.Left="171" TextWrapping="Wrap" Text="LinkPath" Canvas.Top="100" Width="300"/>
         <TextBox x:Name="ScreenPath" Height="24" Canvas.Left="171" TextWrapping="Wrap" Text="ScreenPath" Canvas.Top="137" Width="300"/>
-        <Button Content="DelMarkedFilms" Canvas.Left="10" Canvas.Top="418" Width="91" Click="DelMarkedFilmsBtn_Click" Height="23"/>
+        <Button Content="Delete Marked Films" Canvas.Left="10" Canvas.Top="418" Width="115" Click="DelMarkedFilmsBtn_Click" Height="23"/>
         <Button Content="Ok" Canvas.Left="308" Canvas.Top="418" Width="75" Click="OKBtn_Click" Height="23"/>
         <Button Content="Cancel" Canvas.Left="405" Canvas.Top="418" Width="75" Click="CancelBtn_Click" Height="23"/>
         <Label Content="CategoryDictXMLFilePath" Canvas.Left="10" Canvas.Top="20" Height="26" Width="147"/>
@@ -55,5 +55,6 @@
                 MouseLeave="SecretButton_MouseLeave" Style="{StaticResource SecretButtonStyle}"/>
         <TextBox x:Name="DefBrowserTB" Height="23" Canvas.Left="171" TextWrapping="Wrap" Text="explorer.exe" Canvas.Top="209" Width="300"/>
         <Label Content="Default Browser" Canvas.Left="10" Canvas.Top="209" Width="147"/>
+        <Button Content="Move All Films" Canvas.Left="143" Canvas.Top="419" Width="83" Click="MoveAllFilms_Click"/>
     </Canvas>
 </Window>

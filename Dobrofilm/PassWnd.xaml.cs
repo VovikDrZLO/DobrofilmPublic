@@ -19,6 +19,7 @@ namespace Dobrofilm
     public partial class PassWnd : Window
     {
         private readonly BackgroundWorker worker = new BackgroundWorker();
+        private readonly BackgroundWorker Multworker = new BackgroundWorker();
         public PassWnd()
         {
             InitializeComponent();
@@ -60,6 +61,18 @@ namespace Dobrofilm
             if (CloseWindow) this.Close();
         }
 
+        private void Multworker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            // run all background tasks here
+            List<FilmFile> args = (List<FilmFile>)e.Argument;
+            foreach (FilmFile Film in args)
+            {
+                string TempFileName = Utils.GenerateTempFilePath(Film.Path);
+                Utils.DecryptFile(Film.Path, TempFileName, PassStr);
+            }
+           
+        }
+
         private enum ActionTypeEnum {DecryptFile, ShowCryptedFiles, DecryptFileList};
 
         private string FromFilePath { get; set; }
@@ -75,6 +88,8 @@ namespace Dobrofilm
         {
             worker.DoWork += worker_DoWork;
             worker.RunWorkerCompleted += worker_RunWorkerCompleted;
+            Multworker.DoWork += Multworker_DoWork;
+            Multworker.RunWorkerCompleted += worker_RunWorkerCompleted;
             if (ActionType == ActionTypeEnum.DecryptFile)
             {
                 PassStr = Password_Box.Password;                                
@@ -116,18 +131,9 @@ namespace Dobrofilm
             else if (ActionType == ActionTypeEnum.DecryptFileList)
             {
                 PassStr = Password_Box.Password;
-                Utils.ShowLoadingWindow("Decoding", "FilmList");
-                foreach(FilmFile Film in chekedFiles)                {
-                    string TempFileName = Utils.GenerateTempFilePath(Film.Path);
-                    FromFilePath = Film.Path;
-                    ToFilePath = TempFileName;
-                    //Utils.ShowLoadingWindow("Decoding", FromFilePath);
-                    //worker.RunWorkerAsync();
-                    Utils.DecryptFile(Film.Path, TempFileName, PassStr);
-                }
-                Window LoadingWindow = Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.Title == "wnd_Loading");
-                if (LoadingWindow != null) LoadingWindow.Close();
-                Close();
+                Utils.ShowLoadingWindow("Decoding", "Selected Films");
+                Multworker.RunWorkerAsync(chekedFiles);
+                CloseWindow = true;                
             }
         }
 

@@ -18,11 +18,13 @@ namespace Dobrofilm
     {
         public MainWindow()
         {
-            InitializeComponent();
+            InitializeComponent();            
             FilmFilesList.ShowCryptFilms = false;            
             MainGridData.DataContext = new FilmFilesList();
             CategoryListBox.DataContext = new CategoryList();            
         }
+
+        
 
         public static List<string> OpenedCryptedFiles { get; set; }
 
@@ -119,10 +121,7 @@ namespace Dobrofilm
                     else
                     {
                         string NewFilePath = Utils.GenerateTempFilePath(SelectedFilm.Path);                            
-                        if (OpenedCryptedFiles == null)
-                        {
-                            OpenedCryptedFiles = new List<string>();
-                        }
+                        if (OpenedCryptedFiles == null) OpenedCryptedFiles = new List<string>();
                         if (OpenedCryptedFiles.Contains(NewFilePath))
                         {
                             System.Diagnostics.Process.Start(NewFilePath);
@@ -271,10 +270,7 @@ namespace Dobrofilm
                         Window passwnd = new PassWnd(filmFile.Path, TempFilePath);
                         passwnd.ShowDialog();
                         ParamString = string.Concat(ParamString," /add ", TempFilePath);
-                        if (OpenedCryptedFiles == null)
-                        {
-                            OpenedCryptedFiles = new List<string>();
-                        }
+                        if (OpenedCryptedFiles == null) OpenedCryptedFiles = new List<string>();
                         OpenedCryptedFiles.Add(TempFilePath);                        
                     }
                     else
@@ -348,11 +344,11 @@ namespace Dobrofilm
                 }
                 catch (IOException err)
                 {
-                    Utils.ShowErrorDialog(string.Concat("File ", FilePath, " couldn't by deleted ", err.Message));
+                    Utils.ShowErrorDialog(string.Concat("File ", FilePath, " couldn't be deleted ", err.Message));
                 }
                 catch (UnauthorizedAccessException err)
                 {
-                    Utils.ShowErrorDialog(string.Concat("File ", FilePath, " couldn't by deleted ", err.Message));
+                    Utils.ShowErrorDialog(string.Concat("File ", FilePath, " couldn't be deleted ", err.Message));
                 }
             }
         }
@@ -368,8 +364,11 @@ namespace Dobrofilm
                     SelectedCryptedFilms.Add(CryptedFilm);                
                 } 
             }
-            Window passwnd = new PassWnd(SelectedCryptedFilms);
-            passwnd.ShowDialog();
+            if (SelectedCryptedFilms.Count > 0)
+            {
+                Window passwnd = new PassWnd(SelectedCryptedFilms);
+                passwnd.ShowDialog();
+            }
         }
 
         private void OpenAddLinkBtn_Click(object sender, RoutedEventArgs e)
@@ -401,12 +400,16 @@ namespace Dobrofilm
             foreach (FilmFile Film in CheckList)
             {
                 string CryptFileName =  Utils.GenerateCryptFilePath(Film.Path);
+                Mouse.OverrideCursor = Cursors.Wait;
                 if (!Film.IsCrypted && !Film.IsOnline) Utils.EncryptFile(Film.Path, CryptFileName);
+                if (OpenedCryptedFiles == null) OpenedCryptedFiles = new List<string>();
+                OpenedCryptedFiles.Add(Film.Path);
                 Film.IsCrypted = true;
                 Film.Path = CryptFileName;
                 FilmFilesList FileList = new FilmFilesList();
-                FileList.AddSaveFilmItemToXML(Film, false);
+                FileList.AddSaveFilmItemToXML(Film, false);                
             }
+            Mouse.OverrideCursor = null;
             UpdateMainGridData();
         }
 
@@ -431,6 +434,35 @@ namespace Dobrofilm
                 img.Margin = new Thickness(0, 5, 1, 1);
                 Canvas.SetLeft(img, 130 * i);                
             }                                    
+        }
+
+        private void ShowEncriptedFilms_Click(object sender, RoutedEventArgs e)
+        {
+            if (!!FilmFilesList.ShowCryptFilms)
+            {
+                FilmFilesList.ShowCryptFilms = false;
+            }
+            else
+            {
+                PassWnd PasswordWindow = new PassWnd();
+                PasswordWindow.ShowDialog();
+            }
+            UpdateMainGridData();
+        }
+
+        private void MoveChekedFilms_Click(object sender, RoutedEventArgs e)
+        {
+            string NewFolder = Utils.SelectFolderDlg;
+            IEnumerable<FilmFile> CheckList = ListOfChekedFilms();
+            foreach (FilmFile Film in CheckList)
+            {
+                string Exten = System.IO.Path.GetExtension(Film.Path);
+                string NewPath = string.Concat(NewFolder, @"\", Film.Name, Exten);
+                File.Move(Film.Path, NewPath);
+                Film.Path = NewPath;
+                FilmFilesList filmFilesList = new FilmFilesList();
+                filmFilesList.AddSaveFilmItemToXML(Film, false);
+            }
         }       
     }
 }

@@ -12,12 +12,6 @@ using System.IO;
 using System.ComponentModel;
 using System.Windows.Media;
 
-//using System.Security.Cryptography;
-//using System.Runtime.InteropServices;
-//using System.Windows.Shapes;
-//using System.Windows.Documents;
-//using System.Windows.Data;
-//using System.Text;
 
 namespace Dobrofilm
 {
@@ -325,22 +319,14 @@ namespace Dobrofilm
 
         private void MoveToBtn_Click(object sender, RoutedEventArgs e)
         {
-            var NewFolder = NewFolderPath;                        
+            string NewFolder = Utils.SelectFolderDlg;                        
             var Exten = System.IO.Path.GetExtension(FilePath);
             string NewPath = string.Concat(NewFolder, @"\", FilmName.Text, Exten);
             File.Move(FilePath, NewPath);
             FileStatus(NewPath);
         }
 
-        public string NewFolderPath
-        {
-            get
-            {
-                System.Windows.Forms.FolderBrowserDialog DirDialog = new System.Windows.Forms.FolderBrowserDialog();
-                DirDialog.ShowDialog();                
-                return DirDialog.SelectedPath;
-            }
-        }
+        
 
         private void ChangePathBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -577,6 +563,7 @@ namespace Dobrofilm
             FilmItemStatusBar.Width = WinWidth - 27;
             
             Canvas.SetTop(CryptFile, WinHeight - 126);
+            Canvas.SetTop(Complete_Decrypt, WinHeight - 126);            
 
             Canvas.SetTop(FilmRate, WinHeight - 129);            
             
@@ -660,7 +647,22 @@ namespace Dobrofilm
                 imageArray = outputStream.ToArray();
             }
             return imageArray;
-        }       
+        }
 
+        private void CompleteDecrypt_Click(object sender, RoutedEventArgs e)
+        {
+            string NewFileName = Utils.GenerateTempFilePath(FilePath);
+            PassWnd passWnd = new PassWnd(FilePath, NewFileName);
+            passWnd.ShowDialog();
+            if (Utils.IsFileExists(NewFileName))
+            {
+                Utils.DeleteFile(FilePath);                                
+                IsCrypted = false;
+                FilePath = NewFileName;
+                FileStatus(NewFileName);
+                List<string> openedCryptedFiles = MainWindow.OpenedCryptedFiles;
+                openedCryptedFiles.Remove(NewFileName);                
+            }            
+        }      
     }
 }

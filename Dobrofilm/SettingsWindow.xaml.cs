@@ -133,7 +133,6 @@ namespace Dobrofilm
             }
             else
             {
-
                 PassWnd PasswordWindow = new PassWnd();
                 PasswordWindow.ShowDialog();
             }
@@ -148,6 +147,41 @@ namespace Dobrofilm
         private void SecretButton_MouseLeave(object sender, MouseEventArgs e)
         {
             SecretButton.Content = null;
+        }
+
+        private void MoveAllFilmsToSelectedDirectory()
+        {
+            string NewFolderPath = Utils.SelectFolderDlg;
+            string Drive = NewFolderPath.Substring(0, 1);
+            DriveInfo DriveInf = new DriveInfo(Drive);
+            long freeSpaceInBytes = DriveInf.AvailableFreeSpace;
+            FilmFilesList filmFilesList = new FilmFilesList();
+            ListCollectionView filmFiles = filmFilesList.FilmFiles;
+            long TotalFilesLengthInBytes = Utils.TotalFilmsLength;
+            if (TotalFilesLengthInBytes > freeSpaceInBytes)
+            {
+                Utils.ShowErrorDialog("Insufficient disc space");
+                return;
+            }
+            foreach (FilmFile Film in filmFiles)
+            {
+                if (!Film.IsOnline)
+                {
+                    var Exten = System.IO.Path.GetExtension(Film.Path);
+                    string NewPath = string.Concat(NewFolderPath, @"\", Film.Name, Exten);
+                    File.Move(Film.Path, NewPath);
+                    if (Utils.IsFileExists(NewPath))
+                    {
+                        Film.Path = NewPath;
+                        filmFilesList.AddSaveFilmItemToXML(Film, false);
+                    }
+                }
+            }
+        }
+
+        private void MoveAllFilms_Click(object sender, RoutedEventArgs e)
+        {
+            MoveAllFilmsToSelectedDirectory();
         }
 
     }
