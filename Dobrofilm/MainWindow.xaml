@@ -310,8 +310,7 @@
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
                 <Grid x:Name="RowDetailGrid"	                
-	                 Height="Auto"
-	                 Margin="5">
+	                 Height="Auto">
                     <Border HorizontalAlignment="Left"
 		            VerticalAlignment="Top"
 		            CornerRadius="5">
@@ -409,7 +408,9 @@
                     <ContextMenu>
                         <MenuItem Foreground="Black" Header="Show Encripted Films" Click="ShowEncriptedFilms_Click"/>
                         <MenuItem Foreground="Black" Header="Decrypt Cheked Films" Click="DecodeAllSelectedFiles_Click"/>                        
-                        <MenuItem Foreground="Black" Header="Encrypt Cheked Films" Click="EncodeAllSelectedFiles_Click"/>                        
+                        <MenuItem Foreground="Black" Header="Encrypt Cheked Films" Click="EncodeAllSelectedFiles_Click"/>
+                        <MenuItem Foreground="Black" Header="Encrypt Files In Folder" Click="EncrFlsInFolder_Click"/>
+                        <MenuItem Foreground="Black" Header="Decrypt Files In Folder" Click="DescrFlsInFolder_Click"/>
                     </ContextMenu>
                 </Button.ContextMenu>
                 <StackPanel Orientation="Horizontal">

@@ -463,6 +463,43 @@ namespace Dobrofilm
                 FilmFilesList filmFilesList = new FilmFilesList();
                 filmFilesList.AddSaveFilmItemToXML(Film, false);
             }
-        }       
+        }
+
+        private void EncrFlsInFolder_Click(object sender, RoutedEventArgs e)
+        {
+            string FilesFolder = Utils.SelectFolderDlg;
+            if (FilesFolder == string.Empty) return;
+            DirectoryInfo dInfo = new DirectoryInfo(FilesFolder);
+            DirectoryInfo[] subdirs = dInfo.GetDirectories();
+            var allfiles = Directory.GetFiles(FilesFolder, "*.*", SearchOption.AllDirectories);
+            string[] AllFilesArray = allfiles.ToArray();
+            foreach (string ImagePath in AllFilesArray)
+            {
+                string NewImagePath = Utils.GenerateCryptFilePath(ImagePath);
+                Utils.EncryptFile(ImagePath, NewImagePath);
+                if (Utils.IsFileExists(NewImagePath)) File.Delete(ImagePath);
+            }
+        }
+
+
+        private void DescrFlsInFolder_Click(object sender, RoutedEventArgs e)
+        {
+            string FilesFolder = Utils.SelectFolderDlg;
+            if (FilesFolder == string.Empty) return;
+            DirectoryInfo dInfo = new DirectoryInfo(FilesFolder);
+            DirectoryInfo[] subdirs = dInfo.GetDirectories();
+            var allfiles = Directory.GetFiles(FilesFolder, "*.*", SearchOption.AllDirectories)
+                .Where(s => s.EndsWith("CrypDobFilm"));
+            string[] AllFilesArray = allfiles.ToArray();
+            List<FilmFile> FileList = new List<FilmFile>();
+            foreach (string ImagePath in AllFilesArray)
+            {
+                FileList.Add(new FilmFile { Path = ImagePath });
+                string NewImagePath = Utils.GenerateTempFilePath(ImagePath);
+                if (Utils.IsFileExists(NewImagePath)) File.Delete(ImagePath);
+            }
+            PassWnd passWnd = new PassWnd(FileList);
+            passWnd.ShowDialog();
+        }
     }
 }
