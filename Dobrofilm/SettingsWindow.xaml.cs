@@ -184,5 +184,29 @@ namespace Dobrofilm
             MoveAllFilmsToSelectedDirectory();
         }
 
+        private void DelForgottenFilms_Click(object sender, RoutedEventArgs e)
+        {
+            FilmFilesList filmFilesList = new FilmFilesList();
+            if (!FilmFilesList.ShowCryptFilms)
+            {
+                PassWnd passWnd = new PassWnd();
+                passWnd.ShowDialog();
+            }
+            ListCollectionView filmFiles = filmFilesList.FilmFiles;
+            filmFiles.Filter = new Predicate<object>(IsCrypted);
+            foreach (FilmFile film in filmFiles)
+            {
+                string DecryptedTempName = Utils.GenerateTempFilePath(film.Path);
+                if (Utils.IsFileExists(DecryptedTempName)) File.Delete(DecryptedTempName);
+            }
+            MainWindow.OpenedCryptedFiles = null;
+        }
+
+        public bool IsCrypted(object de)
+        {
+            FilmFile film = de as FilmFile;
+            return film.IsCrypted;
+        }
+
     }
 }

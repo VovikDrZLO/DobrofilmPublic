@@ -79,12 +79,12 @@ namespace Dobrofilm.Properties {
         ///  &lt;xs:element name=&quot;categoris&quot;&gt;
         ///    &lt;xs:complexType&gt;
         ///      &lt;xs:sequence&gt;
-        ///        &lt;xs:element name=&quot;category&quot; maxOccurs=&quot;unbounded&quot;&gt;
+        ///        &lt;xs:element name=&quot;category&quot; maxOccurs=&quot;unbounded&quot; minOccurs=&quot;0&quot;&gt;
         ///          &lt;xs:complexType&gt;
         ///            &lt;xs:simpleContent&gt;
         ///              &lt;xs:extension base=&quot;xs:string&quot;&gt;
         ///                &lt;xs:attribute name=&quot;id&quot; type=&quot;xs:integer&quot; use=&quot;required&quot; /&gt;
-        ///                &lt;xs:attribut [rest of string was truncated]&quot;;.
+        ///               [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CategoryList {
             get {
@@ -111,12 +111,12 @@ namespace Dobrofilm.Properties {
         ///  &lt;xs:element name=&quot;files&quot;&gt;
         ///    &lt;xs:complexType&gt;
         ///      &lt;xs:sequence&gt;
-        ///        &lt;xs:element name=&quot;file&quot; maxOccurs=&quot;unbounded&quot;&gt;
+        ///        &lt;xs:element name=&quot;file&quot; maxOccurs=&quot;unbounded&quot; minOccurs=&quot;0&quot;&gt;
         ///          &lt;xs:complexType&gt;           
         ///            &lt;xs:simpleContent&gt;
         ///              &lt;xs:extension base=&quot;xs:string&quot;&gt;
         ///                &lt;xs:attribute name=&quot;GUID&quot; type=&quot;xs:string&quot; use=&quot;required&quot; /&gt;
-        ///                &lt;xs:attribut [rest of string was truncated]&quot;;.
+        ///               [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string FilmList {
             get {
@@ -131,6 +131,16 @@ namespace Dobrofilm.Properties {
             get {
                 object obj = ResourceManager.GetObject("GreenOk", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] ImgDel {
+            get {
+                object obj = ResourceManager.GetObject("ImgDel", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
@@ -153,12 +163,12 @@ namespace Dobrofilm.Properties {
         ///  &lt;xs:element name=&quot;links&quot;&gt;
         ///    &lt;xs:complexType&gt;
         ///      &lt;xs:sequence&gt;
-        ///        &lt;xs:element name=&quot;link&quot; maxOccurs=&quot;unbounded&quot;&gt;
+        ///        &lt;xs:element name=&quot;link&quot; maxOccurs=&quot;unbounded&quot; minOccurs=&quot;0&quot;&gt;
         ///          &lt;xs:complexType&gt;
         ///            &lt;xs:simpleContent&gt;
         ///              &lt;xs:extension base=&quot;xs:string&quot;&gt;
         ///                &lt;xs:attribute name=&quot;GUIDFROM&quot; type=&quot;xs:string&quot;/&gt;
-        ///                &lt;xs:attribute name =&quot;GUIDTO&quot; t [rest of string was truncated]&quot;;.
+        ///                &lt;xs:attribute na [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string LinksList {
             get {
@@ -205,12 +215,12 @@ namespace Dobrofilm.Properties {
         ///  &lt;xs:element name=&quot;FilmsScr&quot;&gt;
         ///    &lt;xs:complexType&gt;
         ///      &lt;xs:sequence&gt;
-        ///        &lt;xs:element name=&quot;Screen&quot; maxOccurs=&quot;unbounded&quot;&gt;
+        ///        &lt;xs:element name=&quot;Screen&quot; maxOccurs=&quot;unbounded&quot; minOccurs=&quot;0&quot;&gt;
         ///          &lt;xs:complexType&gt;
         ///            &lt;xs:simpleContent&gt;
         ///              &lt;xs:extension base=&quot;xs:string&quot;&gt;
         ///                &lt;xs:attribute name=&quot;id&quot; type =&quot;xs:integer&quot;/&gt;
-        ///                &lt;xs:attribute name=&quot;filmGuid&quot; type=&quot;x [rest of string was truncated]&quot;;.
+        ///                &lt;xs:attribute name=&quot;fil [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ScreenList {
             get {

@@ -11,6 +11,7 @@ using System.Xml.Linq;
 using System.IO;
 using System.ComponentModel;
 using System.Windows.Media;
+using System.Windows.Resources;
 
 
 namespace Dobrofilm
@@ -476,7 +477,11 @@ namespace Dobrofilm
 
         private void MouseOverImage(object sender, RoutedEventArgs e)
         {
-            this.Cursor = new Cursor("C:\\Study\\Dobrofilm\\Dobrofilm\\Resources\\ImgDel.cur");
+            //Uri CurUri = new Uri("Resources\\ImgDel.cur", UriKind.RelativeOrAbsolute);
+            //StreamResourceInfo sri = Application.GetResourceStream(CurUri);
+            //Cursor customCursor = new Cursor(sri.Stream);
+            //this.Cursor = customCursor;
+            this.Cursor = new Cursor(@"C:\Study\Dobrofilm\Dobrofilm\Resources\ImgDel.cur");
         }
 
         private void MouseLeftImage(object sender, RoutedEventArgs e)

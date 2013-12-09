@@ -6,7 +6,7 @@
   <xs:element name="categoris">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="category" maxOccurs="unbounded">
+        <xs:element name="category" maxOccurs="unbounded" minOccurs="0">
           <xs:complexType>
             <xs:simpleContent>
               <xs:extension base="xs:string">
