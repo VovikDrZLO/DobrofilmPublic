@@ -16,20 +16,6 @@ namespace Dobrofilm
     public class FilmFilesList
     {
 
-        //static void ValidationEventHandler(object sender, ValidationEventArgs e)
-        //{
-        //    switch (e.Severity)
-        //    {
-        //        case XmlSeverityType.Error:
-        //            Console.WriteLine("Error: {0}", e.Message);
-        //            break;
-        //        case XmlSeverityType.Warning:
-        //            Console.WriteLine("Warning {0}", e.Message);
-        //            break;
-        //    }
-
-        //}
-
         public ListCollectionView FilmFiles
         {
             get

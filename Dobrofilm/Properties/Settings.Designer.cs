@@ -94,5 +94,17 @@ namespace Dobrofilm.Properties {
                 this["ScreenShotXMLFile"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string HomeFolders {
+            get {
+                return ((string)(this["HomeFolders"]));
+            }
+            set {
+                this["HomeFolders"] = value;
+            }
+        }
     }
 }

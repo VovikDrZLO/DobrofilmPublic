@@ -69,7 +69,8 @@ namespace Dobrofilm
                 timer.Tick += new EventHandler(timer_tick);
                 FileStatus(SelectedFilm.Path);
                 IsLinkTabSelectedFirstTime = true;
-                Btn_Play.IsEnabled = !IsCrypted;
+                string TempFileName = Utils.GenerateTempFilePath(FilePath);
+                Btn_Play.IsEnabled = (!IsCrypted || MainWindow.OpenedCryptedFiles.Contains(TempFileName));
             }
         }
 
@@ -133,7 +134,16 @@ namespace Dobrofilm
                 ChangePathBtn.Visibility = System.Windows.Visibility.Hidden;
                 bitmap = Dobrofilm.Properties.Resources.GreenOk;                
                 StatusTextBox.Text = "FileOk";
-                FilmPlayer.Source = new Uri(FilmFilePath);
+                string TempFilmPath = Utils.GenerateTempFilePath(FilmFilePath);
+                if (IsCrypted && MainWindow.OpenedCryptedFiles.Contains(TempFilmPath) && Utils.IsFileExists(TempFilmPath))
+                {
+                    FilmPlayer.Source = new Uri(TempFilmPath);
+                }
+                else
+                {
+                    FilmPlayer.Source = new Uri(FilmFilePath);
+                }
+
                 Btn_Play.IsEnabled = true;
             }
             else
@@ -477,11 +487,10 @@ namespace Dobrofilm
 
         private void MouseOverImage(object sender, RoutedEventArgs e)
         {
-            //Uri CurUri = new Uri("Resources\\ImgDel.cur", UriKind.RelativeOrAbsolute);
-            //StreamResourceInfo sri = Application.GetResourceStream(CurUri);
-            //Cursor customCursor = new Cursor(sri.Stream);
-            //this.Cursor = customCursor;
-            this.Cursor = new Cursor(@"C:\Study\Dobrofilm\Dobrofilm\Resources\ImgDel.cur");
+            Uri CurUri = new Uri("pack://application:,,,/Resources/ImgDel.cur", UriKind.RelativeOrAbsolute);
+            StreamResourceInfo sri = Application.GetResourceStream(CurUri);
+            Cursor customCursor = new Cursor(sri.Stream);
+            this.Cursor = customCursor;            
         }
 
         private void MouseLeftImage(object sender, RoutedEventArgs e)
@@ -604,7 +613,10 @@ namespace Dobrofilm
             Canvas.SetTop(Btn_Screen, WinHeight - 209);
 
             Canvas.SetTop(SeekBar, WinHeight - 209);            
-            SeekBar.Width = WinWidth -650; //!!!
+            SeekBar.Width = WinWidth -730; //!!!
+
+            Canvas.SetTop(VolumeBar, WinHeight - 209);
+            VolumeBar.Width = WinWidth - 840;
 
             Canvas.SetLeft(MoveToBtn, WinWidth - 210);
 
@@ -668,6 +680,11 @@ namespace Dobrofilm
                 List<string> openedCryptedFiles = MainWindow.OpenedCryptedFiles;
                 openedCryptedFiles.Remove(NewFileName);                
             }            
+        }
+
+        private void ChangeMediaVolume(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            FilmPlayer.Volume = (double)VolumeBar.Value;
         }      
     }
 }

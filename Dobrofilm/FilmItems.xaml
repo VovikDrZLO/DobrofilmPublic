@@ -69,7 +69,8 @@
                     <Button x:Name="Btn_Cancel" Content="Calcel" Canvas.Left="803" Canvas.Top="434" Width="75" Click="FilmItemCancel_Click"/>
                     <Button x:Name="Btn_Play" Content="Play" Canvas.Left="507" Canvas.Top="351" Width="40" Click="PlayBtn_Click"/>
                     <Button x:Name="Btn_Screen" Content="Screen" Canvas.Left="560" Canvas.Top="351" Click="btnScreenShot_Click"/>
-                    <Slider x:Name="SeekBar" Canvas.Left="612" Canvas.Top="351" Width="257" Thumb.DragStarted ="seekBar_DragStarted" Thumb.DragCompleted="seekBar_DragComplite"/>
+                    <Slider x:Name="SeekBar" Canvas.Left="612" Canvas.Top="351" Width="181" Thumb.DragStarted ="seekBar_DragStarted" Thumb.DragCompleted="seekBar_DragComplite"/>
+                    <Slider x:Name="VolumeBar" Canvas.Left="800" Canvas.Top="351" Width="69" Minimum="0" Maximum="1" ValueChanged="ChangeMediaVolume"/>
                     <StatusBar x:Name="FilmItemStatusBar" Height="25" Canvas.Top="464" Width="888"/>
                     <Button x:Name="CryptFile" Height="22" Width="75" Canvas.Left="10" Canvas.Top="434" Content="CryptFile" Click="CryptFile_Click"/>
                     <Button x:Name="Complete_Decrypt" Content="Complete Decrypt" Canvas.Left="90" Canvas.Top="434" Width="101" Click="CompleteDecrypt_Click"/>

@@ -151,13 +151,16 @@ namespace Dobrofilm
 
         private void MoveAllFilmsToSelectedDirectory()
         {
-            string NewFolderPath = Utils.SelectFolderDlg;
-            string Drive = NewFolderPath.Substring(0, 1);
-            DriveInfo DriveInf = new DriveInfo(Drive);
-            long freeSpaceInBytes = DriveInf.AvailableFreeSpace;
             FilmFilesList filmFilesList = new FilmFilesList();
             ListCollectionView filmFiles = filmFilesList.FilmFiles;
             long TotalFilesLengthInBytes = Utils.TotalFilmsLength;
+            int TotalFilesLengthInMBytes = (int)TotalFilesLengthInBytes / 1024 / 1024;
+            if (!Utils.ShowYesNoDialog(string.Format("Need {0} MBytes, proceed", TotalFilesLengthInMBytes))) return;
+            string NewFolderPath = Utils.SelectFolderDlg;
+            if (NewFolderPath == string.Empty) return;
+            string Drive = NewFolderPath.Substring(0, 1);
+            DriveInfo DriveInf = new DriveInfo(Drive);
+            long freeSpaceInBytes = DriveInf.AvailableFreeSpace;            
             if (TotalFilesLengthInBytes > freeSpaceInBytes)
             {
                 Utils.ShowErrorDialog("Insufficient disc space");

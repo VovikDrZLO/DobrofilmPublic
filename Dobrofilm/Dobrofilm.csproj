@@ -107,6 +107,7 @@
     <Compile Include="FilmScreenShoot.cs" />
     <Compile Include="HelperClasses\CommandManagerHelper.cs" />
     <Compile Include="HelperClasses\DelegateCommand.cs" />
+    <Compile Include="HomeFolders.cs" />
     <Compile Include="LinksClass.cs" />
     <Compile Include="Controls\LoadingPanel.xaml.cs">
       <DependentUpon>LoadingPanel.xaml</DependentUpon>
@@ -207,9 +208,9 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\ImgDel.cur">
+    <Resource Include="Resources\ImgDel.cur">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </Resource>
     <Content Include="Resources\LinksList.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
