@@ -135,6 +135,7 @@ namespace Dobrofilm
                 bitmap = Dobrofilm.Properties.Resources.GreenOk;                
                 StatusTextBox.Text = "FileOk";
                 string TempFilmPath = Utils.GenerateTempFilePath(FilmFilePath);
+                if (MainWindow.OpenedCryptedFiles == null) MainWindow.OpenedCryptedFiles = new List<string>();
                 if (IsCrypted && MainWindow.OpenedCryptedFiles.Contains(TempFilmPath) && Utils.IsFileExists(TempFilmPath))
                 {
                     FilmPlayer.Source = new Uri(TempFilmPath);
@@ -333,7 +334,7 @@ namespace Dobrofilm
             string NewFolder = Utils.SelectFolderDlg;                        
             var Exten = System.IO.Path.GetExtension(FilePath);
             string NewPath = string.Concat(NewFolder, @"\", FilmName.Text, Exten);
-            File.Move(FilePath, NewPath);
+            Utils.MoveFile(FilePath, NewPath);
             FileStatus(NewPath);
         }
 
@@ -548,7 +549,7 @@ namespace Dobrofilm
                 LoadingWindow.Close();
             }
 
-            if (File.Exists(NewFileName))
+            if (Utils.IsFileExists(NewFileName))
             {
                 FileInfo f = new FileInfo(NewFileName);
                 if (f.Length == 0)

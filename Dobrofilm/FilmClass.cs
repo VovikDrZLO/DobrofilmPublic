@@ -171,7 +171,8 @@ namespace Dobrofilm
                         Path = Filepath,
                         Rate = 0,
                         Categoris = CategorisStartArray,
-                        IsCrypted = false
+                        IsCrypted = false,
+                        IsOnline  = false
                     }, DialogResult);
                 }
                 else

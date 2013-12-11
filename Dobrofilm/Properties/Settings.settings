@@ -21,7 +21,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="HomeFolders" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">C:\Study\FilmsTest</Value>
     </Setting>
   </Settings>
 </SettingsFile>

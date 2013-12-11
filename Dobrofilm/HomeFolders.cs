@@ -4,11 +4,14 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Xml.Linq;
+using System.Windows.Data;
+using System.ComponentModel;
 
 namespace Dobrofilm
 {
     class HomeFolders
     {
+        private readonly BackgroundWorker worker = new BackgroundWorker();
         public IList<DirectoryInfo> HomeFoldersList
         {
             get
@@ -16,6 +19,7 @@ namespace Dobrofilm
                 string AllFoldersString = Dobrofilm.Properties.Settings.Default.HomeFolders;
                 string[] HomeFoldersArray = AllFoldersString.Split(';');
                 IList<DirectoryInfo> HomeFoldersList = new List<DirectoryInfo>();
+                if (HomeFoldersArray.Length == 1 && HomeFoldersArray[0] == string.Empty) return HomeFoldersList;
                 foreach (string HomeFolder in HomeFoldersArray)
                 {
                     DirectoryInfo HomeFolderInfo = new DirectoryInfo(HomeFolder);
@@ -25,35 +29,57 @@ namespace Dobrofilm
             }
         }
 
+        public string GlobalFilePath { get; set; }
+
         public void CheckHomeFolders()
         {
+            worker.DoWork += worker_DoWork;
+            worker.RunWorkerAsync();
+        }
+
+        public bool IsFileInLibtary(object de)
+        {
+            FilmFile film = de as FilmFile;
+            return film.Path == GlobalFilePath;
+        }
+
+        public void AskToAddNewFilm(string FilePath, FilmFilesList filmFilesList)
+        {
+            string FilmName = System.IO.Path.GetFileNameWithoutExtension(FilePath);
+            if (!Utils.ShowYesNoDialog(string.Format("New file {0} found is home folders, add to filmList?", FilmName))) return;            
+            filmFilesList.AddSaveFilmItemToXML(new FilmFile
+            {
+                Name = FilmName,
+                Path = FilePath,
+                Rate = 0,
+                Categoris = new int[1]{0},
+                IsCrypted = false,
+                IsOnline  = false
+            }, false);
+            
+        }
+
+        private void worker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            // run all background tasks here            
             IList<DirectoryInfo> homeFolderList = HomeFoldersList;
             FilmFilesList filmFilesList = new FilmFilesList();
-            XDocument FilmX = XDocument.Load(filmFilesList.FileListPath);
+            ListCollectionView filmFiles = filmFilesList.FilmFiles;
             foreach (DirectoryInfo HomeFolder in homeFolderList)
-            {                
+            {
                 var allfiles = Directory.GetFiles(HomeFolder.FullName, "*.*", SearchOption.AllDirectories)
                     .Where(s => s.EndsWith(".mp4") || s.EndsWith(".wmv") || s.EndsWith(".avi") || s.EndsWith(".flv") || s.EndsWith(".mpg") || s.EndsWith(".mov"));
                 string[] AllFilesArray = allfiles.ToArray();
                 foreach (string FilePath in AllFilesArray)
                 {
-                    XElement FilmToChange =
-                    (from p in FilmX.Descendants("file")
-                     where p.Attribute("path").Value == FilePath
-                     select p).Single();
-                    if (FilmToChange == null)
+                    GlobalFilePath = FilePath;
+                    filmFiles.Filter = new Predicate<object>(IsFileInLibtary);
+                    if (filmFiles.Count == 0)
                     {
                         AskToAddNewFilm(FilePath, filmFilesList);
-                    }                    
+                    }
                 }
-            }            
-        }
-
-        public void AskToAddNewFilm(string FilePath, FilmFilesList filmFilesList)
-        {
-            if (!Utils.ShowYesNoDialog(string.Format("New file {0} found is home folders, add to filmList?", FilePath))) return;
-
-            
+            }                        
         }
     }
 }

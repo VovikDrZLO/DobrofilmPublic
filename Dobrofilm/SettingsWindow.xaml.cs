@@ -28,6 +28,7 @@ namespace Dobrofilm
             MPCRath.Text = Dobrofilm.Properties.Settings.Default.MPCPath;
             DefBrowserTB.Text = Dobrofilm.Properties.Settings.Default.DefaultBrowser;
             ScreenPath.Text = Dobrofilm.Properties.Settings.Default.ScreenShotXMLFile;
+            HomeFoldersTB.Text = Dobrofilm.Properties.Settings.Default.HomeFolders;
             CategoryList categoryList = new CategoryList();
             CategoryNextIDTB.Text = categoryList.GetCategoryNextID();
             FilmFilesList filmFilesList = new FilmFilesList();
@@ -106,6 +107,7 @@ namespace Dobrofilm
                 Dobrofilm.Properties.Settings.Default.LinksListXMLFile = LinkPath.Text;
                 Dobrofilm.Properties.Settings.Default.DefaultBrowser = DefBrowserTB.Text;
                 Dobrofilm.Properties.Settings.Default.ScreenShotXMLFile = ScreenPath.Text;
+                Dobrofilm.Properties.Settings.Default.HomeFolders = HomeFoldersTB.Text;
                 Dobrofilm.Properties.Settings.Default.Save();
                 CategoryList categoryList = new CategoryList();
                 categoryList.SetCategoryID(NewCategoryID);
@@ -172,7 +174,7 @@ namespace Dobrofilm
                 {
                     var Exten = System.IO.Path.GetExtension(Film.Path);
                     string NewPath = string.Concat(NewFolderPath, @"\", Film.Name, Exten);
-                    File.Move(Film.Path, NewPath);
+                    Utils.MoveFile(Film.Path, NewPath);
                     if (Utils.IsFileExists(NewPath))
                     {
                         Film.Path = NewPath;
@@ -200,7 +202,17 @@ namespace Dobrofilm
             foreach (FilmFile film in filmFiles)
             {
                 string DecryptedTempName = Utils.GenerateTempFilePath(film.Path);
-                if (Utils.IsFileExists(DecryptedTempName)) File.Delete(DecryptedTempName);
+                if (Utils.IsFileExists(DecryptedTempName))
+                {
+                    try
+                    {
+                        Utils.DeleteFile(DecryptedTempName);
+                    }
+                    catch (IOException err)
+                    {
+                        Utils.ShowErrorDialog(err.Message);
+                    }
+                }
             }
             MainWindow.OpenedCryptedFiles = null;
         }

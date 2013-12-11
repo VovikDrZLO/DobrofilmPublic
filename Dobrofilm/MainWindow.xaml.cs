@@ -19,9 +19,12 @@ namespace Dobrofilm
         public MainWindow()
         {
             InitializeComponent();            
-            FilmFilesList.ShowCryptFilms = false;            
+            FilmFilesList.ShowCryptFilms = false;
+            HomeFolders homeFolders = new HomeFolders();
+            homeFolders.CheckHomeFolders();
             MainGridData.DataContext = new FilmFilesList();
-            CategoryListBox.DataContext = new CategoryList();            
+            CategoryListBox.DataContext = new CategoryList();
+            
         }
 
         
@@ -458,7 +461,7 @@ namespace Dobrofilm
             {
                 string Exten = System.IO.Path.GetExtension(Film.Path);
                 string NewPath = string.Concat(NewFolder, @"\", Film.Name, Exten);
-                File.Move(Film.Path, NewPath);
+                Utils.MoveFile(Film.Path, NewPath);
                 Film.Path = NewPath;
                 FilmFilesList filmFilesList = new FilmFilesList();
                 filmFilesList.AddSaveFilmItemToXML(Film, false);
@@ -477,7 +480,7 @@ namespace Dobrofilm
             {
                 string NewImagePath = Utils.GenerateCryptFilePath(ImagePath);
                 Utils.EncryptFile(ImagePath, NewImagePath);
-                if (Utils.IsFileExists(NewImagePath)) File.Delete(ImagePath);
+                if (Utils.IsFileExists(NewImagePath)) Utils.DeleteFile(ImagePath);
             }
         }
 
@@ -496,7 +499,7 @@ namespace Dobrofilm
             {
                 FileList.Add(new FilmFile { Path = ImagePath });
                 string NewImagePath = Utils.GenerateTempFilePath(ImagePath);
-                if (Utils.IsFileExists(NewImagePath)) File.Delete(ImagePath);
+                if (Utils.IsFileExists(NewImagePath)) Utils.DeleteFile(ImagePath);
             }
             PassWnd passWnd = new PassWnd(FileList);
             passWnd.ShowDialog();

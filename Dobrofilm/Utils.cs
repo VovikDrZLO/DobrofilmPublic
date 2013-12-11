@@ -43,12 +43,12 @@ namespace Dobrofilm
 
          static public string RenameFile(string FilePath, string NewName)
          {
-             if (!File.Exists(FilePath))
+             if (!Utils.IsFileExists(FilePath))
              {
                  return FilePath;
              }
              string NewFilePath = GhangeFileNameInPath(FilePath, NewName);
-             File.Move(FilePath, NewFilePath);
+             MoveFile(FilePath, NewFilePath);
              return NewFilePath;
          }
 
@@ -117,8 +117,28 @@ namespace Dobrofilm
              ProcessStartInfo processInfo = new ProcessStartInfo();
              processInfo.WindowStyle = ProcessWindowStyle.Hidden;
              processInfo.FileName = "cmd.exe";
-             processInfo.Arguments = string.Format("/c del \"{0}\"", FilePath); ;
-             Process.Start(processInfo);
+             processInfo.Arguments = string.Format("/c del \"{0}\"", FilePath);
+             try
+             {
+                 Process.Start(processInfo);
+             }
+             catch (Exception ex)
+             {
+                 Utils.ShowErrorDialog(string.Format("File {0} was not delleted because {1}", FilePath, ex.Message));
+             }             
+         }
+
+         static public void MoveFile(string FromFilePath, string ToFilePath)
+         {
+             if (!IsFileExists(FromFilePath) || ToFilePath == string.Empty) return;
+             try
+             {
+                 File.Move(FromFilePath, ToFilePath);
+             }
+             catch (Exception ex)
+             {
+                 Utils.ShowErrorDialog(string.Format("File {0} was not moved because {1}", FromFilePath, ex.Message));
+             }
          }
 
          static public bool IsStringUriValid(string Adsress)
@@ -339,5 +359,6 @@ namespace Dobrofilm
                  return TotalLength;
              }
          }
+
     }
 }
