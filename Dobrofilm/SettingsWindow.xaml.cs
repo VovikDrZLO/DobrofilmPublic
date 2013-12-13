@@ -27,13 +27,15 @@ namespace Dobrofilm
             LinkPath.Text = Dobrofilm.Properties.Settings.Default.LinksListXMLFile;
             MPCRath.Text = Dobrofilm.Properties.Settings.Default.MPCPath;
             DefBrowserTB.Text = Dobrofilm.Properties.Settings.Default.DefaultBrowser;
-            ScreenPath.Text = Dobrofilm.Properties.Settings.Default.ScreenShotXMLFile;
-            HomeFoldersTB.Text = Dobrofilm.Properties.Settings.Default.HomeFolders;
+            ScreenPath.Text = Dobrofilm.Properties.Settings.Default.ScreenShotXMLFile;            
             CategoryList categoryList = new CategoryList();
             CategoryNextIDTB.Text = categoryList.GetCategoryNextID();
             FilmFilesList filmFilesList = new FilmFilesList();
             FilmMaskTB.Text = filmFilesList.GetFilmMask();
             FilmNextIDTB.Text = filmFilesList.GetFileMaskNextID();
+            HomeFolders homeFolders = new HomeFolders();
+            HomeFoldersDataGrid.ItemsSource = homeFolders.HomeFoldersList;          
+
         }
 
         private void DelMarkedFilmsBtn_Click(object sender, RoutedEventArgs e)
@@ -106,8 +108,7 @@ namespace Dobrofilm
                 Dobrofilm.Properties.Settings.Default.MPCPath = MPCRath.Text;
                 Dobrofilm.Properties.Settings.Default.LinksListXMLFile = LinkPath.Text;
                 Dobrofilm.Properties.Settings.Default.DefaultBrowser = DefBrowserTB.Text;
-                Dobrofilm.Properties.Settings.Default.ScreenShotXMLFile = ScreenPath.Text;
-                Dobrofilm.Properties.Settings.Default.HomeFolders = HomeFoldersTB.Text;
+                Dobrofilm.Properties.Settings.Default.ScreenShotXMLFile = ScreenPath.Text;                
                 Dobrofilm.Properties.Settings.Default.Save();
                 CategoryList categoryList = new CategoryList();
                 categoryList.SetCategoryID(NewCategoryID);
@@ -221,6 +222,20 @@ namespace Dobrofilm
         {
             FilmFile film = de as FilmFile;
             return film.IsCrypted;
+        }
+
+        private void AddHomeFolder_Click(object sender, RoutedEventArgs e)
+        {            
+            HomeFolders homeFolders = new HomeFolders();
+            homeFolders.AddHomeFolder(new DirectoryInfo(Utils.SelectFolderDlg));
+            HomeFoldersDataGrid.ItemsSource = homeFolders.HomeFoldersList;        
+        }
+
+        private void RemHomeFolder_Click(object sender, RoutedEventArgs e)
+        {
+            HomeFolders homeFolders = new HomeFolders();
+            homeFolders.RemHomeFolder((DirectoryInfo)HomeFoldersDataGrid.SelectedItem);
+            HomeFoldersDataGrid.ItemsSource = homeFolders.HomeFoldersList;        
         }
 
     }

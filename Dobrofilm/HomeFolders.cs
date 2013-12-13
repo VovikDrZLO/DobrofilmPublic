@@ -81,5 +81,49 @@ namespace Dobrofilm
                 }
             }                        
         }
+
+        public void AddHomeFolder(DirectoryInfo HomeFolder)
+        {
+            if (HomeFolder == null) return;
+            string AllFoldersString = Dobrofilm.Properties.Settings.Default.HomeFolders;
+            if (AllFoldersString == string.Empty)
+            {
+                Dobrofilm.Properties.Settings.Default.HomeFolders = HomeFolder.FullName;
+            }
+            else
+            {
+                Dobrofilm.Properties.Settings.Default.HomeFolders = string.Concat(AllFoldersString, ";", HomeFolder.FullName);
+            }
+            Dobrofilm.Properties.Settings.Default.Save();            
+        }
+
+        public void RemHomeFolder(DirectoryInfo HomeFolder)
+        {
+            if (HomeFolder == null) return;
+            IList<DirectoryInfo> TempFolderList = HomeFoldersList;
+            DirectoryInfo s = TempFolderList.Where(p => p.FullName == HomeFolder.FullName).Single();
+            TempFolderList.Remove(s);
+            Dobrofilm.Properties.Settings.Default.HomeFolders = string.Empty;
+            Dobrofilm.Properties.Settings.Default.Save();
+            foreach (DirectoryInfo homefolder in TempFolderList
+                )
+            {
+                AddHomeFolder(homefolder);
+            }
+            //string AllFoldersString = Dobrofilm.Properties.Settings.Default.HomeFolders;
+            //int index = AllFoldersString.IndexOf(HomeFolder.FullName);
+            //if (index < 0) return;
+            //string NewFoldersString;
+            //if ((index + HomeFolder.FullName.Length) == AllFoldersString.Length)
+            //{
+            //    NewFoldersString =  AllFoldersString.Remove(index, HomeFolder.FullName.Length);
+            //}
+            //else
+            //{
+            //    NewFoldersString = AllFoldersString.Remove(index, HomeFolder.FullName.Length + 1);
+            //}            
+            //Dobrofilm.Properties.Settings.Default.HomeFolders = NewFoldersString;
+            
+        }
     }
 }

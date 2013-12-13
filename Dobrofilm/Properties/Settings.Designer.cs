@@ -97,7 +97,7 @@ namespace Dobrofilm.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Study\\FilmsTest")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Study\\FilmsTest;C:\\Study\\FilmTest2")]
         public string HomeFolders {
             get {
                 return ((string)(this["HomeFolders"]));
