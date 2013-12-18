@@ -143,27 +143,27 @@ namespace Dobrofilm
             return path;
         }
 
-        public void AddCategory(CategoryClass CategoryItem) 
-        {   
-            XDocument CategoryX = XDocument.Load(CategoryListFileName);
-            XElement CategoryXElements = CategoryXElement(CategoryItem);                  
-            if (CategoryItem.ID == 0)
-            {                            
-                CategoryX.Element("categoris").Add(CategoryXElements);
-                CurrentID++;
-                CategoryX.Element("categoris").Attribute("nextid").Value = Convert.ToString(CurrentID);                
-            }
-            else
-            {               
-                var CategoryToChange =
-                    (from p in CategoryX.Descendants("category")
-                    where Convert.ToInt16(p.Attribute("id").Value) == CategoryItem.ID
-                    select p).Single();
-                CategoryToChange.ReplaceWith(CategoryXElements);              
+        //public void AddCategory(CategoryClass CategoryItem) 
+        //{   
+        //    XDocument CategoryX = XDocument.Load(CategoryListFileName);
+        //    XElement CategoryXElements = CategoryXElement(CategoryItem);                  
+        //    if (CategoryItem.ID == 0)
+        //    {                            
+        //        CategoryX.Element("categoris").Add(CategoryXElements);
+        //        CurrentID++;
+        //        CategoryX.Element("categoris").Attribute("nextid").Value = Convert.ToString(CurrentID);                
+        //    }
+        //    else
+        //    {               
+        //        var CategoryToChange =
+        //            (from p in CategoryX.Descendants("category")
+        //            where Convert.ToInt16(p.Attribute("id").Value) == CategoryItem.ID
+        //            select p).Single();
+        //        CategoryToChange.ReplaceWith(CategoryXElements);              
 
-            }
-            CategoryX.Save(CategoryListFileName);            
-        }
+        //    }
+        //    CategoryX.Save(CategoryListFileName);            
+        //}
 
         public string GetCategoryNextID()
         {
@@ -182,84 +182,61 @@ namespace Dobrofilm
             CategoryX.Save(CategoryListFileName);
         }
 
-        public void DelCategory(CategoryClass CategoryItem)
-        {
-            if (CategoryItem.ID == 0)
-            {
-                Utils.ShowWarningDialog("Нельзя удалить системную категорию");
-                return;
-            }            
-            XDocument CategoryX = XDocument.Load(CategoryListFileName);            
-            var CategoryToDelete =
-                    (from p in CategoryX.Descendants("category")
-                     where Convert.ToInt16(p.Attribute("id").Value) == CategoryItem.ID
-                     select p).Single();
-            CategoryToDelete.Remove();
-            CategoryX.Save(CategoryListFileName);
-        }
+        //public void DelCategory(CategoryClass CategoryItem)
+        //{
+        //    if (CategoryItem.ID == 0)
+        //    {
+        //        Utils.ShowWarningDialog("Нельзя удалить системную категорию");
+        //        return;
+        //    }            
+        //    XDocument CategoryX = XDocument.Load(CategoryListFileName);            
+        //    var CategoryToDelete =
+        //            (from p in CategoryX.Descendants("category")
+        //             where Convert.ToInt16(p.Attribute("id").Value) == CategoryItem.ID
+        //             select p).Single();
+        //    CategoryToDelete.Remove();
+        //    CategoryX.Save(CategoryListFileName);
+        //}
 
-        public XElement CategoryXElement(CategoryClass CategoryItem)
-        {
-            string ID;
-            if (CategoryItem.ID == 0)
-            {
-                 ID = Convert.ToString(CurrentID);
-            }
-            else
-            {
-                 ID = Convert.ToString(CategoryItem.ID);
-            }                        
+        //public XElement CategoryXElement(CategoryClass CategoryItem)
+        //{
+        //    string ID;
+        //    if (CategoryItem.ID == 0)
+        //    {
+        //         ID = Convert.ToString(CurrentID);
+        //    }
+        //    else
+        //    {
+        //         ID = Convert.ToString(CategoryItem.ID);
+        //    }                        
 
-            XElement CategoryElement = new XElement("category", CategoryItem.Name,
-                new XAttribute("id", ID),
-                new XAttribute("hint", CategoryItem.Hint),
-                new XAttribute("image", ByteArrayeToBase64(CategoryItem.Icon))
-            );
-            //if (CategoryItem.ID == 0) Convert.ToString(CurrentID); else Convert.ToString(CategoryItem.ID);
-            return CategoryElement;            
-        }
+        //    XElement CategoryElement = new XElement("category", CategoryItem.Name,
+        //        new XAttribute("id", ID),
+        //        new XAttribute("hint", CategoryItem.Hint),
+        //        new XAttribute("image", ByteArrayeToBase64(CategoryItem.Icon))
+        //    );
+        //    //if (CategoryItem.ID == 0) Convert.ToString(CurrentID); else Convert.ToString(CategoryItem.ID);
+        //    return CategoryElement;            
+        //}
 
-        public byte[] CategoryImgByteArray(string Base64String)
-        {
-            byte[] imageBytes;
-            try
-            {
-                imageBytes = Convert.FromBase64String(Base64String);
-            }
-            catch
-            {
-                imageBytes = new byte[0];
-            }
-            return imageBytes;
-        }
+        //public byte[] CategoryImgByteArray(string Base64String)
+        //{
+        //    byte[] imageBytes;
+        //    try
+        //    {
+        //        imageBytes = Convert.FromBase64String(Base64String);
+        //    }
+        //    catch
+        //    {
+        //        imageBytes = new byte[0];
+        //    }
+        //    return imageBytes;
+        //}
 
         public string ByteArrayeToBase64(byte[] ImageByteArray)
         {
             string base64String = Convert.ToBase64String(ImageByteArray);
             return base64String;          
-        }
-
-        public XmlElement CategoryXMLElement(XmlDocument CategoryXml, CategoryClass CategoryItem) // на удаление
-        {
-            XmlElement CategoryElement = CategoryXml.CreateElement("category");
-            XmlAttribute ID = CategoryXml.CreateAttribute("id");
-            XmlAttribute Hint = CategoryXml.CreateAttribute("hint");
-            XmlAttribute CatImage = CategoryXml.CreateAttribute("image");
-            CategoryElement.InnerText = CategoryItem.Name;
-            if (CategoryItem.ID == 0)
-            {
-                ID.Value = Convert.ToString(CurrentID);
-            }
-            else
-            {
-                ID.Value = Convert.ToString(CategoryItem.ID);
-            }            
-            Hint.Value = CategoryItem.Hint;
-            CatImage.Value = ByteArrayeToBase64(CategoryItem.Icon);
-            CategoryElement.Attributes.Append(ID);
-            CategoryElement.Attributes.Append(Hint);
-            CategoryElement.Attributes.Append(CatImage);
-            return CategoryElement;            
         }
 
         public BitmapImage GetCategoryBitmapImageByID (int CategoryID)

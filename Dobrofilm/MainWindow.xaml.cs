@@ -24,7 +24,8 @@ namespace Dobrofilm
             homeFolders.CheckHomeFolders();
             MainGridData.DataContext = new FilmFilesList();
             CategoryListBox.DataContext = new CategoryList();
-            
+            XMLEdit xMLEdit = new XMLEdit();
+            xMLEdit.GetFilmFileFromXML(FilmFilesList.ShowCryptFilms);
         }
 
         
@@ -489,8 +490,7 @@ namespace Dobrofilm
         {
             string FilesFolder = Utils.SelectFolderDlg;
             if (FilesFolder == string.Empty) return;
-            DirectoryInfo dInfo = new DirectoryInfo(FilesFolder);
-            DirectoryInfo[] subdirs = dInfo.GetDirectories();
+            DirectoryInfo dInfo = new DirectoryInfo(FilesFolder);            
             var allfiles = Directory.GetFiles(FilesFolder, "*.*", SearchOption.AllDirectories)
                 .Where(s => s.EndsWith("CrypDobFilm"));
             string[] AllFilesArray = allfiles.ToArray();

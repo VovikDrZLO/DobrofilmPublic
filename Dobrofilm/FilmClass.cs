@@ -23,13 +23,7 @@ namespace Dobrofilm
                 {   
                     IList<FilmFile> _films = new List<FilmFile> { };
                     XmlDocument FilmXml = new XmlDocument();
-                    FilmXml.Load(FileListPath);                   
-
-                    //    Dobrofilm.Properties.Settings.Default.FilmListXMLFile = string.Empty;
-                    //    Dobrofilm.Properties.Settings.Default.Save();                                            
-                    //ValidationEventHandler eventHandler = new ValidationEventHandler(ValidationEventHandler);
-                    //FilmXml.Validate(eventHandler);
-
+                    FilmXml.Load(FileListPath);
                     XmlNodeReader reader = new XmlNodeReader(FilmXml);                    
                     FilmFile FilmFileClass = new FilmFile();                    
                     while (reader.Read())
@@ -221,9 +215,7 @@ namespace Dobrofilm
                 }
                 return dlg.FileNames;
             }
-        }
-
-      
+        }      
 
         public int[] CategorisArray(string CategorisString) 
         {           
@@ -237,47 +229,9 @@ namespace Dobrofilm
         }
              
 
-        public XElement CreateFilmXElement(FilmFile FilmItem)
-        {
-            Guid ID;
-            if (FilmItem.ID == System.Guid.Empty)
-            {
-                ID = Guid.NewGuid();
-            }
-            else
-            {
-                ID = FilmItem.ID;
-            }
-            if (FilmItem.Hint == null)
-            {
-                FilmItem.Hint = "Короткая характеристика";
-            }
-            XElement FilmElement = new XElement("file", FilmItem.Name,
-                new XAttribute("GUID", ID),
-                new XAttribute("hint", FilmItem.Hint),
-                new XAttribute("path", FilmItem.Path),
-                new XAttribute("rate", FilmItem.Rate),
-                new XAttribute("categoris", GetStringFromIntArray(FilmItem.Categoris)),
-                new XAttribute("isCrypted", Convert.ToInt32(FilmItem.IsCrypted)),
-                new XAttribute("isOnline", Convert.ToInt32(FilmItem.IsOnline))
-            );
-            return FilmElement;            
-        }
+        
 
-        public string GetStringFromIntArray(int[] FilmsArray)
-        {
-            string ResultString = "0";
-            if (FilmsArray != null)
-            {
-                if (FilmsArray.Length > 0)
-                {
-                    ResultString = string.Join(":", FilmsArray);
-                }
-               
-            }
-            return ResultString;
-        }
-
+       
         public void AddSaveFilmItemToXML(FilmFile FilmItem, bool RenameFiles)
         {            
             if (FilmItem == null)
@@ -300,7 +254,8 @@ namespace Dobrofilm
                     FilmX.Element("files").Attribute("nextnumber").Value = Convert.ToString(FileNumber + 1);
                 }
             }
-            XElement FilmXElement = CreateFilmXElement(FilmItem);
+            XMLEdit xMLEdit = new XMLEdit();
+            XElement FilmXElement = xMLEdit.CreateFilmXElement(FilmItem);
             if (FilmItem.ID == System.Guid.Empty)
             {
                 FilmX.Element("files").Add(FilmXElement);
@@ -415,16 +370,16 @@ namespace Dobrofilm
             return (FindArray.Length == cnt);
         }
         
-        public void DeleteFilmItemFromXml(FilmFile FilmItem)
-        {
-            XDocument FilmX = XDocument.Load(FileListPath);            
-            var FilmToDelete =
-                    (from p in FilmX.Descendants("file")
-                     where new Guid(p.Attribute("GUID").Value) == FilmItem.ID
-                     select p).Single();
-            FilmToDelete.Remove();
-            FilmX.Save(FileListPath);
-        }
+        //public void DeleteFilmItemFromXml(FilmFile FilmItem)
+        //{
+        //    XDocument FilmX = XDocument.Load(FileListPath);            
+        //    var FilmToDelete =
+        //            (from p in FilmX.Descendants("file")
+        //             where new Guid(p.Attribute("GUID").Value) == FilmItem.ID
+        //             select p).Single();
+        //    FilmToDelete.Remove();
+        //    FilmX.Save(FileListPath);
+        //}
 
     }
 
@@ -439,6 +394,8 @@ namespace Dobrofilm
         public bool IsCheked { get; set; }
         public bool IsCrypted { get; set; }
         public bool IsOnline { get; set; }
+        //public XElement filmsScr { get; set; }
+        //public XElement links { get; set; }
     }
 
 
