@@ -121,13 +121,13 @@ namespace Dobrofilm
             return path;
         }
 
-        public void AddLink(LinksClass LinkItem)
-        {
-            XDocument LinkX = XDocument.Load(LinksListFileName);
-            XElement LinkXElements = LinkXElement(LinkItem);            
-            LinkX.Element("links").Add(LinkXElements);            
-            LinkX.Save(LinksListFileName);
-        }
+        //public void AddLink(LinksClass LinkItem)
+        //{
+        //    XDocument LinkX = XDocument.Load(LinksListFileName);
+        //    XElement LinkXElements = LinkXElement(LinkItem);            
+        //    LinkX.Element("links").Add(LinkXElements);            
+        //    LinkX.Save(LinksListFileName);
+        //}
         
 
         public XElement LinkXElement(LinksClass LinkItem)

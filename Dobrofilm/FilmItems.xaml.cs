@@ -27,9 +27,11 @@ namespace Dobrofilm
         private string FilePath {get; set;}   
         private string NewFileName{get;set;}
         private bool IsOnline { get; set; }
+        private FilmFile FilmPublic { get; set; }
 
         public FilmItem(FilmFile SelectedFilm)
         {
+            FilmPublic = SelectedFilm;
             InitializeComponent();
             FilmID = SelectedFilm.ID;
             FilmName.Text = SelectedFilm.Name;
@@ -458,8 +460,9 @@ namespace Dobrofilm
                     LinkedFilms.Add(filmFile);
                 }
                 LinkedFilmDataGrid.ItemsSource = LinkedFilms;
-                FilmScreenShot ScreenClass = new FilmScreenShot();
-                IList<ScreenShotItem> ScreenShotItems = ScreenClass.GetScreenShotsByFilmID(FilmID);
+                //FilmScreenShot ScreenClass = new FilmScreenShot();
+                XMLEdit xMLEdit = new XMLEdit();
+                IList<ScreenShotItem> ScreenShotItems = xMLEdit.GetScreenShootsByFilmFile(FilmPublic); //ScreenClass.GetScreenShotsByFilmID(FilmID);
                 FilmScreens.Children.Clear();
                 int ColumnPosition = 0;
                 foreach (ScreenShotItem ScreenItem in ScreenShotItems)
@@ -504,7 +507,9 @@ namespace Dobrofilm
             Image img = (Image)sender;
             string ScreenShotID = (string)img.Tag;
             FilmScreenShot filmScreenShot = new FilmScreenShot();
-            filmScreenShot.DelScreenShotByID(ScreenShotID);
+            XMLEdit xMLEdit = new XMLEdit();
+            xMLEdit.DelScreenShotByID(ScreenShotID);
+            //filmScreenShot.DelScreenShotByID(ScreenShotID);
             IsLinkTabSelectedFirstTime = true;
             UpdateLinksTab();            
         }
@@ -627,8 +632,10 @@ namespace Dobrofilm
         private void btnScreenShot_Click(object sender, RoutedEventArgs e)
         {
             byte[] screenshot = GetScreenShot(FilmPlayer, 0.5, 90);
-            FilmScreenShot FilmScreenShotClass = new FilmScreenShot();
-            FilmScreenShotClass.SaveScreenShotToXML(screenshot, FilmID);            
+            XMLEdit xMLEdit = new XMLEdit();
+            xMLEdit.AddScreenShotToXML(screenshot, FilmID);
+            //FilmScreenShot FilmScreenShotClass = new FilmScreenShot();
+            //FilmScreenShotClass.SaveScreenShotToXML(screenshot, FilmID);            
         }
         
         public byte[] GetScreenShot(UIElement source, double scale, int quality)

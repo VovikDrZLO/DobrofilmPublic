@@ -50,7 +50,8 @@ namespace Dobrofilm
                         {
                             categoryClass.ID =  int.Parse(reader.GetAttribute("id"));
                             categoryClass.Hint = reader.GetAttribute("hint");
-                            categoryClass.Icon = CategoryImgByteArray(reader.GetAttribute("image"));
+                            XMLEdit xMLEdit = new XMLEdit();
+                            categoryClass.Icon =  CategoryImgByteArray(reader.GetAttribute("image"));
                         }
                         break;
                     case XmlNodeType.Text:
@@ -219,19 +220,19 @@ namespace Dobrofilm
         //    return CategoryElement;            
         //}
 
-        //public byte[] CategoryImgByteArray(string Base64String)
-        //{
-        //    byte[] imageBytes;
-        //    try
-        //    {
-        //        imageBytes = Convert.FromBase64String(Base64String);
-        //    }
-        //    catch
-        //    {
-        //        imageBytes = new byte[0];
-        //    }
-        //    return imageBytes;
-        //}
+        public byte[] CategoryImgByteArray(string Base64String)
+        {
+            byte[] imageBytes;
+            try
+            {
+                imageBytes = Convert.FromBase64String(Base64String);
+            }
+            catch
+            {
+                imageBytes = new byte[0];
+            }
+            return imageBytes;
+        }
 
         public string ByteArrayeToBase64(byte[] ImageByteArray)
         {

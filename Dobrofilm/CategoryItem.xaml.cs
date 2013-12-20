@@ -68,7 +68,8 @@ namespace Dobrofilm
             {
                 ImageBytes = new byte[0];
             }
-            categoryList.AddCategory(new CategoryClass { Name = CategoryName.Text, Hint = CategoryHint.Text, Icon = ImageBytes, ID = _id});
+            XMLEdit xMLEdit = new XMLEdit();
+            xMLEdit.AddCategoryToXML(new CategoryClass { Name = CategoryName.Text, Hint = CategoryHint.Text, Icon = ImageBytes, ID = _id });
             CloseWindow();
         }
 

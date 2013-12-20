@@ -59,7 +59,9 @@ namespace Dobrofilm
                         Utils.ShowWarningDialog(err.Message);                        
                     }                    
                 }
-                filmFilesList.DeleteFilmItemFromXml(filmFile);
+                XMLEdit xMLEdit = new XMLEdit();
+                xMLEdit.DeleteFilmItemFromXml(filmFile);
+                //filmFilesList.DeleteFilmItemFromXml(filmFile);
             }
         }
 

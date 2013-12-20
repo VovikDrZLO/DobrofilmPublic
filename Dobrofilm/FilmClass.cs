@@ -394,8 +394,8 @@ namespace Dobrofilm
         public bool IsCheked { get; set; }
         public bool IsCrypted { get; set; }
         public bool IsOnline { get; set; }
-        //public XElement filmsScr { get; set; }
-        //public XElement links { get; set; }
+        public XElement filmsScr { get; set; }
+        public XElement links { get; set; }
     }
 
 

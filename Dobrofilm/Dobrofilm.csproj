@@ -120,6 +120,7 @@
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils.cs" />
+    <Compile Include="XMLConverter.cs" />
     <Compile Include="XMLEdit.cs" />
     <Page Include="Controls\CircularProgressBar.xaml">
       <SubType>Designer</SubType>

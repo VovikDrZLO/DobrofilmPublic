@@ -89,22 +89,16 @@ namespace Dobrofilm
                 using (XmlWriter writer = XmlWriter.Create(path))
                 {
                     writer.WriteStartDocument();
-                    writer.WriteStartElement("Dobrofilm");
-                    writer.WriteStartAttribute("xmlns");
-                    writer.WriteString("http://tempuri.org/DobrofilmData.xsd");
-                    writer.WriteEndAttribute(); //<files filemask="filemask1" nextnumber="1">
+                    writer.WriteStartElement("Dobrofilm", "http://tempuri.org/DobrofilmData.xsd");                                                     
+                    //<files filemask="filemask1" nextnumber="1">
                     writer.WriteStartElement("files");
                     writer.WriteStartAttribute("filemask");
                     writer.WriteString("Dobrotfilm");
-                    writer.WriteEndAttribute();
-                    writer.WriteStartAttribute("nextnumber");
-                    writer.WriteString("1");
-                    writer.WriteEndAttribute();
+                    writer.WriteEndAttribute();                    
+                    writer.WriteAttributeString("nextnumber", "1");                    
                     writer.WriteEndElement();
-                    writer.WriteStartElement("categoris"); // <categoris nextid="1">
-                    writer.WriteStartAttribute("nextid");
-                    writer.WriteString("Dobrotfilm");
-                    writer.WriteEndAttribute();
+                    writer.WriteStartElement("categoris"); // <categoris nextid="1">                    
+                    writer.WriteAttributeString("nextid", "1");                    
                     writer.WriteEndElement();
                     writer.WriteEndElement();
                     writer.WriteEndDocument();
@@ -242,7 +236,6 @@ namespace Dobrofilm
             FilmX.Save(Dobrofilm.Properties.Settings.Default.SettingsPath);
         }        
         #endregion 
-
         
         #region Category
         public IList<CategoryClass> GetCategoryListFromXML()
@@ -299,8 +292,9 @@ namespace Dobrofilm
             XElement CategoryXElements = CategoryXElement(Category);
             if (Category.ID == 0)
             {
-                CategoryX.Element("categoris").Add(CategoryXElements);                
-                CategoryX.Element("categoris").Attribute("nextid").Value = Convert.ToString(CurrentID + 1);
+                CategoryX.Element("categoris").Add(CategoryXElements);
+                CategoryX.Element("categoris").SetAttributeValue("nextid", Convert.ToString(CurrentID + 1));
+                
             }
             else
             {
@@ -360,21 +354,83 @@ namespace Dobrofilm
         #endregion
 
         #region Screen
-        public void AddScreenToXML()
-        {
 
+        public IList<ScreenShotItem> GetScreenShootsByFilmFile(FilmFile Film)
+        {
+            if (Film == null)
+            {
+                Utils.ShowErrorDialog("Screen not found");
+                return null;
+            }
+            XElement ScreenShoots = Film.filmsScr;
+            IList<ScreenShotItem> FilmScreens = new List<ScreenShotItem>();
+            IEnumerable<XElement> ScreenShootsElements = ScreenShoots.Descendants("screen"); //!!!!!!!!!
+            foreach (XElement ScreenElement in ScreenShootsElements)
+            {
+                ScreenShotItem FilmScreen = new ScreenShotItem { Base64String = ScreenElement.Attribute("base64Data").Value, ScreenShotID = ScreenElement.Attribute("id").Value };
+                FilmScreens.Add(FilmScreen);
+            }
+            return FilmScreens;
         }
 
-        public void DelScreenFromXML()
-        {
+        public void AddScreenShotToXML(Byte[] ImageByteArray, Guid FilmID) //not valid
+        {            
+            string base64String = Convert.ToBase64String(ImageByteArray);
+            XDocument ScreenShotX = SettingsXMLDoc;
+            Int16 CurrentID = Convert.ToInt16(ScreenShotX.Element("FilmsScr").Attribute("nextid").Value);
+            XElement ScreenShotXElements = ScreenShotXElement(base64String, FilmID, CurrentID);
+            CurrentID++;
+            ScreenShotX.Element("FilmsScr").Add(ScreenShotXElements);
+            ScreenShotX.Element("FilmsScr").Attribute("nextid").Value = Convert.ToString(CurrentID);
+            ScreenShotX.Save(Dobrofilm.Properties.Settings.Default.SettingsPath);            
+        }
 
+        private XElement ScreenShotXElement(string base64String, Guid FilmID, Int16 CurrentID)
+        {
+            XElement ScreenShotElement = new XElement("Screen",
+               new XAttribute("id", Convert.ToString(CurrentID)),
+               new XAttribute("filmGuid", FilmID),
+               new XAttribute("base64Data", base64String));
+            return ScreenShotElement;
+        }        
+
+        public void DelScreenShotByID(string ID) //not valid
+        {
+            if (ID == string.Empty)
+            {
+                return;
+            }
+            XDocument ScreenShotX = SettingsXMLDoc;
+            var ScreenShotToDelete =
+                    (from p in ScreenShotX.Descendants("Screen")
+                     where p.Attribute("id").Value == ID
+                     select p).Single();
+            ScreenShotToDelete.Remove();
+            ScreenShotX.Save(Dobrofilm.Properties.Settings.Default.SettingsPath);
         }
         #endregion
 
-        public void AddLinkToXML()
-        {
+        #region Links
 
+        public void AddLinkToXML(LinksClass linkClass)
+        {
+            
         }
+
+        public IList<LinksClass> GetLinksListByFilm(FilmFile Film)
+        {
+            XElement LinksElement = Film.links;
+            IEnumerable<XElement> LinksElements = LinksElement.Descendants("link");
+            IList<LinksClass> FilmScreens = new List<LinksClass>();
+            foreach (XElement LinkElement in LinksElements)
+            {
+                LinksClass FilmScreen = new LinksClass { To = new Guid(LinkElement.Attribute("GUIDTO").Value) };
+                FilmScreens.Add(FilmScreen);
+            }
+            return FilmScreens;
+        }
+        #endregion
+        
 
 
     }
