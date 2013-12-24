@@ -450,18 +450,28 @@ namespace Dobrofilm
             {
                 IsLinkTabSelectedFirstTime = false;
                 LinksList linksList = new LinksList();
-                XElement[] ArrayOfFilms = linksList.GetLinkedFilm(FilmID);
+                XMLEdit xMLEdit = new XMLEdit();
                 IList<FilmFile> LinkedFilms = new List<FilmFile> { };
-                foreach (XElement Film in ArrayOfFilms)
+                //XElement[] ArrayOfFilms = linksList.GetLinkedFilm(FilmID);                
+                //foreach (XElement Film in ArrayOfFilms)
+                //{
+                //    Guid LinkedFilmID = new Guid(Film.LastAttribute.Value);
+                //    FilmFilesList filmFilesList = new FilmFilesList();
+                //    FilmFile filmFile = filmFilesList.GetFilmByID(LinkedFilmID);
+                //    LinkedFilms.Add(filmFile);
+                //}
+                
+                IList<LinksClass> LinksByFilm = xMLEdit.GetLinksListByFilm(FilmPublic);
+                foreach (LinksClass Link in LinksByFilm)
                 {
-                    Guid LinkedFilmID = new Guid(Film.LastAttribute.Value);
+                    Guid LinkedFilmID = Link.To;
                     FilmFilesList filmFilesList = new FilmFilesList();
                     FilmFile filmFile = filmFilesList.GetFilmByID(LinkedFilmID);
                     LinkedFilms.Add(filmFile);
                 }
                 LinkedFilmDataGrid.ItemsSource = LinkedFilms;
-                //FilmScreenShot ScreenClass = new FilmScreenShot();
-                XMLEdit xMLEdit = new XMLEdit();
+
+                //FilmScreenShot ScreenClass = new FilmScreenShot();                
                 IList<ScreenShotItem> ScreenShotItems = xMLEdit.GetScreenShootsByFilmFile(FilmPublic); //ScreenClass.GetScreenShotsByFilmID(FilmID);
                 FilmScreens.Children.Clear();
                 int ColumnPosition = 0;
@@ -508,7 +518,7 @@ namespace Dobrofilm
             string ScreenShotID = (string)img.Tag;
             FilmScreenShot filmScreenShot = new FilmScreenShot();
             XMLEdit xMLEdit = new XMLEdit();
-            xMLEdit.DelScreenShotByID(ScreenShotID);
+            xMLEdit.DelScreenShotByID(ScreenShotID, FilmPublic.ID);
             //filmScreenShot.DelScreenShotByID(ScreenShotID);
             IsLinkTabSelectedFirstTime = true;
             UpdateLinksTab();            

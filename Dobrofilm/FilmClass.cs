@@ -16,16 +16,16 @@ namespace Dobrofilm
     public class FilmFilesList
     {
 
-        public ListCollectionView FilmFiles
+        public ListCollectionView FilmFiles_v1
         {
             get
             {
-                {   
+                {
                     IList<FilmFile> _films = new List<FilmFile> { };
                     XmlDocument FilmXml = new XmlDocument();
                     FilmXml.Load(FileListPath);
-                    XmlNodeReader reader = new XmlNodeReader(FilmXml);                    
-                    FilmFile FilmFileClass = new FilmFile();                    
+                    XmlNodeReader reader = new XmlNodeReader(FilmXml);
+                    FilmFile FilmFileClass = new FilmFile();
                     while (reader.Read())
                     {
                         switch (reader.NodeType)
@@ -40,7 +40,7 @@ namespace Dobrofilm
                                     catch
                                     {
                                         FilmFileClass.ID = Guid.NewGuid();
-                                    }                                    
+                                    }
                                     FilmFileClass.Hint = reader.GetAttribute("hint");
                                     FilmFileClass.Path = reader.GetAttribute("path");
                                     FilmFileClass.Rate = int.Parse(reader.GetAttribute("rate"));
@@ -65,9 +65,22 @@ namespace Dobrofilm
                         }
 
                     }                    
+                    //XMLEdit xMLEdit = new XMLEdit();
+                    //IList<FilmFile> _films = xMLEdit.GetFilmFileFromXML(ShowCryptFilms);
                     var FilmFilesList = (ListCollectionView)CollectionViewSource.GetDefaultView(_films);
                     return FilmFilesList;
                 }
+            }
+        }
+
+        public ListCollectionView FilmFiles
+        {
+            get
+            {
+                XMLEdit xMLEdit = new XMLEdit();
+                IList<FilmFile> _films = xMLEdit.GetFilmFileFromXML(ShowCryptFilms);
+                var FilmFilesList = (ListCollectionView)CollectionViewSource.GetDefaultView(_films);
+                return FilmFilesList;
             }
         }
 

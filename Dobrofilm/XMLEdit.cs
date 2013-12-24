@@ -13,7 +13,7 @@ namespace Dobrofilm
 {
     class XMLEdit
     {
-        public XDocument SettingsXMLDoc
+        public XDocument SettingsXMLDoc //valid
         {
             get
             {                
@@ -52,9 +52,9 @@ namespace Dobrofilm
                 XDocument XMLDoc_2 = XDocument.Load(SettingsPath);
                 return XMLDoc_2;
             }
-        }
-        
-        public bool ValidateXML(string XMLDoc)
+        } 
+
+        public bool ValidateXML(string XMLDoc) //Valid
         {
             XmlDocument ValidDoc = new XmlDocument();
             XmlReaderSettings settings = new XmlReaderSettings();
@@ -79,7 +79,7 @@ namespace Dobrofilm
             return true;                 
         }
 
-        public void CreateNewXML()
+        public void CreateNewXML() //Valid
         {
             string DirPath = string.Concat(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "\\Dobrofilm");
             try
@@ -110,15 +110,20 @@ namespace Dobrofilm
             {
                 Utils.ShowErrorDialog(ex.Message);
             }
-        }
+        } 
+
+        public XmlNamespaceManager GetDefNameSpaceManager() //valid
+        {
+            var namespaceManager = new XmlNamespaceManager(new NameTable());
+            namespaceManager.AddNamespace("prefix", "http://tempuri.org/DobrofilmData.xsd");
+            return namespaceManager;
+        } 
 
         #region Film
-        public IList<FilmFile> GetFilmFileFromXML(bool ShowCrypted)
+        public IList<FilmFile> GetFilmFileFromXML(bool ShowCrypted) //valid
         {
-            var xmlReader = XmlReader.Create(Dobrofilm.Properties.Settings.Default.SettingsPath);
-            var myXDocument = XDocument.Load( xmlReader );
-            var namespaceManager = new XmlNamespaceManager( xmlReader.NameTable );
-            namespaceManager.AddNamespace("prefix", "http://tempuri.org/DobrofilmData.xsd");
+            XDocument myXDocument = SettingsXMLDoc;
+            XmlNamespaceManager namespaceManager = GetDefNameSpaceManager();
             IEnumerable<XElement> FilesList = myXDocument.XPathSelectElements("//prefix:Dobrofilm/prefix:files/prefix:file", namespaceManager);
             IList<FilmFile> FilmFileList = new List<FilmFile>();
             FilmFilesList filmFilesList = new FilmFilesList();
@@ -128,14 +133,16 @@ namespace Dobrofilm
                 FileClass.ID = new Guid((string)file.Attribute("GUID"));
                 FileClass.Hint = (string)file.Attribute("hint");
                 FileClass.Path = (string)file.Attribute("path");
+                FileClass.Name = (string)file.Attribute("name");
                 FileClass.Rate = (int)file.Attribute("rate");
                 FileClass.IsCrypted = ((string)file.Attribute("isCrypted") == "1");
                 FileClass.IsOnline = ((string)file.Attribute("isOnline") == "1");
                 FileClass.Categoris = filmFilesList.CategorisArray((string)file.Attribute("categoris"));
-                XElement FilmsScr = file.XPathSelectElement("//prefix:file//prefix:filmsScr", namespaceManager);
-                XElement links = file.XPathSelectElement("//prefix:file//prefix:links", namespaceManager);
+                FileClass.filmsScr = file.XPathSelectElement(@"./prefix:filmsScr", namespaceManager);                
+                FileClass.links = file.XPathSelectElement(@"./prefix:links", namespaceManager);                
                 if (ShowCrypted || !FileClass.IsCrypted) FilmFileList.Add(FileClass);
-            }
+            }            
+            myXDocument = null;
             return FilmFileList;
         }
 
@@ -149,11 +156,8 @@ namespace Dobrofilm
             XDocument FilmX = SettingsXMLDoc;
             if (RenameFiles)
             {
-                var xmlReader = XmlReader.Create(Dobrofilm.Properties.Settings.Default.SettingsPath);
-                var myXDocument = XDocument.Load( xmlReader );
-                var namespaceManager = new XmlNamespaceManager( xmlReader.NameTable );
-                namespaceManager.AddNamespace("prefix", "http://tempuri.org/DobrofilmData.xsd");
-                XElement FilesNode = myXDocument.XPathSelectElement("//prefix:Dobrofilm/prefix:files", namespaceManager);
+                XDocument myXDocument = SettingsXMLDoc;
+                XElement FilesNode = myXDocument.XPathSelectElement("//prefix:Dobrofilm/prefix:files", GetDefNameSpaceManager());
                 string NewFileMask = (string)FilesNode.Attribute("filemask");  //FilmX.Element("files").Attribute("filemask").Value;
                 int FileNumber = (int)FilesNode.Attribute("nextnumber");       //int.Parse(FilmX.Element("files").Attribute("nextnumber").Value);
                 if (NewFileMask != null || FileNumber != 0)
@@ -164,7 +168,8 @@ namespace Dobrofilm
                     filmFile.Name = NewFileName;
                     filmFile.Path = NewFilePath;
                     FilesNode.SetAttributeValue("nextnumber", Convert.ToString(FileNumber + 1));
-                }
+                }                
+                myXDocument = null;
             }
             XElement FilmXElement = CreateFilmXElement(filmFile);
             if (filmFile.ID == System.Guid.Empty)
@@ -180,6 +185,7 @@ namespace Dobrofilm
                 FilmToChange.ReplaceWith(FilmXElement);
             }
             FilmX.Save(Dobrofilm.Properties.Settings.Default.SettingsPath);
+            FilmX = null;
         }
 
         public XElement CreateFilmXElement(FilmFile FilmItem)
@@ -224,7 +230,6 @@ namespace Dobrofilm
             return ResultString;
         }
 
-
         public void DeleteFilmItemFromXml(FilmFile FilmItem)
         {
             XDocument FilmX = SettingsXMLDoc;
@@ -234,31 +239,30 @@ namespace Dobrofilm
                      select p).Single();
             FilmToDelete.Remove();
             FilmX.Save(Dobrofilm.Properties.Settings.Default.SettingsPath);
+            FilmX = null;
         }        
         #endregion 
         
         #region Category
-        public IList<CategoryClass> GetCategoryListFromXML()
+        public IList<CategoryClass> GetCategoryListFromXML() //valid
         {
-            var xmlReader = XmlReader.Create(Dobrofilm.Properties.Settings.Default.SettingsPath);
-            var myXDocument = XDocument.Load(xmlReader);
-            var namespaceManager = new XmlNamespaceManager(xmlReader.NameTable);
-            namespaceManager.AddNamespace("prefix", "http://tempuri.org/DobrofilmData.xsd");
-            IEnumerable<XElement> CategorisList = myXDocument.XPathSelectElements("//prefix:Dobrofilm/prefix:categoris/prefix:category", namespaceManager);
+            XDocument myXDocument = SettingsXMLDoc;
+            IEnumerable<XElement> CategorisList = myXDocument.XPathSelectElements("//prefix:Dobrofilm/prefix:categoris/prefix:category", GetDefNameSpaceManager());
             IList<CategoryClass> CategoryList = new List<CategoryClass>();
             foreach (XElement Category in CategorisList)
             {
                 CategoryClass categoryClass = new CategoryClass();
                 categoryClass.ID = (int)Category.Attribute("id");
+                categoryClass.Name = Category.Value;
                 categoryClass.Hint = (string)Category.Attribute("hint");
                 categoryClass.Icon = CategoryImgByteArray((string)Category.Attribute("image"));
                 CategoryList.Add(categoryClass);
             }
-
+            myXDocument = null;            
             return CategoryList;
         }
 
-        public byte[] CategoryImgByteArray(string Base64String)
+        public byte[] CategoryImgByteArray(string Base64String) //valid
         {
             byte[] imageBytes;
             try
@@ -282,14 +286,9 @@ namespace Dobrofilm
                 return;
             }
             XDocument CategoryX = SettingsXMLDoc;
-            var xmlReader = XmlReader.Create(Dobrofilm.Properties.Settings.Default.SettingsPath);
-            var myXDocument = XDocument.Load(xmlReader);
-            var namespaceManager = new XmlNamespaceManager(xmlReader.NameTable);
-            namespaceManager.AddNamespace("prefix", "http://tempuri.org/DobrofilmData.xsd");
-
-            XElement FilesNode = myXDocument.XPathSelectElement("//prefix:Dobrofilm/prefix:categoris", namespaceManager);
-            CurrentID = (int)FilesNode.Attribute("nextid");
-            XElement CategoryXElements = CategoryXElement(Category);
+            XElement CategorisNode = CategoryX.XPathSelectElement("//prefix:Dobrofilm/prefix:categoris", GetDefNameSpaceManager());
+            CurrentID = (int)CategorisNode.Attribute("nextid");
+            XElement CategoryXElements = GetCategoryXElement(Category);
             if (Category.ID == 0)
             {
                 CategoryX.Element("categoris").Add(CategoryXElements);
@@ -305,10 +304,11 @@ namespace Dobrofilm
                 CategoryToChange.ReplaceWith(CategoryXElements);
 
             }
-            CategoryX.Save(Dobrofilm.Properties.Settings.Default.SettingsPath);
+            CategoryX.Save(Dobrofilm.Properties.Settings.Default.SettingsPath);            
+            CategoryX = null;            
         }
 
-        public XElement CategoryXElement(CategoryClass CategoryItem)
+        public XElement GetCategoryXElement(CategoryClass CategoryItem)
         {
             string ID;
             if (CategoryItem.ID == 0)
@@ -329,7 +329,7 @@ namespace Dobrofilm
             return CategoryElement;
         }
 
-        public string ByteArrayeToBase64(byte[] ImageByteArray)
+        public string ByteArrayeToBase64(byte[] ImageByteArray) //valid
         {
             string base64String = Convert.ToBase64String(ImageByteArray);
             return base64String;
@@ -349,13 +349,14 @@ namespace Dobrofilm
                      select p).Single();
             CategoryToDelete.Remove();
             CategoryX.Save(Dobrofilm.Properties.Settings.Default.SettingsPath);
+            CategoryX = null;
         }
 
         #endregion
 
         #region Screen
 
-        public IList<ScreenShotItem> GetScreenShootsByFilmFile(FilmFile Film)
+        public IList<ScreenShotItem> GetScreenShootsByFilmFile(FilmFile Film) //valid
         {
             if (Film == null)
             {
@@ -364,7 +365,8 @@ namespace Dobrofilm
             }
             XElement ScreenShoots = Film.filmsScr;
             IList<ScreenShotItem> FilmScreens = new List<ScreenShotItem>();
-            IEnumerable<XElement> ScreenShootsElements = ScreenShoots.Descendants("screen"); //!!!!!!!!!
+            if (ScreenShoots == null) return FilmScreens;
+            IEnumerable<XElement> ScreenShootsElements = ScreenShoots.XPathSelectElements(@"./prefix:screen", GetDefNameSpaceManager());            
             foreach (XElement ScreenElement in ScreenShootsElements)
             {
                 ScreenShotItem FilmScreen = new ScreenShotItem { Base64String = ScreenElement.Attribute("base64Data").Value, ScreenShotID = ScreenElement.Attribute("id").Value };
@@ -373,37 +375,43 @@ namespace Dobrofilm
             return FilmScreens;
         }
 
-        public void AddScreenShotToXML(Byte[] ImageByteArray, Guid FilmID) //not valid
+        public void AddScreenShotToXML(Byte[] ImageByteArray, Guid FilmID) //valid
         {            
             string base64String = Convert.ToBase64String(ImageByteArray);
             XDocument ScreenShotX = SettingsXMLDoc;
-            Int16 CurrentID = Convert.ToInt16(ScreenShotX.Element("FilmsScr").Attribute("nextid").Value);
-            XElement ScreenShotXElements = ScreenShotXElement(base64String, FilmID, CurrentID);
+
+            XElement Film = (from p in ScreenShotX.XPathSelectElements(@"//prefix:Dobrofilm/prefix:files/prefix:file", GetDefNameSpaceManager())
+                     where p.Attribute("GUID").Value == Convert.ToString(FilmID)
+                     select p).Single();
+            XElement FilmsScr = Film.XPathSelectElement(@"./prefix:filmsScr", GetDefNameSpaceManager());
+            Int16 CurrentID = Convert.ToInt16(FilmsScr.Attribute("nextid").Value);
+            XElement ScreenShotXElements = ScreenShotXElement(base64String, CurrentID);
             CurrentID++;
-            ScreenShotX.Element("FilmsScr").Add(ScreenShotXElements);
-            ScreenShotX.Element("FilmsScr").Attribute("nextid").Value = Convert.ToString(CurrentID);
+            FilmsScr.Add(ScreenShotXElements);
+            FilmsScr.Attribute("nextid").Value = Convert.ToString(CurrentID);
+            Film.ReplaceWith(Film);
             ScreenShotX.Save(Dobrofilm.Properties.Settings.Default.SettingsPath);            
         }
 
-        private XElement ScreenShotXElement(string base64String, Guid FilmID, Int16 CurrentID)
+        private XElement ScreenShotXElement(string base64String, Int16 CurrentID) //valid
         {
-            XElement ScreenShotElement = new XElement("Screen",
-               new XAttribute("id", Convert.ToString(CurrentID)),
-               new XAttribute("filmGuid", FilmID),
+            XNamespace ns = "http://tempuri.org/DobrofilmData.xsd";
+            XElement ScreenShotElement = new XElement(ns + "screen",
+               new XAttribute("id", Convert.ToString(CurrentID)),               
                new XAttribute("base64Data", base64String));
             return ScreenShotElement;
         }        
 
-        public void DelScreenShotByID(string ID) //not valid
+        public void DelScreenShotByID(string ScreenID, Guid FilmID) //not valid
         {
-            if (ID == string.Empty)
+            if (ScreenID == string.Empty)
             {
                 return;
             }
             XDocument ScreenShotX = SettingsXMLDoc;
             var ScreenShotToDelete =
                     (from p in ScreenShotX.Descendants("Screen")
-                     where p.Attribute("id").Value == ID
+                     where p.Attribute("id").Value == ScreenID
                      select p).Single();
             ScreenShotToDelete.Remove();
             ScreenShotX.Save(Dobrofilm.Properties.Settings.Default.SettingsPath);
@@ -412,15 +420,10 @@ namespace Dobrofilm
 
         #region Links
 
-        public void AddLinkToXML(LinksClass linkClass)
-        {
-            
-        }
-
-        public IList<LinksClass> GetLinksListByFilm(FilmFile Film)
+        public IList<LinksClass> GetLinksListByFilm(FilmFile Film) //valid
         {
             XElement LinksElement = Film.links;
-            IEnumerable<XElement> LinksElements = LinksElement.Descendants("link");
+            IEnumerable<XElement> LinksElements = LinksElement.XPathSelectElements(@"./prefix:link", GetDefNameSpaceManager());  //LinksElement.Descendants("link");
             IList<LinksClass> FilmScreens = new List<LinksClass>();
             foreach (XElement LinkElement in LinksElements)
             {
@@ -429,6 +432,12 @@ namespace Dobrofilm
             }
             return FilmScreens;
         }
+
+        public void AddLinkToXML(LinksClass linkClass)
+        {
+
+        }
+
         #endregion
         
 

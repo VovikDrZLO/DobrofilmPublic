@@ -22,11 +22,20 @@ namespace Dobrofilm
 
     public class CategoryList 
     {
+        
         public ListCollectionView Category { get; private set; }
+        public ListCollectionView Category_v1 { get; private set; }
 
         public int CurrentID { get; set; }
 
         public CategoryList()
+        {            
+            XMLEdit xMLEdit1 = new XMLEdit();
+            IList<CategoryClass> _categoris_2 = xMLEdit1.GetCategoryListFromXML();
+            Category = (ListCollectionView)CollectionViewSource.GetDefaultView(_categoris_2);
+        }
+
+        public void CategoryList_v1()
         {
             IList<CategoryClass> _categoris = new List<CategoryClass> { };
             XmlDocument CategoryXml = new XmlDocument();
@@ -48,15 +57,15 @@ namespace Dobrofilm
                         }
                         else
                         {
-                            categoryClass.ID =  int.Parse(reader.GetAttribute("id"));
+                            categoryClass.ID = int.Parse(reader.GetAttribute("id"));
                             categoryClass.Hint = reader.GetAttribute("hint");
                             XMLEdit xMLEdit = new XMLEdit();
-                            categoryClass.Icon =  CategoryImgByteArray(reader.GetAttribute("image"));
+                            categoryClass.Icon = CategoryImgByteArray(reader.GetAttribute("image"));
                         }
                         break;
                     case XmlNodeType.Text:
                         categoryClass.Name = reader.Value;
-                            break;
+                        break;
                     /*case XmlNodeType.XmlDeclaration:
                     case XmlNodeType.ProcessingInstruction:
                         
@@ -66,17 +75,20 @@ namespace Dobrofilm
                         break;
                      */
                     case XmlNodeType.EndElement:
-                            if (reader.Name != "categoris")
-                            {
-                                _categoris.Add(categoryClass);
-                                categoryClass = new CategoryClass();
-                            }
+                        if (reader.Name != "categoris")
+                        {
+                            _categoris.Add(categoryClass);
+                            categoryClass = new CategoryClass();
+                        }
                         break;
                 }
 
             }
-            Category = (ListCollectionView)CollectionViewSource.GetDefaultView(_categoris);
+            XMLEdit xMLEdit1 = new XMLEdit();            
+            Category_v1 = (ListCollectionView)CollectionViewSource.GetDefaultView(_categoris);            
         }
+
+
 
         public string CategoryListFileName
         {

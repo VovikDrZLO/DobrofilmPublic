@@ -19,13 +19,13 @@ namespace Dobrofilm
         public MainWindow()
         {
             InitializeComponent();
-            XMLConverter xMLConverter = new XMLConverter();
-            xMLConverter.Main();
-            //FilmFilesList.ShowCryptFilms = false;
+            //XMLConverter xMLConverter = new XMLConverter();
+            //xMLConverter.Main();
+            FilmFilesList.ShowCryptFilms = false;
             //HomeFolders homeFolders = new HomeFolders();
             //homeFolders.CheckHomeFolders();
-            //MainGridData.DataContext = new FilmFilesList();
-            //CategoryListBox.DataContext = new CategoryList();
+            MainGridData.DataContext = new FilmFilesList();
+            CategoryListBox.DataContext = new CategoryList();
             //XMLEdit xMLEdit = new XMLEdit();
             //xMLEdit.GetFilmFileFromXML(FilmFilesList.ShowCryptFilms);
         }
