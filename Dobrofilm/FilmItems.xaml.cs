@@ -472,7 +472,8 @@ namespace Dobrofilm
                 LinkedFilmDataGrid.ItemsSource = LinkedFilms;
 
                 //FilmScreenShot ScreenClass = new FilmScreenShot();                
-                IList<ScreenShotItem> ScreenShotItems = xMLEdit.GetScreenShootsByFilmFile(FilmPublic); //ScreenClass.GetScreenShotsByFilmID(FilmID);
+                FilmFile NewFilmFile = xMLEdit.GetFilmFileFromXMLByID(FilmID);
+                IList<ScreenShotItem> ScreenShotItems = xMLEdit.GetScreenShootsByFilmFile(NewFilmFile); //ScreenClass.GetScreenShotsByFilmID(FilmID);
                 FilmScreens.Children.Clear();
                 int ColumnPosition = 0;
                 foreach (ScreenShotItem ScreenItem in ScreenShotItems)
@@ -516,7 +517,7 @@ namespace Dobrofilm
         {
             Image img = (Image)sender;
             string ScreenShotID = (string)img.Tag;
-            FilmScreenShot filmScreenShot = new FilmScreenShot();
+            //FilmScreenShot filmScreenShot = new FilmScreenShot();
             XMLEdit xMLEdit = new XMLEdit();
             xMLEdit.DelScreenShotByID(ScreenShotID, FilmPublic.ID);
             //filmScreenShot.DelScreenShotByID(ScreenShotID);
