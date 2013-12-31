@@ -386,6 +386,8 @@ namespace Dobrofilm
             }                        
             NewFilm.Hint = FilmHint.Text;
             NewFilm.Rate = Convert.ToInt16(FilmRate.Value);
+            NewFilm.filmsScr = FilmPublic.filmsScr;
+            NewFilm.links = FilmPublic.links;
             if ((bool)DelChb.IsChecked)
             {
                 NewFilm.Rate = -1;
@@ -401,8 +403,10 @@ namespace Dobrofilm
                 }
                 NewFilm.Categoris = CategoryIDsArray;
             }
-            FilmFilesList filmFilesList = new FilmFilesList();
-            filmFilesList.AddSaveFilmItemToXML(NewFilm, false);
+            XMLEdit xMLEdit = new XMLEdit();
+            xMLEdit.AddFilmToXML(NewFilm, false);
+            //FilmFilesList filmFilesList = new FilmFilesList();
+            //filmFilesList.AddSaveFilmItemToXML(NewFilm, false);
             //Window win = Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.Title == "FilmItem");
             Close();
         }
@@ -645,6 +649,7 @@ namespace Dobrofilm
             byte[] screenshot = GetScreenShot(FilmPlayer, 0.5, 90);
             XMLEdit xMLEdit = new XMLEdit();
             xMLEdit.AddScreenShotToXML(screenshot, FilmID);
+            FilmPublic = xMLEdit.GetFilmFileFromXMLByID(FilmID);
             //FilmScreenShot FilmScreenShotClass = new FilmScreenShot();
             //FilmScreenShotClass.SaveScreenShotToXML(screenshot, FilmID);            
         }

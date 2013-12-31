@@ -171,16 +171,26 @@ namespace Dobrofilm
                     {
                         DialogResult = Utils.ShowYesNoDialog("Rename Files?");
                         DialogShow = true;
-                    }                  
-                    AddSaveFilmItemToXML(new FilmFile
+                    }
+                    XMLEdit xMLEdit = new XMLEdit();
+                    xMLEdit.AddFilmToXML(new FilmFile
                     {
                         Name = FilmName,
                         Path = Filepath,
                         Rate = 0,
                         Categoris = CategorisStartArray,
                         IsCrypted = false,
-                        IsOnline  = false
+                        IsOnline = false
                     }, DialogResult);
+                    //AddSaveFilmItemToXML(new FilmFile
+                    //{
+                    //    Name = FilmName,
+                    //    Path = Filepath,
+                    //    Rate = 0,
+                    //    Categoris = CategorisStartArray,
+                    //    IsCrypted = false,
+                    //    IsOnline  = false
+                    //}, DialogResult);
                 }
                 else
                 {
