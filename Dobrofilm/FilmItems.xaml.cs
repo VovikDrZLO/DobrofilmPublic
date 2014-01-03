@@ -62,6 +62,7 @@ namespace Dobrofilm
                     Btn_Play.Visibility = 
                     SeekBar.Visibility = 
                     Btn_Screen.Visibility = 
+                    Complete_Decrypt.Visibility =
                     MoveToBtn.Visibility = System.Windows.Visibility.Collapsed;               
             }
             else
@@ -72,6 +73,7 @@ namespace Dobrofilm
                 FileStatus(SelectedFilm.Path);
                 IsLinkTabSelectedFirstTime = true;
                 string TempFileName = Utils.GenerateTempFilePath(FilePath);
+                Complete_Decrypt.Visibility = (IsCrypted) ? System.Windows.Visibility.Visible : System.Windows.Visibility.Hidden;
                 Btn_Play.IsEnabled = (!IsCrypted || MainWindow.OpenedCryptedFiles.Contains(TempFileName));
             }
         }
@@ -89,6 +91,7 @@ namespace Dobrofilm
                 SeekBar.Visibility = 
                 MoveToBtn.Visibility =
                 CryptFile.Visibility =
+                Complete_Decrypt.Visibility =
                 ChangePathBtn.Visibility = 
                 System.Windows.Visibility.Collapsed;  
         }
@@ -112,6 +115,7 @@ namespace Dobrofilm
             if (IsCrypted)
             {
                 CryptFile.Visibility = System.Windows.Visibility.Hidden;
+                Complete_Decrypt.Visibility = System.Windows.Visibility.Visible;
                 CryptBitmap = Dobrofilm.Properties.Resources.Crypted;
                 CryptStatus.Text = "Crypted";
             }
@@ -377,7 +381,8 @@ namespace Dobrofilm
                     return;
                 }
                 NewFilm.Path = FilmName.Text;
-                NewFilm.Name = FilmName.Text.Substring(FilmName.Text.LastIndexOf("/") + 1);                
+                string OnlineFilmName = FilmName.Text.Substring(FilmName.Text.LastIndexOf("/") + 1);
+                NewFilm.Name = (OnlineFilmName == string.Empty) ? FilmName.Text : OnlineFilmName;
             }
             else
             {
@@ -386,8 +391,11 @@ namespace Dobrofilm
             }                        
             NewFilm.Hint = FilmHint.Text;
             NewFilm.Rate = Convert.ToInt16(FilmRate.Value);
-            NewFilm.filmsScr = FilmPublic.filmsScr;
-            NewFilm.links = FilmPublic.links;
+            if (FilmPublic != null)
+            {
+                NewFilm.filmsScr = FilmPublic.filmsScr;
+                NewFilm.links = FilmPublic.links;
+            }
             if ((bool)DelChb.IsChecked)
             {
                 NewFilm.Rate = -1;

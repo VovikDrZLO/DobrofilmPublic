@@ -14,7 +14,16 @@ namespace Dobrofilm
 {
     class XMLConverter
     {
-        public void Main()
+        public bool IsNeedConvert()
+        {
+            string SettingFilePath = Dobrofilm.Properties.Settings.Default.SettingsPath;
+            if (SettingFilePath == string.Empty || !Utils.IsFileExists(SettingFilePath)) return true;
+            XMLEdit xMLEdit = new XMLEdit();
+            if (!xMLEdit.ValidateXML(SettingFilePath)) return true;
+            return false;
+        }
+
+        public void MakeConversion()
         {
             string FilmListXMLFile = Dobrofilm.Properties.Settings.Default.FilmListXMLFile;
             string CategoryListXMLFile = Dobrofilm.Properties.Settings.Default.CategoryListXMLFile;

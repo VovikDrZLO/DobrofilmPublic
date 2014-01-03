@@ -128,33 +128,33 @@ namespace Dobrofilm
                         }
                     }                    
                 }
-                string NewFilePath = CreateNewFilmListXML();
-                Dobrofilm.Properties.Settings.Default.FilmListXMLFile = NewFilePath;
-                Dobrofilm.Properties.Settings.Default.Save();
-                return NewFilePath; 
+                //string NewFilePath = CreateNewFilmListXML();
+                //Dobrofilm.Properties.Settings.Default.FilmListXMLFile = NewFilePath;
+                //Dobrofilm.Properties.Settings.Default.Save();
+                return string.Empty; 
             }
         }
 
-        public string CreateNewFilmListXML()
-        {
-            string DirPath = string.Concat(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "\\Dobrofilm");
-            Utils.CreateDirectory(DirPath);
-            string path = string.Concat(DirPath, "\\", "FilmList.xml"); //Directory.GetCurrentDirectory()            
-            using (XmlWriter writer = XmlWriter.Create(path))
-            {
-                writer.WriteStartDocument();
-                writer.WriteStartElement("files");
-                writer.WriteStartAttribute("filemask");
-                writer.WriteString("Dobrofilm");
-                writer.WriteEndAttribute();
-                writer.WriteStartAttribute("nextnumber");
-                writer.WriteString("1");
-                writer.WriteEndAttribute();                
-                writer.WriteEndElement();
-                writer.WriteEndDocument();                
-            }
-            return path;
-        }
+        //public string CreateNewFilmListXML()
+        //{
+        //    string DirPath = string.Concat(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "\\Dobrofilm");
+        //    Utils.CreateDirectory(DirPath);
+        //    string path = string.Concat(DirPath, "\\", "FilmList.xml"); //Directory.GetCurrentDirectory()            
+        //    using (XmlWriter writer = XmlWriter.Create(path))
+        //    {
+        //        writer.WriteStartDocument();
+        //        writer.WriteStartElement("files");
+        //        writer.WriteStartAttribute("filemask");
+        //        writer.WriteString("Dobrofilm");
+        //        writer.WriteEndAttribute();
+        //        writer.WriteStartAttribute("nextnumber");
+        //        writer.WriteString("1");
+        //        writer.WriteEndAttribute();
+        //        writer.WriteEndElement();
+        //        writer.WriteEndDocument();
+        //    }
+        //    return path;
+        //}
 
         public void AddFilmsToFilmFiles()
         {            
@@ -250,73 +250,46 @@ namespace Dobrofilm
             }
             return ResultArray;
         }
-             
-
-        
 
        
-        public void AddSaveFilmItemToXML(FilmFile FilmItem, bool RenameFiles)
-        {            
-            if (FilmItem == null)
-            {
-                Utils.ShowWarningDialog("Saving Error");
-                return;
-            }
-            XDocument FilmX = XDocument.Load(FileListPath);
-            if (RenameFiles)
-            {
-                string NewFileMask = FilmX.Element("files").Attribute("filemask").Value;
-                int FileNumber = int.Parse(FilmX.Element("files").Attribute("nextnumber").Value);
-                if (NewFileMask != null || FileNumber != 0)
-                {
-                    string NewFileName = NewFileMask + FileNumber;
-                    string NewFilePath = Utils.RenameFile(FilmItem.Path, NewFileName);
-                    FilmItem.Hint = FilmItem.Name;
-                    FilmItem.Name = NewFileName;
-                    FilmItem.Path = NewFilePath;
-                    FilmX.Element("files").Attribute("nextnumber").Value = Convert.ToString(FileNumber + 1);
-                }
-            }
-            XMLEdit xMLEdit = new XMLEdit();
-            XElement FilmXElement = xMLEdit.CreateFilmXElement(FilmItem);
-            if (FilmItem.ID == System.Guid.Empty)
-            {
-                FilmX.Element("files").Add(FilmXElement);
-            }
-            else
-            {
-                var FilmToChange =
-                    (from p in FilmX.Descendants("file")
-                     where new Guid(p.Attribute("GUID").Value) == FilmItem.ID
-                     select p).Single();
-                FilmToChange.ReplaceWith(FilmXElement);  
-            }
-            FilmX.Save(FileListPath);
-        }
-
-        public string GetFilmMask()
-        {
-            XDocument FilmX = XDocument.Load(FileListPath);
-            return FilmX.Element("files").Attribute("filemask").Value;
-        }
-
-        public string GetFileMaskNextID()
-        {
-            XDocument FilmX = XDocument.Load(FileListPath);
-            return FilmX.Element("files").Attribute("nextnumber").Value;
-        }
-
-        public void SetFilmMaskAndCounter(string Mask, int Counter)
-        {
-            if (Counter == 0)
-            {
-                return;
-            }
-            XDocument FilmX = XDocument.Load(FileListPath);
-            FilmX.Element("files").Attribute("nextnumber").Value = Convert.ToString(Counter);
-            FilmX.Element("files").Attribute("filemask").Value = Mask;
-            FilmX.Save(FileListPath);
-        }
+        //public void AddSaveFilmItemToXML(FilmFile FilmItem, bool RenameFiles)
+        //{            
+        //    if (FilmItem == null)
+        //    {
+        //        Utils.ShowWarningDialog("Saving Error");
+        //        return;
+        //    }
+        //    XDocument FilmX = XDocument.Load(FileListPath);
+        //    if (RenameFiles)
+        //    {
+        //        string NewFileMask = FilmX.Element("files").Attribute("filemask").Value;
+        //        int FileNumber = int.Parse(FilmX.Element("files").Attribute("nextnumber").Value);
+        //        if (NewFileMask != null || FileNumber != 0)
+        //        {
+        //            string NewFileName = NewFileMask + FileNumber;
+        //            string NewFilePath = Utils.RenameFile(FilmItem.Path, NewFileName);
+        //            FilmItem.Hint = FilmItem.Name;
+        //            FilmItem.Name = NewFileName;
+        //            FilmItem.Path = NewFilePath;
+        //            FilmX.Element("files").Attribute("nextnumber").Value = Convert.ToString(FileNumber + 1);
+        //        }
+        //    }
+        //    XMLEdit xMLEdit = new XMLEdit();
+        //    XElement FilmXElement = xMLEdit.CreateFilmXElement(FilmItem);
+        //    if (FilmItem.ID == System.Guid.Empty)
+        //    {
+        //        FilmX.Element("files").Add(FilmXElement);
+        //    }
+        //    else
+        //    {
+        //        var FilmToChange =
+        //            (from p in FilmX.Descendants("file")
+        //             where new Guid(p.Attribute("GUID").Value) == FilmItem.ID
+        //             select p).Single();
+        //        FilmToChange.ReplaceWith(FilmXElement);  
+        //    }
+        //    FilmX.Save(FileListPath);
+        //}        
 
         public ListCollectionView GetFilmListByCategory(int[] CategotisLocalArray, AndOrEnum LogicOperation)
         {

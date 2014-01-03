@@ -19,11 +19,11 @@ namespace Dobrofilm
         public MainWindow()
         {
             InitializeComponent();
-            //XMLConverter xMLConverter = new XMLConverter();
-            //xMLConverter.Main();
+            XMLConverter xMLConverter = new XMLConverter();
+            if (xMLConverter.IsNeedConvert()) xMLConverter.MakeConversion();            
             FilmFilesList.ShowCryptFilms = false;
-            //HomeFolders homeFolders = new HomeFolders();
-            //homeFolders.CheckHomeFolders();
+            HomeFolders homeFolders = new HomeFolders();
+            homeFolders.CheckHomeFolders();
             MainGridData.DataContext = new FilmFilesList();
             CategoryListBox.DataContext = new CategoryList();
             //XMLEdit xMLEdit = new XMLEdit();
@@ -418,8 +418,10 @@ namespace Dobrofilm
                 OpenedCryptedFiles.Add(Film.Path);
                 Film.IsCrypted = true;
                 Film.Path = CryptFileName;
-                FilmFilesList FileList = new FilmFilesList();
-                FileList.AddSaveFilmItemToXML(Film, false);                
+                XMLEdit xMLEdit = new XMLEdit();
+                xMLEdit.AddFilmToXML(Film, false);
+                //FilmFilesList FileList = new FilmFilesList();
+                //FileList.AddSaveFilmItemToXML(Film, false);                
             }
             Mouse.OverrideCursor = null;
             UpdateMainGridData();
@@ -473,8 +475,10 @@ namespace Dobrofilm
                 string NewPath = string.Concat(NewFolder, @"\", Film.Name, Exten);
                 Utils.MoveFile(Film.Path, NewPath);
                 Film.Path = NewPath;
-                FilmFilesList filmFilesList = new FilmFilesList();
-                filmFilesList.AddSaveFilmItemToXML(Film, false);
+                XMLEdit xMLEdit = new XMLEdit();
+                xMLEdit.AddFilmToXML(Film, false);
+                //FilmFilesList filmFilesList = new FilmFilesList();
+                //filmFilesList.AddSaveFilmItemToXML(Film, false);
             }
         }
 

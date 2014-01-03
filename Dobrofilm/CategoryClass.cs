@@ -123,38 +123,38 @@ namespace Dobrofilm
                         }
                     }
                 }
-                string NewFilePath = CreateNewCategoryListXML();
-                Dobrofilm.Properties.Settings.Default.CategoryListXMLFile = NewFilePath;
-                Dobrofilm.Properties.Settings.Default.Save();
-                return NewFilePath;
-                //return "CategoryList.xml";
+                //string NewFilePath = CreateNewCategoryListXML();
+                //Dobrofilm.Properties.Settings.Default.CategoryListXMLFile = NewFilePath;
+                //Dobrofilm.Properties.Settings.Default.Save();
+                //return NewFilePath;
+                return string.Empty;                
             }
         }
 
 
-        public string CreateNewCategoryListXML()
-        {  
-            string DirPath = string.Concat(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "\\Dobrofilm");
-            Utils.CreateDirectory(DirPath);
-            string path = string.Concat(DirPath, "\\", "CategoryList.xml"); //Directory.GetCurrentDirectory()
-            using (XmlWriter writer = XmlWriter.Create(path))
-            {
-                writer.WriteStartDocument();
-                    writer.WriteStartElement("categoris");
-                        writer.WriteStartAttribute("nextid");
-                        writer.WriteString("1");
-                        writer.WriteEndAttribute();
-                        writer.WriteStartElement("category");
-                        writer.WriteStartAttribute("id");
-                        writer.WriteString("0");
-                        writer.WriteEndAttribute();
-                        writer.WriteValue("No Category");
-                        writer.WriteEndElement();                
-                    writer.WriteEndElement();
-                writer.WriteEndDocument();
-            }
-            return path;
-        }
+        //public string CreateNewCategoryListXML()
+        //{  
+        //    string DirPath = string.Concat(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "\\Dobrofilm");
+        //    Utils.CreateDirectory(DirPath);
+        //    string path = string.Concat(DirPath, "\\", "CategoryList.xml"); //Directory.GetCurrentDirectory()
+        //    using (XmlWriter writer = XmlWriter.Create(path))
+        //    {
+        //        writer.WriteStartDocument();
+        //            writer.WriteStartElement("categoris");
+        //                writer.WriteStartAttribute("nextid");
+        //                writer.WriteString("1");
+        //                writer.WriteEndAttribute();
+        //                writer.WriteStartElement("category");
+        //                writer.WriteStartAttribute("id");
+        //                writer.WriteString("0");
+        //                writer.WriteEndAttribute();
+        //                writer.WriteValue("No Category");
+        //                writer.WriteEndElement();                
+        //            writer.WriteEndElement();
+        //        writer.WriteEndDocument();
+        //    }
+        //    return path;
+        //}
 
         //public void AddCategory(CategoryClass CategoryItem) 
         //{   
@@ -178,22 +178,7 @@ namespace Dobrofilm
         //    CategoryX.Save(CategoryListFileName);            
         //}
 
-        public string GetCategoryNextID()
-        {
-            XDocument CategoryX = XDocument.Load(CategoryListFileName);
-            return CategoryX.Element("categoris").Attribute("nextid").Value;
-        }
-
-        public void SetCategoryID(int NewID)
-        {
-            if (NewID == 0)
-            {
-                return;
-            }
-            XDocument CategoryX = XDocument.Load(CategoryListFileName);
-            CategoryX.Element("categoris").Attribute("nextid").Value = Convert.ToString(NewID);
-            CategoryX.Save(CategoryListFileName);
-        }
+      
 
         //public void DelCategory(CategoryClass CategoryItem)
         //{

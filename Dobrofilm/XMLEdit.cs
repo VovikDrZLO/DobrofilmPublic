@@ -13,11 +13,11 @@ namespace Dobrofilm
 {
     class XMLEdit
     {
+        public string SettingsPath = Dobrofilm.Properties.Settings.Default.SettingsPath;
         public XDocument SettingsXMLDoc //valid
         {
             get
-            {                
-                string SettingsPath = Dobrofilm.Properties.Settings.Default.SettingsPath;
+            {   
                 if (!Utils.IsFileExists(SettingsPath))
                 {
                     bool DialogResult = Utils.ShowYesNoDialog("To select existing FilmFiles xml library press YES press NO to create it automatically");
@@ -34,7 +34,7 @@ namespace Dobrofilm
                             if (ValidateXML(dlg.FileName))
                             {
                                 IsInvalid = false;
-                                Dobrofilm.Properties.Settings.Default.SettingsPath = dlg.FileName;
+                                SettingsPath = dlg.FileName;
                                 Dobrofilm.Properties.Settings.Default.Save();
                                 XDocument XMLDoc = XDocument.Load(dlg.FileName);                                
                                 return XMLDoc;
@@ -46,7 +46,7 @@ namespace Dobrofilm
                         }
                     }
                     CreateNewXML();
-                    XDocument XMLDoc_1 = XDocument.Load(Dobrofilm.Properties.Settings.Default.SettingsPath);
+                    XDocument XMLDoc_1 = XDocument.Load(SettingsPath);
                     return XMLDoc_1;
                 }
                 XDocument XMLDoc_2 = XDocument.Load(SettingsPath);
@@ -105,7 +105,7 @@ namespace Dobrofilm
                     writer.WriteEndElement();
                     writer.WriteEndDocument();
                 }
-                Dobrofilm.Properties.Settings.Default.SettingsPath = path;
+                SettingsPath = path;
                 Dobrofilm.Properties.Settings.Default.Save();
             }
             catch (Exception ex)
@@ -201,7 +201,7 @@ namespace Dobrofilm
                      select p).Single();
                 FilmToChange.ReplaceWith(FilmXElement);
             }
-            FilmX.Save(Dobrofilm.Properties.Settings.Default.SettingsPath);
+            FilmX.Save(SettingsPath);
             FilmX = null;
         }
 
@@ -257,9 +257,39 @@ namespace Dobrofilm
                      where new Guid(p.Attribute("GUID").Value) == FilmItem.ID
                      select p).Single();
             FilmToDelete.Remove();
-            FilmX.Save(Dobrofilm.Properties.Settings.Default.SettingsPath);
+            FilmX.Save(SettingsPath);
             FilmX = null;
-        }        
+        }
+
+        public string GetFilmMask() 
+        {
+            XDocument FilmX = SettingsXMLDoc;
+            XElement FilesNode = FilmX.XPathSelectElement("//prefix:Dobrofilm/prefix:files", GetDefNameSpaceManager());
+            return FilesNode.Attribute("filemask").Value;
+        }
+
+        public string GetFileMaskNextID() //not valid
+        {
+            XDocument FilmX = SettingsXMLDoc;
+            XElement FilesNode = FilmX.XPathSelectElement("//prefix:Dobrofilm/prefix:files", GetDefNameSpaceManager());
+            return FilesNode.Attribute("nextnumber").Value;
+        }
+
+        public void SetFilmMaskAndCounter(string Mask, int Counter) //not valid
+        {
+            if (Counter == 0)
+            {
+                return;
+            }
+            XDocument FilmX = SettingsXMLDoc;
+            XElement FilesNode = FilmX.XPathSelectElement("//prefix:Dobrofilm/prefix:files", GetDefNameSpaceManager());
+            FilesNode.SetAttributeValue("nextnumber", Convert.ToString(Counter));
+            FilesNode.SetAttributeValue("filemask", Mask);
+            //FilmX.Element("files").Attribute("nextnumber").Value = Convert.ToString(Counter);
+            //FilmX.Element("files").Attribute("filemask").Value = Mask;
+            FilmX.Save(SettingsPath);
+        }
+
         #endregion 
         
         #region Category
@@ -268,9 +298,14 @@ namespace Dobrofilm
             XDocument myXDocument = SettingsXMLDoc;
             IEnumerable<XElement> CategorisList = myXDocument.XPathSelectElements("//prefix:Dobrofilm/prefix:categoris/prefix:category", GetDefNameSpaceManager());
             IList<CategoryClass> CategoryList = new List<CategoryClass>();
+            CategoryClass categoryClass = new CategoryClass();
+            categoryClass.Name = "All Categoris";
+            categoryClass.ID = -1;
+            CategoryList.Add(categoryClass);
+            categoryClass = new CategoryClass();
             foreach (XElement Category in CategorisList)
             {
-                CategoryClass categoryClass = new CategoryClass();
+                categoryClass = new CategoryClass();
                 categoryClass.ID = (int)Category.Attribute("id");
                 categoryClass.Name = Category.Value;
                 categoryClass.Hint = (string)Category.Attribute("hint");
@@ -323,7 +358,7 @@ namespace Dobrofilm
                 CategoryToChange.ReplaceWith(CategoryXElements);
 
             }
-            CategoryX.Save(Dobrofilm.Properties.Settings.Default.SettingsPath);            
+            CategoryX.Save(SettingsPath);            
             CategoryX = null;            
         }
 
@@ -366,8 +401,27 @@ namespace Dobrofilm
                      where Convert.ToInt16(p.Attribute("id").Value) == CategoryItem.ID
                      select p).Single();
             CategoryToDelete.Remove();
-            CategoryX.Save(Dobrofilm.Properties.Settings.Default.SettingsPath);
+            CategoryX.Save(SettingsPath);
             CategoryX = null;
+        }
+
+        public string GetCategoryNextID() //not valid
+        {
+            XDocument CategoryX = SettingsXMLDoc;
+            XElement CategoryNode = CategoryX.XPathSelectElement("//prefix:Dobrofilm/prefix:categoris", GetDefNameSpaceManager());
+            return CategoryNode.Attribute("nextid").Value;
+        }
+
+        public void SetCategoryID(int NewID) //not valid
+        {
+            if (NewID == 0)
+            {
+                return;
+            }
+            XDocument CategoryX = SettingsXMLDoc;
+            XElement CategoryNode = CategoryX.XPathSelectElement("//prefix:Dobrofilm/prefix:categoris", GetDefNameSpaceManager());
+            CategoryNode.SetAttributeValue("nextid", Convert.ToString(NewID));            
+            CategoryX.Save(SettingsPath);
         }
 
         #endregion
@@ -408,7 +462,7 @@ namespace Dobrofilm
             FilmsScr.Add(ScreenShotXElements);
             FilmsScr.Attribute("nextid").Value = Convert.ToString(CurrentID);
             Film.ReplaceWith(Film);
-            ScreenShotX.Save(Dobrofilm.Properties.Settings.Default.SettingsPath);            
+            ScreenShotX.Save(SettingsPath);            
         }
 
         private XElement ScreenShotXElement(string base64String, Int16 CurrentID) //valid
@@ -437,7 +491,7 @@ namespace Dobrofilm
                     ScreenShotToDelete.Remove();
                 }
             }            
-            ScreenShotX.Save(Dobrofilm.Properties.Settings.Default.SettingsPath);
+            ScreenShotX.Save(SettingsPath);
         }
         #endregion
 
@@ -467,7 +521,7 @@ namespace Dobrofilm
             XElement LinkXElements = LinkXElement(linkClass);            
 
             Film.Element(ns + "links").Add(LinkXElements);
-            LinkX.Save(Dobrofilm.Properties.Settings.Default.SettingsPath);           
+            LinkX.Save(SettingsPath);           
         }
 
         public XElement LinkXElement(LinksClass LinkItem)
