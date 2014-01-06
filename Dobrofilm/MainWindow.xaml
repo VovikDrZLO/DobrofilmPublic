@@ -410,7 +410,7 @@
                         <MenuItem Foreground="Black" Header="Decrypt Cheked Films" Click="DecodeAllSelectedFiles_Click"/>                        
                         <MenuItem Foreground="Black" Header="Encrypt Cheked Films" Click="EncodeAllSelectedFiles_Click"/>
                         <MenuItem Foreground="Black" Header="Encrypt Files In Folder" Click="EncrFlsInFolder_Click"/>
-                        <MenuItem Foreground="Black" Header="Decrypt Files In Folder" Click="DescrFlsInFolder_Click"/>
+                        <MenuItem Foreground="Black" Header="Decrypt Files In Folder" Click="DecrFlsInFolder_Click"/>
                     </ContextMenu>
                 </Button.ContextMenu>
                 <StackPanel Orientation="Horizontal">

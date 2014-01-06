@@ -165,6 +165,7 @@ namespace Dobrofilm
             foreach (string Filepath in FilePathArray)
             {
                 string FilmName = System.IO.Path.GetFileNameWithoutExtension(Filepath);
+                string FilmExt = System.IO.Path.GetExtension(Filepath);
                 if (!IsFileInLibrary(Filepath))
                 {
                     if (!DialogShow)
@@ -179,7 +180,7 @@ namespace Dobrofilm
                         Path = Filepath,
                         Rate = 0,
                         Categoris = CategorisStartArray,
-                        IsCrypted = false,
+                        IsCrypted = (FilmExt.EndsWith("CrypDobFilm")),
                         IsOnline = false
                     }, DialogResult);
                     //AddSaveFilmItemToXML(new FilmFile
@@ -222,7 +223,7 @@ namespace Dobrofilm
             {
                 Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();                
                 dlg.DefaultExt = ".avi";
-                dlg.Filter = "Video Files|*.avi;*.mpg;*.flv;*.wmv;*.mp4;*.mov|All Files|*.*";
+                dlg.Filter = "Video Files|*.avi;*.mpg;*.flv;*.wmv;*.mp4;*.mov;*.aviCrypDobFilm;*.mpgCrypDobFilm;*.flvCrypDobFilm;*.wmvCrypDobFilm;*.mp4CrypDobFilm;*.movCrypDobFilm|All Files|*.*";
                 dlg.Multiselect = true;                
                 dlg.ShowDialog();
                 bool IncludeSubFolders = Utils.ShowYesNoDialog("Include subfolders?");

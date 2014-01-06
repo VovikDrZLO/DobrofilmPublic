@@ -63,7 +63,7 @@ namespace Dobrofilm
                     SeekBar.Visibility = 
                     Btn_Screen.Visibility = 
                     Complete_Decrypt.Visibility =
-                    MoveToBtn.Visibility = System.Windows.Visibility.Collapsed;               
+                    MoveToBtn.Visibility = System.Windows.Visibility.Collapsed;
             }
             else
             {                
@@ -507,7 +507,8 @@ namespace Dobrofilm
 
                 }
                 double RowsCount = Math.Ceiling(ScreenShotItems.Count / 5.0);
-                FilmScreensBorder.Margin = new Thickness(0, 315 - 150 * (RowsCount - 1), 5, 0);
+                IList<FilmFile> itemSource = (List<FilmFile>)LinkedFilmDataGrid.ItemsSource;
+                FilmScreensBorder.Margin = new Thickness(0, (315 - 150 * (RowsCount - 1)) - itemSource.Count * 20, 10, 0);
                 FilmScreensBorder.Height = 150 * RowsCount;
             }            
         }

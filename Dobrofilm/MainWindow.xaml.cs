@@ -29,8 +29,7 @@ namespace Dobrofilm
             //XMLEdit xMLEdit = new XMLEdit();
             //xMLEdit.GetFilmFileFromXML(FilmFilesList.ShowCryptFilms);
         }
-
-        
+                
 
         public static List<string> OpenedCryptedFiles { get; set; }
 
@@ -499,11 +498,11 @@ namespace Dobrofilm
         }
 
 
-        private void DescrFlsInFolder_Click(object sender, RoutedEventArgs e)
+        private void DecrFlsInFolder_Click(object sender, RoutedEventArgs e)
         {
             string FilesFolder = Utils.SelectFolderDlg;
             if (FilesFolder == string.Empty) return;
-            DirectoryInfo dInfo = new DirectoryInfo(FilesFolder);            
+            DirectoryInfo dInfo = new DirectoryInfo(FilesFolder);
             var allfiles = Directory.GetFiles(FilesFolder, "*.*", SearchOption.AllDirectories)
                 .Where(s => s.EndsWith("CrypDobFilm"));
             string[] AllFilesArray = allfiles.ToArray();
@@ -516,6 +515,15 @@ namespace Dobrofilm
             }
             PassWnd passWnd = new PassWnd(FileList);
             passWnd.ShowDialog();
+
+            if (Utils.ShowYesNoDialog("Left files decrypted after close app?"))
+            {
+                foreach (FilmFile filmFile in FileList)
+                {
+                    if (Utils.IsFileExists(filmFile.Path)) Utils.DeleteFile(filmFile.Path);
+                    MainWindow.OpenedCryptedFiles.Remove(Utils.GenerateTempFilePath(filmFile.Path));
+                } 
+            }
         }
     }
 }
