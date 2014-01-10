@@ -120,6 +120,9 @@
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils.cs" />
+    <Compile Include="Warning.xaml.cs">
+      <DependentUpon>Warning.xaml</DependentUpon>
+    </Compile>
     <Compile Include="XMLConverter.cs" />
     <Compile Include="XMLEdit.cs" />
     <Page Include="Controls\CircularProgressBar.xaml">
@@ -163,6 +166,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Warning.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -178,6 +185,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Resources\Error3.png" />
+    <None Include="Resources\Question2.jpg" />
+    <None Include="Resources\Question2.png" />
+    <Content Include="Resources\Warning3.png" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -209,6 +220,7 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <Content Include="Resources\Error3.jpg" />
     <Content Include="Resources\FilmList.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

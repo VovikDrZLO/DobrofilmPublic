@@ -20,25 +20,37 @@ namespace Dobrofilm
 {
     public enum AndOrEnum {And, Or};
     public enum XMLFile {Files, Categoris, Links, Screens };
+    public enum MessageType {Warning, Error, Question};
     static public class Utils
     {        
 
         static public void ShowWarningDialog(string Message) 
         {
-            string messageBoxText = Message;
-            string caption = "Warning";
-            MessageBoxButton button = MessageBoxButton.OK;
-            MessageBoxImage icon = MessageBoxImage.Warning;
-            MessageBox.Show(messageBoxText, caption, button, icon);
+            Warning WarningWnd = new Warning(Message, "", MessageType.Warning);
+            WarningWnd.ShowDialog();
+            //string messageBoxText = Message;
+            //string caption = "Warning";
+            //MessageBoxButton button = MessageBoxButton.OK;
+            //MessageBoxImage icon = MessageBoxImage.Warning;
+            //MessageBox.Show(messageBoxText, caption, button, icon);
         }
 
         static public void ShowErrorDialog(string Message)
         {
-            string messageBoxText = Message;
-            string caption = "Error";
-            MessageBoxButton button = MessageBoxButton.OK;
-            MessageBoxImage icon = MessageBoxImage.Error;
-            MessageBox.Show(messageBoxText, caption, button, icon);
+            Warning WarningWnd = new Warning(Message, "", MessageType.Error);
+            WarningWnd.ShowDialog();
+            //string messageBoxText = Message;
+            //string caption = "Error";
+            //MessageBoxButton button = MessageBoxButton.OK;
+            //MessageBoxImage icon = MessageBoxImage.Error;
+            //MessageBox.Show(messageBoxText, caption, button, icon);
+        }
+
+        static public void ShowErrorDialog(string Message, string AdditionalInf)
+        {
+            Warning WarningWnd = new Warning(Message, AdditionalInf, MessageType.Error);
+            WarningWnd.ShowDialog();
+            
         }
 
          static public string RenameFile(string FilePath, string NewName)

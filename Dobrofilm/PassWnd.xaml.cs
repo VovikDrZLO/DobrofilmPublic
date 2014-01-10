@@ -21,8 +21,9 @@ namespace Dobrofilm
         private readonly BackgroundWorker worker = new BackgroundWorker();
         private readonly BackgroundWorker Multworker = new BackgroundWorker();
         public PassWnd()
-        {
+        {            
             InitializeComponent();
+            this.Title = "Enter View Pass";
             ActionType = ActionTypeEnum.ShowCryptedFiles;
             CloseWindow = true;
             Password_Box.Focus();
@@ -31,6 +32,7 @@ namespace Dobrofilm
         public PassWnd(string FromFile, string ToFile)
         {
             InitializeComponent();
+            this.Title = "Enter Film Decription Pass";
             FromFilePath = FromFile;
             ToFilePath = ToFile;
             ActionType = ActionTypeEnum.DecryptFile;
@@ -41,6 +43,7 @@ namespace Dobrofilm
         public PassWnd(List<FilmFile> ChekedFiles)
         {
             InitializeComponent();
+            this.Title = "Enter Film Decription Pass";
             chekedFiles = ChekedFiles;
             ActionType = ActionTypeEnum.DecryptFileList;
             CloseWindow = false;
