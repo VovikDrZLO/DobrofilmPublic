@@ -43,11 +43,12 @@ namespace Dobrofilm
             return film.Path == GlobalFilePath;
         }
 
-        public void AskToAddNewFilm(string FilePath, FilmFilesList filmFilesList)
+        public void AskToAddNewFilm(string FilePath)
         {
             string FilmName = System.IO.Path.GetFileNameWithoutExtension(FilePath);
-            if (!Utils.ShowYesNoDialog(string.Format("New file {0} found is home folders, add to filmList?", FilmName))) return;            
-            filmFilesList.AddSaveFilmItemToXML(new FilmFile
+            if (!Utils.ShowYesNoDialog(string.Format("New file {0} found is home folders, add to filmList?", FilmName))) return;
+            XMLEdit xMLEdit = new XMLEdit();
+            xMLEdit.AddFilmToXML(new FilmFile
             {
                 Name = FilmName,
                 Path = FilePath,
@@ -76,7 +77,7 @@ namespace Dobrofilm
                     filmFiles.Filter = new Predicate<object>(IsFileInLibtary);
                     if (filmFiles.Count == 0)
                     {
-                        AskToAddNewFilm(FilePath, filmFilesList);
+                        AskToAddNewFilm(FilePath);
                     }
                 }
             }                        

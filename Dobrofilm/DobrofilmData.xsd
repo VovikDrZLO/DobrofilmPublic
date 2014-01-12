@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DobrofilmData"
+    targetNamespace="http://tempuri.org/DobrofilmData.xsd"
+    elementFormDefault="qualified"
+    xmlns="http://tempuri.org/DobrofilmData.xsd"
+    xmlns:mstns="http://tempuri.org/DobrofilmData.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+  <xs:element name="Dobrofilm">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element  name="files">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="file" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="filmsScr">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="screen" maxOccurs="unbounded" minOccurs="0">
+                            <xs:complexType>                             
+                              <xs:attribute name="id" type ="xs:integer"/>                                  
+                              <xs:attribute name="base64Data" type="xs:base64Binary"/>                             
+                            </xs:complexType>
+                          </xs:element>                         
+                        </xs:sequence>
+                        <xs:attribute name="nextid" type ="xs:integer"/>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="links">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="link" maxOccurs="unbounded" minOccurs="0">
+                            <xs:complexType>                              
+                              <xs:attribute name ="GUIDTO" type="xs:string"/>                              
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>                    
+                  <xs:attribute name="GUID" type="xs:string" use="required" />
+                  <xs:attribute name="hint" type="xs:string" use="required" />
+                  <xs:attribute name="path" type="xs:string" use="required" />
+                  <xs:attribute name="rate" type="xs:integer" use="required" />
+                  <xs:attribute name="categoris" type="xs:string" use="required" />
+                  <xs:attribute name="isCrypted" type="xs:integer" use="required" />
+                  <xs:attribute name="isOnline" type="xs:integer" use="required" />                  
+                  <xs:attribute name="name" type="xs:string" use="required" /> 
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="filemask" type="xs:string" use="required" />
+            <xs:attribute name="nextnumber" type="xs:integer" use="required" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="categoris">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="category" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                  <xs:simpleContent>
+                    <xs:extension base="xs:string">
+                      <xs:attribute name="id" type="xs:integer" use="required" />
+                      <xs:attribute name="hint" type="xs:string" use="optional" />
+                      <xs:attribute name="image" type="xs:base64Binary" use="optional" />
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="nextid" type="xs:int" use="required"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

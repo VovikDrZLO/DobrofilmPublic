@@ -22,17 +22,18 @@ namespace Dobrofilm
         public SettingsWindow()
         {
             InitializeComponent();
-            CategotyPathTB.Text = Dobrofilm.Properties.Settings.Default.CategoryListXMLFile;
-            FilmPathTB.Text = Dobrofilm.Properties.Settings.Default.FilmListXMLFile;
-            LinkPath.Text = Dobrofilm.Properties.Settings.Default.LinksListXMLFile;
+            SettingsFilePath.Text = Dobrofilm.Properties.Settings.Default.SettingsPath;            
             MPCRath.Text = Dobrofilm.Properties.Settings.Default.MPCPath;
-            DefBrowserTB.Text = Dobrofilm.Properties.Settings.Default.DefaultBrowser;
-            ScreenPath.Text = Dobrofilm.Properties.Settings.Default.ScreenShotXMLFile;            
-            CategoryList categoryList = new CategoryList();
-            CategoryNextIDTB.Text = categoryList.GetCategoryNextID();
-            FilmFilesList filmFilesList = new FilmFilesList();
-            FilmMaskTB.Text = filmFilesList.GetFilmMask();
-            FilmNextIDTB.Text = filmFilesList.GetFileMaskNextID();
+            DefBrowserTB.Text = Dobrofilm.Properties.Settings.Default.DefaultBrowser;                        
+            XMLEdit xMLEdit = new XMLEdit();
+            FilmMaskTB.Text = xMLEdit.GetFilmMask();
+            FilmNextIDTB.Text = xMLEdit.GetFileMaskNextID();
+            CategoryNextIDTB.Text = xMLEdit.GetCategoryNextID();
+            //CategoryList categoryList = new CategoryList();
+            //CategoryNextIDTB.Text = categoryList.GetCategoryNextID();
+            //FilmFilesList filmFilesList = new FilmFilesList();
+            //FilmMaskTB.Text = filmFilesList.GetFilmMask();
+            //FilmNextIDTB.Text = filmFilesList.GetFileMaskNextID();
             HomeFolders homeFolders = new HomeFolders();
             HomeFoldersDataGrid.ItemsSource = homeFolders.HomeFoldersList;          
 
@@ -59,7 +60,9 @@ namespace Dobrofilm
                         Utils.ShowWarningDialog(err.Message);                        
                     }                    
                 }
-                filmFilesList.DeleteFilmItemFromXml(filmFile);
+                XMLEdit xMLEdit = new XMLEdit();
+                xMLEdit.DeleteFilmItemFromXml(filmFile);
+                //filmFilesList.DeleteFilmItemFromXml(filmFile);
             }
         }
 
@@ -73,26 +76,14 @@ namespace Dobrofilm
         {
             int NewCategoryID;
             int NewFilmMaskID;
-            if (!Utils.IsFileExists(CategotyPathTB.Text))
+            if (!Utils.IsFileExists(SettingsFilePath.Text))
             {
-                Utils.ShowWarningDialog(string.Format("Category Dictionary file {0} does not exists", CategotyPathTB.Text));             
+                Utils.ShowWarningDialog(string.Format("Settings file {0} does not exists", SettingsFilePath.Text));             
             }
             else if(!Utils.IsFileExists(MPCRath.Text))
             {
                 Utils.ShowWarningDialog(string.Format("Media Player Classic was not found by this path {0}", MPCRath.Text));             
-            }
-            else if (!Utils.IsFileExists(FilmPathTB.Text))
-            {
-                Utils.ShowWarningDialog(string.Format("Film list Dictionary file {0} does not exists", FilmPathTB.Text));
-            }
-            else if (!Utils.IsFileExists(LinkPath.Text))
-            {
-                Utils.ShowWarningDialog(string.Format("Links Dictionary file {0} does not exists", LinkPath.Text));
-            }
-            else if (!Utils.IsFileExists(ScreenPath.Text))
-            {
-                Utils.ShowWarningDialog(string.Format("ScreenShot  Dictionary file {0} does not exists", ScreenPath.Text));
-            }
+            }            
             else if (!int.TryParse(CategoryNextIDTB.Text, out NewCategoryID) && CategoryNextIDTB.Text == string.Empty)
             {
                 Utils.ShowWarningDialog(string.Format("{0} is not valid ID", CategoryNextIDTB.Text));
@@ -103,17 +94,14 @@ namespace Dobrofilm
             }
             else
             {
-                Dobrofilm.Properties.Settings.Default.CategoryListXMLFile = CategotyPathTB.Text;
-                Dobrofilm.Properties.Settings.Default.FilmListXMLFile = FilmPathTB.Text;
-                Dobrofilm.Properties.Settings.Default.MPCPath = MPCRath.Text;
-                Dobrofilm.Properties.Settings.Default.LinksListXMLFile = LinkPath.Text;
-                Dobrofilm.Properties.Settings.Default.DefaultBrowser = DefBrowserTB.Text;
-                Dobrofilm.Properties.Settings.Default.ScreenShotXMLFile = ScreenPath.Text;                
+                Dobrofilm.Properties.Settings.Default.SettingsPath = SettingsFilePath.Text;                
+                Dobrofilm.Properties.Settings.Default.MPCPath = MPCRath.Text;                
+                Dobrofilm.Properties.Settings.Default.DefaultBrowser = DefBrowserTB.Text;                
                 Dobrofilm.Properties.Settings.Default.Save();
                 CategoryList categoryList = new CategoryList();
-                categoryList.SetCategoryID(NewCategoryID);
-                FilmFilesList filmFilesList = new FilmFilesList();
-                filmFilesList.SetFilmMaskAndCounter(FilmMaskTB.Text, NewFilmMaskID); 
+                XMLEdit xMLEdit = new XMLEdit();
+                xMLEdit.SetCategoryID(NewCategoryID);                
+                xMLEdit.SetFilmMaskAndCounter(FilmMaskTB.Text, NewFilmMaskID); 
                 Close();
             }
         }
@@ -155,6 +143,7 @@ namespace Dobrofilm
         private void MoveAllFilmsToSelectedDirectory()
         {
             FilmFilesList filmFilesList = new FilmFilesList();
+            XMLEdit xMLEdit = new XMLEdit();
             ListCollectionView filmFiles = filmFilesList.FilmFiles;
             long TotalFilesLengthInBytes = Utils.TotalFilmsLength;
             int TotalFilesLengthInMBytes = (int)TotalFilesLengthInBytes / 1024 / 1024;
@@ -179,7 +168,8 @@ namespace Dobrofilm
                     if (Utils.IsFileExists(NewPath))
                     {
                         Film.Path = NewPath;
-                        filmFilesList.AddSaveFilmItemToXML(Film, false);
+                        xMLEdit.AddFilmToXML(Film, false);
+                        //filmFilesList.AddSaveFilmItemToXML(Film, false);
                     }
                 }
             }

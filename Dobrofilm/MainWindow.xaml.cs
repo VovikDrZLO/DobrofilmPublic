@@ -19,15 +19,17 @@ namespace Dobrofilm
         public MainWindow()
         {
             InitializeComponent();            
+            XMLConverter xMLConverter = new XMLConverter();
+            if (xMLConverter.IsNeedConvert()) xMLConverter.MakeConversion();            
             FilmFilesList.ShowCryptFilms = false;
             HomeFolders homeFolders = new HomeFolders();
             homeFolders.CheckHomeFolders();
             MainGridData.DataContext = new FilmFilesList();
             CategoryListBox.DataContext = new CategoryList();
-            
+            //XMLEdit xMLEdit = new XMLEdit();
+            //xMLEdit.GetFilmFileFromXML(FilmFilesList.ShowCryptFilms);
         }
-
-        
+                
 
         public static List<string> OpenedCryptedFiles { get; set; }
 
@@ -179,8 +181,10 @@ namespace Dobrofilm
                 return;
             }            
             FilmFile filmFile = MainGridData.SelectedItem as FilmFile;
-            FilmFilesList filmFilesList = new FilmFilesList();
-            filmFilesList.DeleteFilmItemFromXml(filmFile);
+            //FilmFilesList filmFilesList = new FilmFilesList();
+            //filmFilesList.DeleteFilmItemFromXml(filmFile);
+            XMLEdit xMLEdit = new XMLEdit();
+            xMLEdit.DeleteFilmItemFromXml(filmFile);
             UpdateMainGridData();
             //MainGridData.ItemsSource = filmFilesList.FilmFiles;
         }
@@ -202,7 +206,9 @@ namespace Dobrofilm
                 Utils.ShowWarningDialog("Can't delete linked Categoris");
                 return;
             }
-            categoryList.DelCategory(categoryClass);
+            XMLEdit xMLEdit = new XMLEdit();
+            //categoryList.DelCategory(categoryClass);
+            xMLEdit.DelCategory(categoryClass);
             CategoryListBox.DataContext = new CategoryList();
             CategoryListBox.Items.Refresh();            
         }
@@ -330,7 +336,9 @@ namespace Dobrofilm
                     if (innerfilmFile.ID != filmFile.ID)
                     {
                         LinksClass linkClass = new LinksClass { From = filmFile.ID, To = innerfilmFile.ID };
-                        linksList.AddLink(linkClass);
+                        XMLEdit xMLEdit = new XMLEdit();
+                        xMLEdit.AddLinkToXML(linkClass);
+                        //linksList.AddLink(linkClass);
                     }                    
                 }                
             }
@@ -409,8 +417,10 @@ namespace Dobrofilm
                 OpenedCryptedFiles.Add(Film.Path);
                 Film.IsCrypted = true;
                 Film.Path = CryptFileName;
-                FilmFilesList FileList = new FilmFilesList();
-                FileList.AddSaveFilmItemToXML(Film, false);                
+                XMLEdit xMLEdit = new XMLEdit();
+                xMLEdit.AddFilmToXML(Film, false);
+                //FilmFilesList FileList = new FilmFilesList();
+                //FileList.AddSaveFilmItemToXML(Film, false);                
             }
             Mouse.OverrideCursor = null;
             UpdateMainGridData();
@@ -422,9 +432,10 @@ namespace Dobrofilm
             Canvas DetailCanvas = (Canvas)e.DetailsElement.FindName("DetailCanvas");
             
             FilmFile SelectedFilm = (FilmFile)row.Item;
-            Guid FilmID = SelectedFilm.ID;
-            FilmScreenShot ScreenClass = new FilmScreenShot();
-            IList<ScreenShotItem> ScreenShotItems = ScreenClass.GetScreenShotsByFilmID(FilmID);
+            //Guid FilmID = SelectedFilm.ID;
+            //FilmScreenShot ScreenClass = new FilmScreenShot();
+            XMLEdit xMLEdit = new XMLEdit();
+            IList<ScreenShotItem> ScreenShotItems = xMLEdit.GetScreenShootsByFilmFile(SelectedFilm);//ScreenClass.GetScreenShotsByFilmID(FilmID);
             if (ScreenShotItems.Count > 0)
             {
                 DetailCanvas.Height = 100;
@@ -463,8 +474,10 @@ namespace Dobrofilm
                 string NewPath = string.Concat(NewFolder, @"\", Film.Name, Exten);
                 Utils.MoveFile(Film.Path, NewPath);
                 Film.Path = NewPath;
-                FilmFilesList filmFilesList = new FilmFilesList();
-                filmFilesList.AddSaveFilmItemToXML(Film, false);
+                XMLEdit xMLEdit = new XMLEdit();
+                xMLEdit.AddFilmToXML(Film, false);
+                //FilmFilesList filmFilesList = new FilmFilesList();
+                //filmFilesList.AddSaveFilmItemToXML(Film, false);
             }
         }
 
@@ -485,12 +498,11 @@ namespace Dobrofilm
         }
 
 
-        private void DescrFlsInFolder_Click(object sender, RoutedEventArgs e)
+        private void DecrFlsInFolder_Click(object sender, RoutedEventArgs e)
         {
             string FilesFolder = Utils.SelectFolderDlg;
             if (FilesFolder == string.Empty) return;
             DirectoryInfo dInfo = new DirectoryInfo(FilesFolder);
-            DirectoryInfo[] subdirs = dInfo.GetDirectories();
             var allfiles = Directory.GetFiles(FilesFolder, "*.*", SearchOption.AllDirectories)
                 .Where(s => s.EndsWith("CrypDobFilm"));
             string[] AllFilesArray = allfiles.ToArray();
@@ -503,6 +515,15 @@ namespace Dobrofilm
             }
             PassWnd passWnd = new PassWnd(FileList);
             passWnd.ShowDialog();
+
+            if (Utils.ShowYesNoDialog("Left files decrypted after close app?"))
+            {
+                foreach (FilmFile filmFile in FileList)
+                {
+                    if (Utils.IsFileExists(filmFile.Path)) Utils.DeleteFile(filmFile.Path);
+                    MainWindow.OpenedCryptedFiles.Remove(Utils.GenerateTempFilePath(filmFile.Path));
+                } 
+            }
         }
     }
 }

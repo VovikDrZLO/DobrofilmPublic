@@ -27,9 +27,11 @@ namespace Dobrofilm
         private string FilePath {get; set;}   
         private string NewFileName{get;set;}
         private bool IsOnline { get; set; }
+        private FilmFile FilmPublic { get; set; }
 
         public FilmItem(FilmFile SelectedFilm)
         {
+            FilmPublic = SelectedFilm;
             InitializeComponent();
             FilmID = SelectedFilm.ID;
             FilmName.Text = SelectedFilm.Name;
@@ -60,7 +62,8 @@ namespace Dobrofilm
                     Btn_Play.Visibility = 
                     SeekBar.Visibility = 
                     Btn_Screen.Visibility = 
-                    MoveToBtn.Visibility = System.Windows.Visibility.Collapsed;               
+                    Complete_Decrypt.Visibility =
+                    MoveToBtn.Visibility = System.Windows.Visibility.Collapsed;
             }
             else
             {                
@@ -70,6 +73,7 @@ namespace Dobrofilm
                 FileStatus(SelectedFilm.Path);
                 IsLinkTabSelectedFirstTime = true;
                 string TempFileName = Utils.GenerateTempFilePath(FilePath);
+                Complete_Decrypt.Visibility = (IsCrypted) ? System.Windows.Visibility.Visible : System.Windows.Visibility.Hidden;
                 Btn_Play.IsEnabled = (!IsCrypted || MainWindow.OpenedCryptedFiles.Contains(TempFileName));
             }
         }
@@ -87,6 +91,7 @@ namespace Dobrofilm
                 SeekBar.Visibility = 
                 MoveToBtn.Visibility =
                 CryptFile.Visibility =
+                Complete_Decrypt.Visibility =
                 ChangePathBtn.Visibility = 
                 System.Windows.Visibility.Collapsed;  
         }
@@ -110,6 +115,7 @@ namespace Dobrofilm
             if (IsCrypted)
             {
                 CryptFile.Visibility = System.Windows.Visibility.Hidden;
+                Complete_Decrypt.Visibility = System.Windows.Visibility.Visible;
                 CryptBitmap = Dobrofilm.Properties.Resources.Crypted;
                 CryptStatus.Text = "Crypted";
             }
@@ -375,7 +381,8 @@ namespace Dobrofilm
                     return;
                 }
                 NewFilm.Path = FilmName.Text;
-                NewFilm.Name = FilmName.Text.Substring(FilmName.Text.LastIndexOf("/") + 1);                
+                string OnlineFilmName = FilmName.Text.Substring(FilmName.Text.LastIndexOf("/") + 1);
+                NewFilm.Name = (OnlineFilmName == string.Empty) ? FilmName.Text : OnlineFilmName;
             }
             else
             {
@@ -384,6 +391,11 @@ namespace Dobrofilm
             }                        
             NewFilm.Hint = FilmHint.Text;
             NewFilm.Rate = Convert.ToInt16(FilmRate.Value);
+            if (FilmPublic != null)
+            {
+                NewFilm.filmsScr = FilmPublic.filmsScr;
+                NewFilm.links = FilmPublic.links;
+            }
             if ((bool)DelChb.IsChecked)
             {
                 NewFilm.Rate = -1;
@@ -399,8 +411,10 @@ namespace Dobrofilm
                 }
                 NewFilm.Categoris = CategoryIDsArray;
             }
-            FilmFilesList filmFilesList = new FilmFilesList();
-            filmFilesList.AddSaveFilmItemToXML(NewFilm, false);
+            XMLEdit xMLEdit = new XMLEdit();
+            xMLEdit.AddFilmToXML(NewFilm, false);
+            //FilmFilesList filmFilesList = new FilmFilesList();
+            //filmFilesList.AddSaveFilmItemToXML(NewFilm, false);
             //Window win = Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.Title == "FilmItem");
             Close();
         }
@@ -448,18 +462,30 @@ namespace Dobrofilm
             {
                 IsLinkTabSelectedFirstTime = false;
                 LinksList linksList = new LinksList();
-                XElement[] ArrayOfFilms = linksList.GetLinkedFilm(FilmID);
+                XMLEdit xMLEdit = new XMLEdit();
                 IList<FilmFile> LinkedFilms = new List<FilmFile> { };
-                foreach (XElement Film in ArrayOfFilms)
+                //XElement[] ArrayOfFilms = linksList.GetLinkedFilm(FilmID);                
+                //foreach (XElement Film in ArrayOfFilms)
+                //{
+                //    Guid LinkedFilmID = new Guid(Film.LastAttribute.Value);
+                //    FilmFilesList filmFilesList = new FilmFilesList();
+                //    FilmFile filmFile = filmFilesList.GetFilmByID(LinkedFilmID);
+                //    LinkedFilms.Add(filmFile);
+                //}
+                
+                IList<LinksClass> LinksByFilm = xMLEdit.GetLinksListByFilm(FilmPublic);
+                foreach (LinksClass Link in LinksByFilm)
                 {
-                    Guid LinkedFilmID = new Guid(Film.LastAttribute.Value);
+                    Guid LinkedFilmID = Link.To;
                     FilmFilesList filmFilesList = new FilmFilesList();
                     FilmFile filmFile = filmFilesList.GetFilmByID(LinkedFilmID);
                     LinkedFilms.Add(filmFile);
                 }
                 LinkedFilmDataGrid.ItemsSource = LinkedFilms;
-                FilmScreenShot ScreenClass = new FilmScreenShot();
-                IList<ScreenShotItem> ScreenShotItems = ScreenClass.GetScreenShotsByFilmID(FilmID);
+
+                //FilmScreenShot ScreenClass = new FilmScreenShot();                
+                FilmFile NewFilmFile = xMLEdit.GetFilmFileFromXMLByID(FilmID);
+                IList<ScreenShotItem> ScreenShotItems = xMLEdit.GetScreenShootsByFilmFile(NewFilmFile); //ScreenClass.GetScreenShotsByFilmID(FilmID);
                 FilmScreens.Children.Clear();
                 int ColumnPosition = 0;
                 foreach (ScreenShotItem ScreenItem in ScreenShotItems)
@@ -481,7 +507,8 @@ namespace Dobrofilm
 
                 }
                 double RowsCount = Math.Ceiling(ScreenShotItems.Count / 5.0);
-                FilmScreensBorder.Margin = new Thickness(0, 315 - 150 * (RowsCount - 1), 5, 0);
+                IList<FilmFile> itemSource = (List<FilmFile>)LinkedFilmDataGrid.ItemsSource;
+                FilmScreensBorder.Margin = new Thickness(0, (315 - 150 * (RowsCount - 1)) - itemSource.Count * 20, 10, 0);
                 FilmScreensBorder.Height = 150 * RowsCount;
             }            
         }
@@ -503,8 +530,10 @@ namespace Dobrofilm
         {
             Image img = (Image)sender;
             string ScreenShotID = (string)img.Tag;
-            FilmScreenShot filmScreenShot = new FilmScreenShot();
-            filmScreenShot.DelScreenShotByID(ScreenShotID);
+            //FilmScreenShot filmScreenShot = new FilmScreenShot();
+            XMLEdit xMLEdit = new XMLEdit();
+            xMLEdit.DelScreenShotByID(ScreenShotID, FilmPublic.ID);
+            //filmScreenShot.DelScreenShotByID(ScreenShotID);
             IsLinkTabSelectedFirstTime = true;
             UpdateLinksTab();            
         }
@@ -627,8 +656,11 @@ namespace Dobrofilm
         private void btnScreenShot_Click(object sender, RoutedEventArgs e)
         {
             byte[] screenshot = GetScreenShot(FilmPlayer, 0.5, 90);
-            FilmScreenShot FilmScreenShotClass = new FilmScreenShot();
-            FilmScreenShotClass.SaveScreenShotToXML(screenshot, FilmID);            
+            XMLEdit xMLEdit = new XMLEdit();
+            xMLEdit.AddScreenShotToXML(screenshot, FilmID);
+            FilmPublic = xMLEdit.GetFilmFileFromXMLByID(FilmID);
+            //FilmScreenShot FilmScreenShotClass = new FilmScreenShot();
+            //FilmScreenShotClass.SaveScreenShotToXML(screenshot, FilmID);            
         }
         
         public byte[] GetScreenShot(UIElement source, double scale, int quality)

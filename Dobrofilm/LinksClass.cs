@@ -18,45 +18,45 @@ namespace Dobrofilm
     {
         public ListCollectionView Link { get; private set; }
 
-        public LinksList()
-        {
-            IList<LinksClass> _links = new List<LinksClass> { };
-            XmlDocument LinksXml = new XmlDocument();
-            LinksXml.Load(LinksListFileName);
-            XmlNodeReader reader = new XmlNodeReader(LinksXml);
-            LinksClass linksClass = new LinksClass();            
-            while (reader.Read())
-            {
-                switch (reader.NodeType)
-                {
-                    case XmlNodeType.Element:
-                        if (reader.Name == "link")                        
-                        {
-                            linksClass.From = Guid.Parse(reader.GetAttribute("GUIDFROM"));
-                            linksClass.To = Guid.Parse(reader.GetAttribute("GUIDTO"));                           
-                        }
-                        break;
-                    case XmlNodeType.Text:                        
-                            break;                  
-                    case XmlNodeType.EndElement:
-                            if (reader.Name != "links")
-                            {
-                                _links.Add(linksClass);
-                                linksClass = new LinksClass();
-                            }
-                        break;
-                }
+        //public LinksList()
+        //{
+        //    IList<LinksClass> _links = new List<LinksClass> { };
+        //    XmlDocument LinksXml = new XmlDocument();
+        //    LinksXml.Load(LinksListFileName);
+        //    XmlNodeReader reader = new XmlNodeReader(LinksXml);
+        //    LinksClass linksClass = new LinksClass();            
+        //    while (reader.Read())
+        //    {
+        //        switch (reader.NodeType)
+        //        {
+        //            case XmlNodeType.Element:
+        //                if (reader.Name == "link")                        
+        //                {
+        //                    linksClass.From = Guid.Parse(reader.GetAttribute("GUIDFROM"));
+        //                    linksClass.To = Guid.Parse(reader.GetAttribute("GUIDTO"));                           
+        //                }
+        //                break;
+        //            case XmlNodeType.Text:                        
+        //                    break;                  
+        //            case XmlNodeType.EndElement:
+        //                    if (reader.Name != "links")
+        //                    {
+        //                        _links.Add(linksClass);
+        //                        linksClass = new LinksClass();
+        //                    }
+        //                break;
+        //        }
 
-            }
-            Link = (ListCollectionView)CollectionViewSource.GetDefaultView(_links);
-        }
+        //    }
+        //    Link = (ListCollectionView)CollectionViewSource.GetDefaultView(_links);
+        //}
 
         public XElement[] GetLinkedFilm(Guid FilmGuid)
         {
             if (FilmGuid == Guid.Empty || FilmGuid == null)
             {
                 return null;
-            }    
+            }
             XDocument LinkX = XDocument.Load(LinksListFileName);
             var FindLink =
                 (from p in LinkX.Descendants("link")
@@ -97,12 +97,12 @@ namespace Dobrofilm
                             Utils.ShowWarningDialog("Select Enother LinkList File");
                         }
                     }
-                    
+
                 }
                 string NewFilePath = CreateNewLinksListXML();
                 Dobrofilm.Properties.Settings.Default.LinksListXMLFile = NewFilePath;
                 Dobrofilm.Properties.Settings.Default.Save();
-                return NewFilePath;                
+                return NewFilePath;
             }
         }
 
@@ -121,23 +121,23 @@ namespace Dobrofilm
             return path;
         }
 
-        public void AddLink(LinksClass LinkItem)
-        {
-            XDocument LinkX = XDocument.Load(LinksListFileName);
-            XElement LinkXElements = LinkXElement(LinkItem);            
-            LinkX.Element("links").Add(LinkXElements);            
-            LinkX.Save(LinksListFileName);
-        }
+        //public void AddLink(LinksClass LinkItem)
+        //{
+        //    XDocument LinkX = XDocument.Load(LinksListFileName);
+        //    XElement LinkXElements = LinkXElement(LinkItem);            
+        //    LinkX.Element("links").Add(LinkXElements);            
+        //    LinkX.Save(LinksListFileName);
+        //}
         
 
-        public XElement LinkXElement(LinksClass LinkItem)
-        {
-            XElement LinkElement = new XElement("link",
-                new XAttribute("GUIDFROM", LinkItem.From),
-                new XAttribute("GUIDTO", LinkItem.To)                
-            );            
-            return LinkElement;
-        }
+        //public XElement LinkXElement(LinksClass LinkItem)
+        //{
+        //    XElement LinkElement = new XElement("link",
+        //        new XAttribute("GUIDFROM", LinkItem.From),
+        //        new XAttribute("GUIDTO", LinkItem.To)                
+        //    );            
+        //    return LinkElement;
+        //}
 
         public void DelLink(LinksClass LinkItem)
         {

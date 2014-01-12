@@ -1,7 +1,7 @@
 ﻿<Window x:Name="SettingsWindow1" x:Class="Dobrofilm.SettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="SettingsWindow" Height="661" Width="491" KeyDown="SettingsWindow1_KeyDown" Icon="Resources/MainIcon.ico" ResizeMode="NoResize">
+        Title="SettingsWindow" Height="547" Width="491" KeyDown="SettingsWindow1_KeyDown" Icon="Resources/MainIcon.ico" ResizeMode="NoResize">
     <Window.Resources>
         <Style x:Key="SecretButtonStyle" TargetType="Button">
             <Setter Property="OverridesDefaultStyle" Value="True"/>
@@ -29,41 +29,43 @@
             </Setter>
         </Style>
     </Window.Resources>
-    <Canvas Margin="0,0,0,13">
-        <TextBox x:Name="CategotyPathTB" Height="23" Canvas.Left="171" TextWrapping="Wrap" Text="CategotyPath" Canvas.Top="20" Width="300"/>
-        <TextBox x:Name="FilmPathTB" Height="23" Canvas.Left="171" TextWrapping="Wrap" Text="FilmsPath" Canvas.Top="59" Width="300"/>
-        <TextBox x:Name="MPCRath" Width="300" Canvas.Left="171" Canvas.Top="243" TextWrapping="Wrap"/>
-        <TextBox x:Name="CategoryNextIDTB" Height="24" Canvas.Left="171" TextWrapping="Wrap" Text="NextCategoryID" Canvas.Top="174" Width="120" />
-        <TextBox x:Name="FilmNextIDTB" Height="24" Canvas.Left="172" TextWrapping="Wrap" Text="NextFilmID" Canvas.Top="500" Width="120"/>
-        <TextBox x:Name="FilmMaskTB" Height="24" Canvas.Left="172" TextWrapping="Wrap" Text="FilmMask" Canvas.Top="459" Width="120"/>
-        <TextBox x:Name="LinkPath" Height="24" Canvas.Left="171" TextWrapping="Wrap" Text="LinkPath" Canvas.Top="100" Width="300"/>
-        <TextBox x:Name="ScreenPath" Height="24" Canvas.Left="171" TextWrapping="Wrap" Text="ScreenPath" Canvas.Top="137" Width="300"/>
-        <Button Content="Delete Marked Films" Canvas.Left="21" Canvas.Top="558" Width="115" Click="DelMarkedFilmsBtn_Click" Height="23"/>
-        <Button Content="Ok" Canvas.Left="300" Canvas.Top="597" Width="75" Click="OKBtn_Click" Height="23"/>
-        <Button Content="Cancel" Canvas.Left="397" Canvas.Top="597" Width="75" Click="CancelBtn_Click" Height="23"/>
-        <Label Content="CategoryDictXMLFilePath" Canvas.Left="10" Canvas.Top="20" Height="26" Width="147"/>
+    <Canvas Margin="0,0,0,2">
+        <!--<TextBox x:Name="CategotyPathTB" Height="23" Canvas.Left="171" TextWrapping="Wrap" Text="CategotyPath" Canvas.Top="20" Width="300"/>
+        <TextBox x:Name="FilmPathTB" Height="23" Canvas.Left="171" TextWrapping="Wrap" Text="FilmsPath" Canvas.Top="59" Width="300"/>-->
+        <TextBox x:Name="SettingsFilePath" Height="23" Canvas.Left="171" TextWrapping="Wrap" Text="SettingsFilePath" Canvas.Top="10" Width="300"/>
+        <TextBox x:Name="MPCRath" Width="300" Canvas.Left="171" Canvas.Top="113" TextWrapping="Wrap"/>
+        <TextBox x:Name="CategoryNextIDTB" Height="24" Canvas.Left="171" TextWrapping="Wrap" Text="NextCategoryID" Canvas.Top="44" Width="120" />
+        <TextBox x:Name="FilmNextIDTB" Height="24" Canvas.Left="176" TextWrapping="Wrap" Text="NextFilmID" Canvas.Top="374" Width="120"/>
+        <TextBox x:Name="FilmMaskTB" Height="24" Canvas.Left="176" TextWrapping="Wrap" Text="FilmMask" Canvas.Top="333" Width="120"/>
+        <!--<TextBox x:Name="LinkPath" Height="24" Canvas.Left="171" TextWrapping="Wrap" Text="LinkPath" Canvas.Top="100" Width="300"/>
+        <TextBox x:Name="ScreenPath" Height="24" Canvas.Left="171" TextWrapping="Wrap" Text="ScreenPath" Canvas.Top="137" Width="300"/>-->
+        <Button Content="Delete Marked Films" Canvas.Left="15" Canvas.Top="441" Width="115" Click="DelMarkedFilmsBtn_Click" Height="23"/>
+        <Button Content="Ok" Canvas.Left="293" Canvas.Top="485" Width="75" Click="OKBtn_Click" Height="23"/>
+        <Button Content="Cancel" Canvas.Left="390" Canvas.Top="485" Width="75" Click="CancelBtn_Click" Height="23"/>
+        <Label Content="SettingsFilePath" Canvas.Left="10" Canvas.Top="10" Width="147" Height="26"/>
+        <!--<Label Content="CategoryDictXMLFilePath" Canvas.Left="10" Canvas.Top="20" Height="26" Width="147"/>
         <Label Content="LinkXMLFilePath" Canvas.Left="10" Canvas.Top="100" Height="26" Width="147"/>
         <Label Content="FilmDictXMLFilePath" Canvas.Left="10" Canvas.Top="59" Width="147" Height="26"/>
-        <Label Content="ScreensXMLFilePath" Canvas.Left="10" Canvas.Top="137" Width="147" Height="26"/>
-        <Label Content="CategoryDictNextID" Canvas.Left="10" Canvas.Top="174" Height="27" Width="147"/>
-        <Label Content="FilmMask" Canvas.Left="11" Canvas.Top="460" Height="28" Width="147" />
-        <Label Content="FilmMaskNextID" Canvas.Left="11" Canvas.Top="500" Width="147" Height="27"/>
-        <GroupBox Header="ForAutoFileNameGeneration" Height="106" Canvas.Left="11" Canvas.Top="438" Width="447"/>
-        <Label Content="Path to MPC" Canvas.Left="10" Canvas.Top="242" Width="147"/>
-        <Button x:Name="SecretButton" Canvas.Left="10" Canvas.Top="273" Width="25" Height="25" BorderBrush="White" Foreground="White"
+        <Label Content="ScreensXMLFilePath" Canvas.Left="10" Canvas.Top="137" Width="147" Height="26"/>-->
+        <Label Content="CategoryDictNextID" Canvas.Left="10" Canvas.Top="44" Height="27" Width="147"/>
+        <Label Content="FilmMask" Canvas.Left="15" Canvas.Top="334" Height="28" Width="147" />
+        <Label Content="FilmMaskNextID" Canvas.Left="15" Canvas.Top="374" Width="147" Height="27"/>
+        <GroupBox Header="ForAutoFileNameGeneration" Height="106" Canvas.Left="9" Canvas.Top="309" Width="460"/>
+        <Label Content="Path to MPC" Canvas.Left="10" Canvas.Top="112" Width="147"/>
+        <Button x:Name="SecretButton" Canvas.Left="15" Canvas.Top="143" Width="25" Height="25" BorderBrush="White" Foreground="White"
                 Click="SecretButton_Click" MouseEnter="SecretButton_MouseEnter" 
                 MouseLeave="SecretButton_MouseLeave" Style="{StaticResource SecretButtonStyle}"/>
-        <TextBox x:Name="DefBrowserTB" Height="23" Canvas.Left="171" TextWrapping="Wrap" Text="explorer.exe" Canvas.Top="209" Width="300"/>
-        <Label Content="Default Browser" Canvas.Left="10" Canvas.Top="209" Width="147"/>
-        <GroupBox Height="40" Canvas.Left="11" Canvas.Top="549" Width="447"/>
-        <Button Content="Move All Films" Canvas.Left="151" Canvas.Top="559" Width="83" Click="MoveAllFilms_Click"/>
-        <Button Content="Del forgotten films" ToolTip="Delete all decripted files" Canvas.Left="246" Canvas.Top="559" Width="113" Click="DelForgottenFilms_Click"/>
-        <DataGrid x:Name="HomeFoldersDataGrid"  Height="130" Canvas.Left="11" Canvas.Top="303" Width="424" AutoGenerateColumns ="False">
+        <TextBox x:Name="DefBrowserTB" Height="23" Canvas.Left="171" TextWrapping="Wrap" Text="explorer.exe" Canvas.Top="79" Width="300"/>
+        <Label Content="Default Browser" Canvas.Left="10" Canvas.Top="79" Width="147"/>
+        <GroupBox Height="40" Canvas.Left="9" Canvas.Top="431" Width="460"/>
+        <Button Content="Move All Films" Canvas.Left="149" Canvas.Top="441" Width="83" Click="MoveAllFilms_Click"/>
+        <Button Content="Del forgotten films" ToolTip="Delete all decripted files" Canvas.Left="244" Canvas.Top="441" Width="113" Click="DelForgottenFilms_Click"/>
+        <DataGrid x:Name="HomeFoldersDataGrid"  Height="130" Canvas.Left="11" Canvas.Top="174" Width="424" AutoGenerateColumns ="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="HomeFolder" Binding="{Binding Path=FullName}" Width="*" IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>
-        <Button Content="+" Canvas.Left="442" Canvas.Top="303" Width="29" Height="77" Click="AddHomeFolder_Click" />
-        <Button Content="-" Canvas.Left="442" Canvas.Top="385" Width="29" Height="48" Click="RemHomeFolder_Click" />
+        <Button Content="+" Canvas.Left="442" Canvas.Top="174" Width="29" Height="77" Click="AddHomeFolder_Click" />
+        <Button Content="-" Canvas.Left="442" Canvas.Top="256" Width="29" Height="48" Click="RemHomeFolder_Click" />
     </Canvas>
 </Window>
