@@ -18,9 +18,12 @@ namespace Dobrofilm
     /// </summary>
     public partial class Warning : Window
     {
+        private MessageType GlobalType { set; get; }
+
         public Warning(string Message, string AdditionalInfo, MessageType Type)
         {
             InitializeComponent();
+            GlobalType = Type;
             this.Height = 177;
             Canvas.SetBottom(BtnBorder, 1);
             System.Drawing.Bitmap TypeIconBitmap;
@@ -36,6 +39,16 @@ namespace Dobrofilm
                     break;
                 case MessageType.Error:
                     TypeIconBitmap = Dobrofilm.Properties.Resources.Error;
+                    TypeIcon.Source = Utils.ConvertBitmapToBitmapImage(TypeIconBitmap);
+                    break;
+                case MessageType.Question:
+                    Button YesBtn = new Button();
+                    YesBtn.Content = "Yes";
+                    YesBtn.Margin = new Thickness(370, 2, 100, 2);
+                    YesBtn.Click += YesBtn_Click;
+                    OkBtn.Content = "No";
+                    BtnGrid.Children.Add(YesBtn);
+                    TypeIconBitmap = Dobrofilm.Properties.Resources.Question;
                     TypeIcon.Source = Utils.ConvertBitmapToBitmapImage(TypeIconBitmap);
                     break;
             }
@@ -57,10 +70,32 @@ namespace Dobrofilm
 
         private void OkBtn_Click(object sender, RoutedEventArgs e)
         {
-            //this.DialogResult = true;	
+            if (GlobalType == MessageType.Question)
+            {
+                this.DialogResult = false;
+            }            
             Close();
 
         }
-        
+
+        private void YesBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (GlobalType == MessageType.Question)
+            {
+                this.DialogResult = true;
+            }
+            Close();
+        }
+
+        private void MainWindow1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Escape) return;
+            if (GlobalType == MessageType.Question)
+            {
+                this.DialogResult = false;
+            }
+            Close();
+        }
+
     }
 }
