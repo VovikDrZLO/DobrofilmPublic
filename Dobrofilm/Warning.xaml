@@ -14,12 +14,12 @@
                 <Button x:Name="OkBtn" Content="OK" Margin="461,2,9,2" Click="OkBtn_Click"/>
                 <Button x:Name="AddInfo_btn" Content="Additional Info" Margin="7,2,434,2" Click="AddInfoBtn_Click"/>
             </Grid>
-
-        </Border>
-        <Image x:Name="TypeIcon" Height="80" Canvas.Left="10" Canvas.Top="22" Width="80" Source="Resources/Error3.jpg"/>        
-        <Border Canvas.Left="9" Canvas.Top="118" BorderBrush="Black"  BorderThickness="1">
-            <TextBlock x:Name="AddText" Height="148" Canvas.Left="10" TextWrapping="Wrap" Text="Additional Error Text" Canvas.Top="119" Width="531"/>
         </Border>
         <TextBlock x:Name="MainText" Height="23" Canvas.Left="104" TextWrapping="Wrap" Text="Error/Warning Text" Canvas.Top="37" Width="407" />
+        <Image x:Name="TypeIcon" Height="80" Canvas.Left="10" Canvas.Top="22" Width="80" Source="Resources/Error3.jpg"/>        
+        <Border Canvas.Left="9" Canvas.Top="118" BorderBrush="Black"  BorderThickness="1">
+            <TextBlock x:Name="AdditionalText" Height="148" Canvas.Left="10" TextWrapping="Wrap" Text="Additional Error Text" Canvas.Top="119" Width="531"/>
+        </Border>
+        
     </Canvas>
 </Window>

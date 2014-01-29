@@ -28,8 +28,8 @@ namespace Dobrofilm
             Canvas.SetBottom(BtnBorder, 1);
             System.Drawing.Bitmap TypeIconBitmap;
             MainText.Text = Message;
-            AddText.Text = AdditionalInfo;
-            AddText.Visibility = System.Windows.Visibility.Collapsed;
+            AdditionalText.Text = AdditionalInfo;
+            AdditionalText.Visibility = System.Windows.Visibility.Collapsed;
             AddInfo_btn.Visibility  = (AdditionalInfo != string.Empty) ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
             switch (Type)
             {
@@ -56,15 +56,15 @@ namespace Dobrofilm
 
         private void AddInfoBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (AddText.Visibility == System.Windows.Visibility.Visible)
+            if (AdditionalText.Visibility == System.Windows.Visibility.Visible)
             {
                 this.Height = 177;
-                AddText.Visibility = System.Windows.Visibility.Collapsed;
+                AdditionalText.Visibility = System.Windows.Visibility.Collapsed;
             }
             else
             {
                 this.Height = 342;
-                AddText.Visibility = System.Windows.Visibility.Visible;
+                AdditionalText.Visibility = System.Windows.Visibility.Visible;
             }
         }
 
