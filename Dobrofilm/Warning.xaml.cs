@@ -18,15 +18,18 @@ namespace Dobrofilm
     /// </summary>
     public partial class Warning : Window
     {
+        private MessageType GlobalType { set; get; }
+
         public Warning(string Message, string AdditionalInfo, MessageType Type)
         {
             InitializeComponent();
+            GlobalType = Type;
             this.Height = 177;
             Canvas.SetBottom(BtnBorder, 1);
             System.Drawing.Bitmap TypeIconBitmap;
             MainText.Text = Message;
-            AddText.Text = AdditionalInfo;
-            AddText.Visibility = System.Windows.Visibility.Collapsed;
+            AdditionalText.Text = AdditionalInfo;
+            AdditionalText.Visibility = System.Windows.Visibility.Collapsed;
             AddInfo_btn.Visibility  = (AdditionalInfo != string.Empty) ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
             switch (Type)
             {
@@ -38,29 +41,61 @@ namespace Dobrofilm
                     TypeIconBitmap = Dobrofilm.Properties.Resources.Error;
                     TypeIcon.Source = Utils.ConvertBitmapToBitmapImage(TypeIconBitmap);
                     break;
+                case MessageType.Question:
+                    Button YesBtn = new Button();
+                    YesBtn.Content = "Yes";
+                    YesBtn.Margin = new Thickness(370, 2, 100, 2);
+                    YesBtn.Click += YesBtn_Click;
+                    OkBtn.Content = "No";
+                    BtnGrid.Children.Add(YesBtn);
+                    TypeIconBitmap = Dobrofilm.Properties.Resources.Question;
+                    TypeIcon.Source = Utils.ConvertBitmapToBitmapImage(TypeIconBitmap);
+                    break;
             }
         }
 
         private void AddInfoBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (AddText.Visibility == System.Windows.Visibility.Visible)
+            if (AdditionalText.Visibility == System.Windows.Visibility.Visible)
             {
                 this.Height = 177;
-                AddText.Visibility = System.Windows.Visibility.Collapsed;
+                AdditionalText.Visibility = System.Windows.Visibility.Collapsed;
             }
             else
             {
                 this.Height = 342;
-                AddText.Visibility = System.Windows.Visibility.Visible;
+                AdditionalText.Visibility = System.Windows.Visibility.Visible;
             }
         }
 
         private void OkBtn_Click(object sender, RoutedEventArgs e)
         {
-            //this.DialogResult = true;	
+            if (GlobalType == MessageType.Question)
+            {
+                this.DialogResult = false;
+            }            
             Close();
 
         }
-        
+
+        private void YesBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (GlobalType == MessageType.Question)
+            {
+                this.DialogResult = true;
+            }
+            Close();
+        }
+
+        private void MainWindow1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Escape) return;
+            if (GlobalType == MessageType.Question)
+            {
+                this.DialogResult = false;
+            }
+            Close();
+        }
+
     }
 }
