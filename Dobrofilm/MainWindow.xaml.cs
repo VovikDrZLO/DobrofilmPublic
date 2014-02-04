@@ -18,7 +18,7 @@ namespace Dobrofilm
     {
         public MainWindow()
         {
-            InitializeComponent();            
+            InitializeComponent();             
             XMLConverter xMLConverter = new XMLConverter();
             if (xMLConverter.IsNeedConvert()) xMLConverter.MakeConversion();            
             FilmFilesList.ShowCryptFilms = false;
@@ -26,10 +26,10 @@ namespace Dobrofilm
             homeFolders.CheckHomeFolders();
             MainGridData.DataContext = new FilmFilesList();
             CategoryListBox.DataContext = new CategoryList();
+            ProfilesComboBox.DataContext = new XMLEdit();
             //XMLEdit xMLEdit = new XMLEdit();
             //xMLEdit.GetFilmFileFromXML(FilmFilesList.ShowCryptFilms);
-        }
-                
+        }               
 
         public static List<string> OpenedCryptedFiles { get; set; }
 
@@ -163,7 +163,7 @@ namespace Dobrofilm
             MainWindow mainWindow = sender as MainWindow;            
             double WinHeight = e.NewSize.Height;
             double WinWidth = e.NewSize.Width;
-            CategoryListBox.Height = WinHeight - 150;            
+            CategoryListBox.Height = WinHeight - 179;             
             MainGridData.Height = WinHeight - 150;
             MainGridData.Width = WinWidth - 240;
             MenuBar.Width = WinWidth;
