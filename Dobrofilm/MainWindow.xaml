@@ -425,6 +425,6 @@
             <Button Content="Exit App" Click="ExitApp_Click" Width="80"  Margin="0,5,0,5"/>
         </Menu>
         <ComboBox ItemsSource="{Binding Path=GetProfilesList}" x:Name="ProfilesComboBox" Canvas.Left="10" Canvas.Top="6" Width="193"
-            DisplayMemberPath="Name" SelectedValuePath="ProfileID"/>       
+            DisplayMemberPath="Name" SelectedValuePath="ProfileID" SelectionChanged="SelectChange" SelectedIndex="0"/>       
     </Canvas>
 </Window>

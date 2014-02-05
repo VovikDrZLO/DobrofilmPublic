@@ -41,6 +41,13 @@ namespace Dobrofilm
             IsOnline = false;
             DrawCategoryButtons(SelectedFilm);
             FilmRate.Value = SelectedFilm.Rate;
+            XMLEdit xMLEdit = new XMLEdit();
+            ProfileComboBox.DataContext = xMLEdit;
+            if (SelectedFilm.Profile == Guid.Empty) ProfileComboBox.SelectedIndex = 0;
+            else
+            {
+                ProfileComboBox.SelectedIndex = xMLEdit.GetIndexNumberOfProfile(xMLEdit.GetProfileByID(SelectedFilm.Profile));
+            }
             if (SelectedFilm.IsOnline)
             {
                 MainTabControl.Margin = new Thickness(1, 1, 1, 1);
@@ -411,6 +418,7 @@ namespace Dobrofilm
                 }
                 NewFilm.Categoris = CategoryIDsArray;
             }
+            if (ProfileComboBox.SelectedIndex > 0) NewFilm.Profile = (Guid)ProfileComboBox.SelectedValue;
             XMLEdit xMLEdit = new XMLEdit();
             xMLEdit.AddFilmToXML(NewFilm, false);
             //FilmFilesList filmFilesList = new FilmFilesList();
@@ -601,7 +609,7 @@ namespace Dobrofilm
             double WinWidth = e.NewSize.Width;
             MainTabControl.Height = WinHeight - 5;
             MainTabControl.Width = WinWidth - 5;
-            FilmName.Width = WinWidth - 240;
+            FilmName.Width = WinWidth - 420;
             CategoryGrid.Height = WinHeight - 235;  
             Canvas.SetTop(FilmItemStatusBar, WinHeight - 95);
             FilmItemStatusBar.Width = WinWidth - 27;
@@ -649,6 +657,7 @@ namespace Dobrofilm
             VolumeBar.Width = WinWidth - 840;
 
             Canvas.SetLeft(MoveToBtn, WinWidth - 210);
+            Canvas.SetLeft(ProfileComboBox, WinWidth - 390);
 
             Canvas.SetLeft(ChangePathBtn, WinWidth - 112);            
         }             

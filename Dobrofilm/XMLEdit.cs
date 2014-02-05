@@ -8,6 +8,7 @@ using System.Xml.Schema;
 using System.Xml.XPath;
 using System.Xml.Linq;
 using System.Collections;
+using System.Windows.Data;
 
 namespace Dobrofilm
 {
@@ -298,7 +299,7 @@ namespace Dobrofilm
         #endregion 
         
         #region Category
-        public IList<CategoryClass> GetCategoryListFromXML() //valid
+        public IList<CategoryClass> GetCategoryListFromXML(ProfileClass Profile) //valid
         {
             XDocument myXDocument = SettingsXMLDoc;
             IEnumerable<XElement> CategorisList = myXDocument.XPathSelectElements("//prefix:Dobrofilm/prefix:categoris/prefix:category", GetDefNameSpaceManager());
@@ -310,6 +311,10 @@ namespace Dobrofilm
             categoryClass = new CategoryClass();
             foreach (XElement Category in CategorisList)
             {
+                //if (Profile.ProfileID == Guid.Empty || Profile.ProfileID == (Guid)Category.Attribute("profile"))
+                //{
+
+                //}
                 categoryClass = new CategoryClass();
                 categoryClass.ID = (int)Category.Attribute("id");
                 categoryClass.Name = Category.Value;
@@ -317,7 +322,7 @@ namespace Dobrofilm
                 categoryClass.Icon = CategoryImgByteArray((string)Category.Attribute("image"));
                 CategoryList.Add(categoryClass);
             }
-            myXDocument = null;            
+            myXDocument = null;           
             return CategoryList;
         }
 
@@ -541,6 +546,17 @@ namespace Dobrofilm
 
         #region Profile
 
+        public int GetIndexNumberOfProfile(ProfileClass Profile)
+        {
+            int cnt = 0;
+            foreach (ProfileClass PrifileClassItem in GetProfilesList)
+            {
+                if (PrifileClassItem.ProfileID == Profile.ProfileID) return cnt;
+                cnt++ ;
+            }
+            return -1;
+        }
+
         public void AddProfileToXML(ProfileClass Profile)
         {
             if (Profile == null)
@@ -565,6 +581,15 @@ namespace Dobrofilm
             }
             ProfileX.Save(SettingsPath);
             ProfileX = null;            
+        }
+
+        public ProfileClass GetProfileByID(Guid ProfID)
+        {
+            var Profile =
+                    (from p in GetProfilesList
+                     where p.ProfileID == ProfID
+                     select p).Single();
+            return (ProfileClass)Profile;
         }
 
         public XElement CreateProfileXElement(ProfileClass ProfileItem)
@@ -624,6 +649,9 @@ namespace Dobrofilm
         public void DeleteProfile(ProfileClass Profile) // TODO Add check for linked films and categoris
         {
             if (Profile == null) return;
+            FilmFilesList filmFilesList = new FilmFilesList();
+            ListCollectionView FilmList = filmFilesList.GetFilmListByProfile(Profile);
+            if (FilmList.Count > 0) Utils.ShowWarningDialog("Linked films exists!!!");
             XDocument ProfileX = SettingsXMLDoc;
             var ProfileToDelete =
                     (from p in ProfileX.Descendants(ns + "profile")

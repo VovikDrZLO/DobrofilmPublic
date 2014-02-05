@@ -25,13 +25,14 @@ namespace Dobrofilm
         
         public ListCollectionView Category { get; private set; }
         public ListCollectionView Category_v1 { get; private set; }
+        public static ProfileClass CurrentProfile { get; set; }
 
         public int CurrentID { get; set; }
 
         public CategoryList()
         {            
             XMLEdit xMLEdit1 = new XMLEdit();
-            IList<CategoryClass> _categoris_2 = xMLEdit1.GetCategoryListFromXML();
+            IList<CategoryClass> _categoris_2 = xMLEdit1.GetCategoryListFromXML(CurrentProfile);
             Category = (ListCollectionView)CollectionViewSource.GetDefaultView(_categoris_2);
         }
 

@@ -525,5 +525,18 @@ namespace Dobrofilm
                 } 
             }
         }
+
+        private void SelectChange(object sender, SelectionChangedEventArgs e)
+        {
+            if (ProfilesComboBox.SelectedItem == null) return;
+
+            if (ProfilesComboBox.SelectedItem.GetType() == typeof(ProfileClass))
+            {
+                ProfileClass SelProfile = (ProfileClass)ProfilesComboBox.SelectedItem;
+                FilmFilesList filmFilesList = new FilmFilesList();
+                ListCollectionView FilteredSource = filmFilesList.GetFilmListByProfile(SelProfile);
+                MainGridData.ItemsSource = FilteredSource;
+            }            
+        }
     }
 }
