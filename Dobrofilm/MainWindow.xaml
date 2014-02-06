@@ -302,6 +302,8 @@
                 <GradientStop Color="#FFC7EECE" Offset="0.283"/>
             </LinearGradientBrush>
         </Canvas.Background>
+        <ComboBox ItemsSource="{Binding Path=GetProfilesList}" x:Name="ProfilesComboBox" Canvas.Left="10" Canvas.Top="6" Width="193"
+            DisplayMemberPath="Name" SelectedValuePath="ProfileID" SelectionChanged="SelectChange"/>
         <DataGrid x:Name="MainGridData" Canvas.Left="208" Canvas.Top="1" Width="581"
                    AutoGenerateColumns ="False" CanUserAddRows="False" ItemsSource="{Binding FilmFiles}"
                   MouseDoubleClick="FileBtn_DbClick" 
@@ -424,7 +426,6 @@
             <Button Content="Link" Click="LinkBtn_Click" Width="80"  Margin="0,5,0,5"/>
             <Button Content="Exit App" Click="ExitApp_Click" Width="80"  Margin="0,5,0,5"/>
         </Menu>
-        <ComboBox ItemsSource="{Binding Path=GetProfilesList}" x:Name="ProfilesComboBox" Canvas.Left="10" Canvas.Top="6" Width="193"
-            DisplayMemberPath="Name" SelectedValuePath="ProfileID" SelectionChanged="SelectChange" SelectedIndex="0"/>       
+        
     </Canvas>
 </Window>

@@ -14,8 +14,7 @@ using System.Xml.Linq;
 namespace Dobrofilm
 {
     public class FilmFilesList
-    {
-
+    {        
         public ListCollectionView FilmFiles_v1
         {
             get
@@ -78,7 +77,7 @@ namespace Dobrofilm
             get
             {
                 XMLEdit xMLEdit = new XMLEdit();
-                IList<FilmFile> _films = xMLEdit.GetFilmFileFromXML(ShowCryptFilms, CurrProfile);
+                IList<FilmFile> _films = xMLEdit.GetFilmFileFromXML(ShowCryptFilms, MainWindow.CurrentProfile, false);
                 var FilmFilesList = (ListCollectionView)CollectionViewSource.GetDefaultView(_films);
                 return FilmFilesList;
             }
@@ -182,7 +181,7 @@ namespace Dobrofilm
                         Categoris = CategorisStartArray,
                         IsCrypted = (FilmExt.EndsWith("CrypDobFilm")),
                         IsOnline = false,
-                        Profile = CurrProfile.ProfileID
+                        Profile = MainWindow.CurrentProfile.ProfileID
                     }, DialogResult);
                     //AddSaveFilmItemToXML(new FilmFile
                     //{
@@ -328,7 +327,7 @@ namespace Dobrofilm
         public AndOrEnum ChosenLogicType { get; set; }
         public int[] CategorisIDArray { get; set; }
         public Guid SFilmID { get; set; }
-        public ProfileClass CurrProfile { get; set; }
+        
 
         public bool Contains(object de)
         {
@@ -356,7 +355,7 @@ namespace Dobrofilm
         {
             if (Profile == null) return FilmFiles;
             ListCollectionView FilteredFileList = FilmFiles;
-            CurrProfile = Profile;
+            MainWindow.CurrentProfile = Profile;
             FilteredFileList.Filter = new Predicate<object>(CurProfile);
             return FilteredFileList;
         }
@@ -364,7 +363,7 @@ namespace Dobrofilm
         public bool CurProfile(object de)
         {
             FilmFile Film = de as FilmFile;
-            if (Film.Profile == CurrProfile.ProfileID)
+            if (Film.Profile == MainWindow.CurrentProfile.ProfileID)
             {
                 return true;
             }            

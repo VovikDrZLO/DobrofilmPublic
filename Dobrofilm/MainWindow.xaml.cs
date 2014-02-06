@@ -24,14 +24,16 @@ namespace Dobrofilm
             FilmFilesList.ShowCryptFilms = false;
             HomeFolders homeFolders = new HomeFolders();
             homeFolders.CheckHomeFolders();
-            MainGridData.DataContext = new FilmFilesList();
-            CategoryListBox.DataContext = new CategoryList();
             ProfilesComboBox.DataContext = new XMLEdit();
+            ProfilesComboBox.SelectedIndex = 0;
+            MainGridData.DataContext = new FilmFilesList();
+            CategoryListBox.DataContext = new CategoryList();            
             //XMLEdit xMLEdit = new XMLEdit();
             //xMLEdit.GetFilmFileFromXML(FilmFilesList.ShowCryptFilms);
         }               
 
         public static List<string> OpenedCryptedFiles { get; set; }
+        public static ProfileClass CurrentProfile { get; set; }
 
         private void AddFilesClick(object sender, RoutedEventArgs e)
         {
@@ -45,8 +47,8 @@ namespace Dobrofilm
         {            
             CategoryItem categoryWindow = new CategoryItem();
             categoryWindow.ShowDialog();
-            CategoryListBox.DataContext = new CategoryList(); 
-            CategoryListBox.Items.Refresh();
+            CategoryList categoryList = new CategoryList();
+            CategoryListBox.ItemsSource = categoryList.Category;            
         }
 
         private void ListBox1_MouseDoubleClick(object sender, RoutedEventArgs e)        {
@@ -232,11 +234,13 @@ namespace Dobrofilm
         {
             SettingsWindow settingsWindow = new SettingsWindow();
             settingsWindow.ShowDialog();
-            CategoryList categoryList = new CategoryList();
-            FilmFilesList filmFilesList = new FilmFilesList();
+            CategoryList categoryList = new CategoryList();            
             CategoryListBox.ItemsSource = categoryList.Category;
             UpdateMainGridData();
-            //MainGridData.ItemsSource = filmFilesList.FilmFiles;
+            XMLEdit xMLEdit = new XMLEdit();
+            int SelIndex = ProfilesComboBox.SelectedIndex;
+            ProfilesComboBox.ItemsSource = xMLEdit.GetProfilesList;
+            ProfilesComboBox.SelectedIndex = SelIndex;            
         }
 
         private void AddBtn_Click(object sender, RoutedEventArgs e)
@@ -533,9 +537,13 @@ namespace Dobrofilm
             if (ProfilesComboBox.SelectedItem.GetType() == typeof(ProfileClass))
             {
                 ProfileClass SelProfile = (ProfileClass)ProfilesComboBox.SelectedItem;
-                FilmFilesList filmFilesList = new FilmFilesList();
-                ListCollectionView FilteredSource = filmFilesList.GetFilmListByProfile(SelProfile);
-                MainGridData.ItemsSource = FilteredSource;
+                CurrentProfile = SelProfile;
+                UpdateMainGridData();
+                CategoryList categoryList = new CategoryList();
+                CategoryListBox.ItemsSource = categoryList.Category;
+                //FilmFilesList filmFilesList = new FilmFilesList();
+                //ListCollectionView FilteredSource = filmFilesList.GetFilmListByProfile(SelProfile);
+                //MainGridData.ItemsSource = FilteredSource;
             }            
         }
     }

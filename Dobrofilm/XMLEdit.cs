@@ -125,17 +125,17 @@ namespace Dobrofilm
         } 
 
         #region Film
-        public IList<FilmFile> GetFilmFileFromXML(bool ShowCrypted, ProfileClass Profile) 
+        public IList<FilmFile> GetFilmFileFromXML(bool ShowCrypted, ProfileClass Profile, bool DisableFilters) 
         {
+            if (Profile == null) Profile = new ProfileClass { ProfileID = Guid.Empty };
             XDocument myXDocument = SettingsXMLDoc;
             XmlNamespaceManager namespaceManager = GetDefNameSpaceManager();
             IEnumerable<XElement> FilesList = myXDocument.XPathSelectElements("//prefix:Dobrofilm/prefix:files/prefix:file", namespaceManager);
-            IList<FilmFile> FilmFileList = new List<FilmFile>();
-            FilmFilesList filmFilesList = new FilmFilesList();
+            IList<FilmFile> FilmFileList = new List<FilmFile>();            
             foreach (XElement file in FilesList)
             {
                 FilmFile FileClass = ConvertXElementToFilmFile(file);
-                if (ShowCrypted || !FileClass.IsCrypted) FilmFileList.Add(FileClass); // &&(Profile.ProfileID == Guid.Empty)|| FileClass.Profile == Profile.ProfileID
+                if (((ShowCrypted || !FileClass.IsCrypted) && (FileClass.Profile == Profile.ProfileID)) || DisableFilters) FilmFileList.Add(FileClass); 
             }            
             myXDocument = null;
             return FilmFileList;
@@ -301,6 +301,7 @@ namespace Dobrofilm
         #region Category
         public IList<CategoryClass> GetCategoryListFromXML(ProfileClass Profile) //valid
         {
+            if (Profile == null) Profile = new ProfileClass { ProfileID = Guid.Empty };
             XDocument myXDocument = SettingsXMLDoc;
             IEnumerable<XElement> CategorisList = myXDocument.XPathSelectElements("//prefix:Dobrofilm/prefix:categoris/prefix:category", GetDefNameSpaceManager());
             IList<CategoryClass> CategoryList = new List<CategoryClass>();
@@ -311,16 +312,17 @@ namespace Dobrofilm
             categoryClass = new CategoryClass();
             foreach (XElement Category in CategorisList)
             {
-                //if (Profile.ProfileID == Guid.Empty || Profile.ProfileID == (Guid)Category.Attribute("profile"))
-                //{
-
-                //}
-                categoryClass = new CategoryClass();
-                categoryClass.ID = (int)Category.Attribute("id");
-                categoryClass.Name = Category.Value;
-                categoryClass.Hint = (string)Category.Attribute("hint");
-                categoryClass.Icon = CategoryImgByteArray((string)Category.Attribute("image"));
-                CategoryList.Add(categoryClass);
+                
+                    categoryClass = new CategoryClass();
+                    categoryClass.ID = (int)Category.Attribute("id");
+                    categoryClass.Name = Category.Value;
+                    categoryClass.Profile = ((string)Category.Attribute("profile") == null) ? Guid.Empty : new Guid((string)Category.Attribute("profile"));
+                    categoryClass.Hint = (string)Category.Attribute("hint");
+                    categoryClass.Icon = CategoryImgByteArray((string)Category.Attribute("image"));
+                    if (Profile.ProfileID == categoryClass.Profile)
+                    {
+                       CategoryList.Add(categoryClass);
+                    }
             }
             myXDocument = null;           
             return CategoryList;
@@ -374,7 +376,7 @@ namespace Dobrofilm
 
         public XElement GetCategoryXElement(CategoryClass CategoryItem) //valid
         {
-            string ID;
+            string ID;            
             if (CategoryItem.ID == 0)
             {
                 ID = Convert.ToString(CurrentID);
@@ -386,7 +388,8 @@ namespace Dobrofilm
             XElement CategoryElement = new XElement(ns + "category", CategoryItem.Name,
                 new XAttribute("id", ID),
                 new XAttribute("hint", CategoryItem.Hint),
-                new XAttribute("image", ByteArrayeToBase64(CategoryItem.Icon))
+                new XAttribute("image", ByteArrayeToBase64(CategoryItem.Icon)),
+                   (CategoryItem.Profile != Guid.Empty) ? new XAttribute("profile", CategoryItem.Profile) : null 
             );
             //if (CategoryItem.ID == 0) Convert.ToString(CurrentID); else Convert.ToString(CategoryItem.ID);
             return CategoryElement;
@@ -432,6 +435,19 @@ namespace Dobrofilm
             XElement CategoryNode = CategoryX.XPathSelectElement("//prefix:Dobrofilm/prefix:categoris", GetDefNameSpaceManager());
             CategoryNode.SetAttributeValue("nextid", Convert.ToString(NewID));            
             CategoryX.Save(SettingsPath);
+        }
+
+        public XDocument CreateNoCategoryRecordForNewProfile(ProfileClass Profile, XDocument CategoryX)
+        {            
+            CategoryClass Category = new CategoryClass{Name = "No Category", Profile = Profile.ProfileID, ID = 0 };                        
+            XElement CategorisNode = CategoryX.XPathSelectElement("//prefix:Dobrofilm/prefix:categoris", GetDefNameSpaceManager());
+            
+            XElement CategoryXElements = new XElement(ns + "category", Category.Name,
+                                        new XAttribute("id", Category.ID),                                                                                
+                                        new XAttribute("profile", Category.Profile) );
+            CategorisNode.Add(CategoryXElements);            
+            CategoryX.Save(SettingsPath);
+            return CategoryX;                        
         }
 
         #endregion
@@ -569,6 +585,7 @@ namespace Dobrofilm
             if (Profile.ProfileID == Guid.Empty)
             {
                 ProfilesNode.Add(CreateProfileXElement(Profile));
+                ProfileX = CreateNoCategoryRecordForNewProfile(Profile, ProfileX);
             }
             else
             {
