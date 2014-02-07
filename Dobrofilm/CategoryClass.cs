@@ -273,5 +273,23 @@ namespace Dobrofilm
             }
             return grayBitmap;
         }
+
+        public ListCollectionView GetCategorisListByProfile(ProfileClass Profile)
+        {
+            if (Profile == null) return Category;
+            ListCollectionView FilteredCategotyList = Category;
+            MainWindow.CurrentProfile = Profile;
+            FilteredCategotyList.Filter = new Predicate<object>(CurProfile);
+            return FilteredCategotyList;
+        }
+        public bool CurProfile(object de)
+        {
+            CategoryClass Categoty = de as CategoryClass;
+            if (Categoty.Profile == MainWindow.CurrentProfile.ProfileID)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

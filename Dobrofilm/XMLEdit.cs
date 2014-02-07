@@ -671,9 +671,7 @@ namespace Dobrofilm
         public void DeleteProfile(ProfileClass Profile) // TODO Add check for linked films and categoris
         {
             if (Profile == null) return;
-            FilmFilesList filmFilesList = new FilmFilesList();
-            ListCollectionView FilmList = filmFilesList.GetFilmListByProfile(Profile);
-            if (FilmList.Count > 0) Utils.ShowWarningDialog("Linked films exists!!!");
+            if (ProfileIsBusy(Profile)) return;
             XDocument ProfileX = SettingsXMLDoc;
             var ProfileToDelete =
                     (from p in ProfileX.Descendants(ns + "profile")
@@ -684,6 +682,19 @@ namespace Dobrofilm
             ProfileX = null;
         }
 
+        public bool ProfileIsBusy(ProfileClass Profile)
+        {
+            FilmFilesList filmFilesList = new FilmFilesList();
+            ListCollectionView FilmList = filmFilesList.GetFilmListByProfile(Profile);
+            CategoryList categoryList = new CategoryList();
+            ListCollectionView CaterorisList = categoryList.GetCategorisListByProfile(Profile);
+            if (FilmList.Count > 0 || CaterorisList.Count > 0)
+            {
+                Utils.ShowWarningDialog("Linked films or categoris exists!!!");
+                return true;
+            }
+            return false;
+        }
 
         #endregion
 
