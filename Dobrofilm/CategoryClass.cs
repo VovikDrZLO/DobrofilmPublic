@@ -17,7 +17,8 @@ namespace Dobrofilm
         public string Name { get; set; }
         public int ID { get; set; }
         public byte[] Icon { get; set; }
-        public string Hint { get; set; }        
+        public string Hint { get; set; }
+        public Guid Profile { get; set; }
     }
 
     public class CategoryList 
@@ -25,13 +26,14 @@ namespace Dobrofilm
         
         public ListCollectionView Category { get; private set; }
         public ListCollectionView Category_v1 { get; private set; }
+        
 
         public int CurrentID { get; set; }
 
         public CategoryList()
         {            
             XMLEdit xMLEdit1 = new XMLEdit();
-            IList<CategoryClass> _categoris_2 = xMLEdit1.GetCategoryListFromXML();
+            IList<CategoryClass> _categoris_2 = xMLEdit1.GetCategoryListFromXML(MainWindow.CurrentProfile);
             Category = (ListCollectionView)CollectionViewSource.GetDefaultView(_categoris_2);
         }
 
@@ -58,8 +60,7 @@ namespace Dobrofilm
                         else
                         {
                             categoryClass.ID = int.Parse(reader.GetAttribute("id"));
-                            categoryClass.Hint = reader.GetAttribute("hint");
-                            XMLEdit xMLEdit = new XMLEdit();
+                            categoryClass.Hint = reader.GetAttribute("hint");                            
                             categoryClass.Icon = CategoryImgByteArray(reader.GetAttribute("image"));
                         }
                         break;
@@ -271,6 +272,24 @@ namespace Dobrofilm
                 }
             }
             return grayBitmap;
+        }
+
+        public ListCollectionView GetCategorisListByProfile(ProfileClass Profile)
+        {
+            if (Profile == null) return Category;
+            ListCollectionView FilteredCategotyList = Category;
+            MainWindow.CurrentProfile = Profile;
+            FilteredCategotyList.Filter = new Predicate<object>(CurProfile);
+            return FilteredCategotyList;
+        }
+        public bool CurProfile(object de)
+        {
+            CategoryClass Categoty = de as CategoryClass;
+            if (Categoty.Profile == MainWindow.CurrentProfile.ProfileID)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

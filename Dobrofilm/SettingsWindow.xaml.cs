@@ -35,7 +35,8 @@ namespace Dobrofilm
             //FilmMaskTB.Text = filmFilesList.GetFilmMask();
             //FilmNextIDTB.Text = filmFilesList.GetFileMaskNextID();
             HomeFolders homeFolders = new HomeFolders();
-            HomeFoldersDataGrid.ItemsSource = homeFolders.HomeFoldersList;          
+            HomeFoldersDataGrid.ItemsSource = homeFolders.HomeFoldersList;                        
+            ProfileDataGrid.ItemsSource = xMLEdit.GetProfilesList;
 
         }
 
@@ -228,5 +229,39 @@ namespace Dobrofilm
             HomeFoldersDataGrid.ItemsSource = homeFolders.HomeFoldersList;        
         }
 
+        private void AddProfile_Click(object sender, RoutedEventArgs e)
+        {
+            ProfilesList profilesList = new ProfilesList();
+            profilesList.ShowNewProfileWindow();
+            XMLEdit xMLEdit = new XMLEdit();
+            ProfileDataGrid.ItemsSource = xMLEdit.GetProfilesList;
+        }
+
+        private void DelProfile_Click(object sender, RoutedEventArgs e)
+        {
+            if (ProfileDataGrid.SelectedItem != null)
+            {
+                ProfileClass Profile = (ProfileClass)ProfileDataGrid.SelectedItem;
+                if (Profile == null) return;
+                XMLEdit xMLEdit = new XMLEdit();
+                xMLEdit.DeleteProfile(Profile);
+                ProfileDataGrid.ItemsSource = xMLEdit.GetProfilesList;
+            }
+        }
+
+        private void ProfileBtn_DbClick(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is DataGrid)
+            {
+                DataGrid ProfilesDataGrid = (DataGrid)sender;                
+                ProfileClass Profile = (ProfileClass)ProfilesDataGrid.SelectedItem;
+               
+                ProfilesList profilesList = new ProfilesList();
+                profilesList.ShowNewProfileWindow(Profile);
+                XMLEdit xMLEdit = new XMLEdit();
+                ProfileDataGrid.ItemsSource = xMLEdit.GetProfilesList;
+            }
+            
+        }
     }
 }

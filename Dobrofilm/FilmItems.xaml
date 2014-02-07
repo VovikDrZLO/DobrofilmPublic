@@ -42,8 +42,8 @@
 
                     </Border>
                     <Slider x:Name="FilmRate" Minimum="0" Maximum="12" Canvas.Left="196" Canvas.Top="431" Height="25" Width="360" Orientation="Horizontal" Style="{DynamicResource MySlider}"/>
-                    <TextBox x:Name="FilmName" Height="23" Canvas.Left="10" TextWrapping="Wrap" Text="TextBox" Canvas.Top="10" Width="675" GotFocus="FilmName_GotFocus" GotKeyboardFocus="FilmName_GotFocus" GotMouseCapture="FilmName_GotFocus"/>
-                    <Button x:Name="ChangePathBtn" Content="ChangePath" Canvas.Left="803" Canvas.Top="11" Width="75" Click="ChangePathBtn_Click"/>
+                    <TextBox x:Name="FilmName" Height="23" Canvas.Left="10" TextWrapping="Wrap" Text="TextBox" Canvas.Top="10" Width="517" GotFocus="FilmName_GotFocus" GotKeyboardFocus="FilmName_GotFocus" GotMouseCapture="FilmName_GotFocus"/>
+                    <Button x:Name="ChangePathBtn" Content="ChangePath" Canvas.Left="800" Canvas.Top="11" Width="75" Click="ChangePathBtn_Click"/>
                     <Button x:Name="MoveToBtn" Content="Move To"  Canvas.Left="705" Canvas.Top="11" Width="75" Click="MoveToBtn_Click"/>
                     <Grid x:Name="CategoryGrid" Height="325" Canvas.Left="10" Canvas.Top="48" Width="325">
                         <!--Grid.RowDefinitions>
@@ -74,6 +74,8 @@
                     <StatusBar x:Name="FilmItemStatusBar" Height="25" Canvas.Top="464" Width="888"/>
                     <Button x:Name="CryptFile" Height="22" Width="75" Canvas.Left="10" Canvas.Top="434" Content="CryptFile" Click="CryptFile_Click"/>
                     <Button x:Name="Complete_Decrypt" Content="Complete Decrypt" Canvas.Left="90" Canvas.Top="434" Width="101" Click="CompleteDecrypt_Click"/>
+                    <ComboBox x:Name="ProfileComboBox" Canvas.Left="532" Canvas.Top="10" Width="168" ItemsSource="{Binding Path=GetProfilesList}"
+                              DisplayMemberPath="Name" SelectedValuePath="ProfileID"/>                    
                 </Canvas>
             </TabItem>
             <TabItem Header="Links" x:Name="Links">

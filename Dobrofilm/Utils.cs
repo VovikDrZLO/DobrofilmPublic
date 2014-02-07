@@ -69,12 +69,16 @@ namespace Dobrofilm
              Warning warning = new Warning(Message, "", MessageType.Question);
              warning.ShowDialog();
              bool Result = (bool)warning.DialogResult;
-             return Result;
-             //string messageBoxText = Message;
-             //string caption = "Question";
-             //MessageBoxButton button = MessageBoxButton.YesNo;
-             //MessageBoxImage icon = MessageBoxImage.Warning;
-             //return (MessageBox.Show(messageBoxText, caption, button, icon) == MessageBoxResult.Yes);             
+             return Result;                       
+         }
+
+         static public bool ShowSimpleYesNoDialog(string Message)
+         {
+             string messageBoxText = Message;
+             string caption = "Question";
+             MessageBoxButton button = MessageBoxButton.YesNo;
+             MessageBoxImage icon = MessageBoxImage.Warning;
+             return (MessageBox.Show(messageBoxText, caption, button, icon) == MessageBoxResult.Yes);             
          }
 
          static public string GhangeFileNameInPath(string FilePath, string NewName)

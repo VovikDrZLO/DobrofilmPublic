@@ -8,6 +8,7 @@ using System.Xml.Schema;
 using System.Xml.XPath;
 using System.Xml.Linq;
 using System.Collections;
+using System.Windows.Data;
 
 namespace Dobrofilm
 {
@@ -99,8 +100,15 @@ namespace Dobrofilm
                     writer.WriteEndAttribute();                    
                     writer.WriteAttributeString("nextnumber", "1");                    
                     writer.WriteEndElement();
-                    writer.WriteStartElement("categoris"); // <categoris nextid="1">                    
-                    writer.WriteAttributeString("nextid", "1");                    
+                    writer.WriteStartElement("categoris"); // <categoris nextid="1">
+                    writer.WriteAttributeString("nextid", "1");
+                    //<category id="0">No Category</category>
+                    writer.WriteStartElement("category");
+                    writer.WriteAttributeString("id", "0");
+                    writer.WriteValue("No Category");
+                    writer.WriteEndElement();
+                    writer.WriteEndElement();
+                    writer.WriteStartElement("profiles");                    
                     writer.WriteEndElement();
                     writer.WriteEndElement();
                     writer.WriteEndDocument();
@@ -122,17 +130,17 @@ namespace Dobrofilm
         } 
 
         #region Film
-        public IList<FilmFile> GetFilmFileFromXML(bool ShowCrypted) //valid
+        public IList<FilmFile> GetFilmFileFromXML(bool ShowCrypted, ProfileClass Profile, bool DisableFilters) 
         {
+            if (Profile == null) Profile = new ProfileClass { ProfileID = Guid.Empty };
             XDocument myXDocument = SettingsXMLDoc;
             XmlNamespaceManager namespaceManager = GetDefNameSpaceManager();
             IEnumerable<XElement> FilesList = myXDocument.XPathSelectElements("//prefix:Dobrofilm/prefix:files/prefix:file", namespaceManager);
-            IList<FilmFile> FilmFileList = new List<FilmFile>();
-            FilmFilesList filmFilesList = new FilmFilesList();
+            IList<FilmFile> FilmFileList = new List<FilmFile>();            
             foreach (XElement file in FilesList)
             {
                 FilmFile FileClass = ConvertXElementToFilmFile(file);
-                if (ShowCrypted || !FileClass.IsCrypted) FilmFileList.Add(FileClass);
+                if (((ShowCrypted || !FileClass.IsCrypted) && (FileClass.Profile == Profile.ProfileID)) || DisableFilters) FilmFileList.Add(FileClass); 
             }            
             myXDocument = null;
             return FilmFileList;
@@ -149,6 +157,8 @@ namespace Dobrofilm
             FileClass.Rate = (int)file.Attribute("rate");
             FileClass.IsCrypted = ((string)file.Attribute("isCrypted") == "1");
             FileClass.IsOnline = ((string)file.Attribute("isOnline") == "1");
+            
+            FileClass.Profile = ((string)file.Attribute("profile") == null)? Guid.Empty : new Guid((string)file.Attribute("profile"));
             FileClass.Categoris = filmFilesList.CategorisArray((string)file.Attribute("categoris"));
             FileClass.filmsScr = file.XPathSelectElement(@"./prefix:filmsScr", GetDefNameSpaceManager());
             FileClass.links = file.XPathSelectElement(@"./prefix:links", GetDefNameSpaceManager());
@@ -229,6 +239,7 @@ namespace Dobrofilm
                 new XAttribute("categoris", GetStringFromIntArray(FilmItem.Categoris)),
                 new XAttribute("isCrypted", Convert.ToInt32(FilmItem.IsCrypted)),
                 new XAttribute("isOnline", Convert.ToInt32(FilmItem.IsOnline)),
+                new XAttribute("profile", FilmItem.Profile),
                 (FilmItem.filmsScr == null) ? new XElement(ns + "filmsScr", new XAttribute("nextid", "1")) : FilmItem.filmsScr,
                 (FilmItem.links == null) ? new XElement(ns + "links") : FilmItem.links
             );
@@ -293,8 +304,9 @@ namespace Dobrofilm
         #endregion 
         
         #region Category
-        public IList<CategoryClass> GetCategoryListFromXML() //valid
+        public IList<CategoryClass> GetCategoryListFromXML(ProfileClass Profile) //valid
         {
+            if (Profile == null) Profile = new ProfileClass { ProfileID = Guid.Empty };
             XDocument myXDocument = SettingsXMLDoc;
             IEnumerable<XElement> CategorisList = myXDocument.XPathSelectElements("//prefix:Dobrofilm/prefix:categoris/prefix:category", GetDefNameSpaceManager());
             IList<CategoryClass> CategoryList = new List<CategoryClass>();
@@ -305,14 +317,19 @@ namespace Dobrofilm
             categoryClass = new CategoryClass();
             foreach (XElement Category in CategorisList)
             {
-                categoryClass = new CategoryClass();
-                categoryClass.ID = (int)Category.Attribute("id");
-                categoryClass.Name = Category.Value;
-                categoryClass.Hint = (string)Category.Attribute("hint");
-                categoryClass.Icon = CategoryImgByteArray((string)Category.Attribute("image"));
-                CategoryList.Add(categoryClass);
+                
+                    categoryClass = new CategoryClass();
+                    categoryClass.ID = (int)Category.Attribute("id");
+                    categoryClass.Name = Category.Value;
+                    categoryClass.Profile = ((string)Category.Attribute("profile") == null) ? Guid.Empty : new Guid((string)Category.Attribute("profile"));
+                    categoryClass.Hint = (string)Category.Attribute("hint");
+                    categoryClass.Icon = CategoryImgByteArray((string)Category.Attribute("image"));
+                    if (Profile.ProfileID == categoryClass.Profile)
+                    {
+                       CategoryList.Add(categoryClass);
+                    }
             }
-            myXDocument = null;            
+            myXDocument = null;           
             return CategoryList;
         }
 
@@ -364,7 +381,7 @@ namespace Dobrofilm
 
         public XElement GetCategoryXElement(CategoryClass CategoryItem) //valid
         {
-            string ID;
+            string ID;            
             if (CategoryItem.ID == 0)
             {
                 ID = Convert.ToString(CurrentID);
@@ -376,7 +393,8 @@ namespace Dobrofilm
             XElement CategoryElement = new XElement(ns + "category", CategoryItem.Name,
                 new XAttribute("id", ID),
                 new XAttribute("hint", CategoryItem.Hint),
-                new XAttribute("image", ByteArrayeToBase64(CategoryItem.Icon))
+                new XAttribute("image", ByteArrayeToBase64(CategoryItem.Icon)),
+                   (CategoryItem.Profile != Guid.Empty) ? new XAttribute("profile", CategoryItem.Profile) : null 
             );
             //if (CategoryItem.ID == 0) Convert.ToString(CurrentID); else Convert.ToString(CategoryItem.ID);
             return CategoryElement;
@@ -422,6 +440,19 @@ namespace Dobrofilm
             XElement CategoryNode = CategoryX.XPathSelectElement("//prefix:Dobrofilm/prefix:categoris", GetDefNameSpaceManager());
             CategoryNode.SetAttributeValue("nextid", Convert.ToString(NewID));            
             CategoryX.Save(SettingsPath);
+        }
+
+        public XDocument CreateNoCategoryRecordForNewProfile(ProfileClass Profile, XDocument CategoryX)
+        {            
+            CategoryClass Category = new CategoryClass{Name = "No Category", Profile = Profile.ProfileID, ID = 0 };                        
+            XElement CategorisNode = CategoryX.XPathSelectElement("//prefix:Dobrofilm/prefix:categoris", GetDefNameSpaceManager());
+            
+            XElement CategoryXElements = new XElement(ns + "category", Category.Name,
+                                        new XAttribute("id", Category.ID),                                                                                
+                                        new XAttribute("profile", Category.Profile) );
+            CategorisNode.Add(CategoryXElements);            
+            CategoryX.Save(SettingsPath);
+            return CategoryX;                        
         }
 
         #endregion
@@ -493,6 +524,7 @@ namespace Dobrofilm
             }            
             ScreenShotX.Save(SettingsPath);
         }
+
         #endregion
 
         #region Links
@@ -532,8 +564,139 @@ namespace Dobrofilm
         }
 
         #endregion
-        
 
+        #region Profile
+
+        public int GetIndexNumberOfProfile(ProfileClass Profile)
+        {
+            int cnt = 0;
+            foreach (ProfileClass PrifileClassItem in GetProfilesList)
+            {
+                if (PrifileClassItem.ProfileID == Profile.ProfileID) return cnt;
+                cnt++ ;
+            }
+            return -1;
+        }
+
+        public void AddProfileToXML(ProfileClass Profile)
+        {
+            if (Profile == null)
+            {
+                Utils.ShowWarningDialog("Saving Error");
+                return;
+            }
+            XDocument ProfileX = SettingsXMLDoc;
+            XElement ProfilesNode = ProfileX.XPathSelectElement("//prefix:Dobrofilm/prefix:profiles", GetDefNameSpaceManager());                                    
+            if (Profile.ProfileID == Guid.Empty)
+            {
+                ProfilesNode.Add(CreateProfileXElement(Profile));
+                ProfileX = CreateNoCategoryRecordForNewProfile(Profile, ProfileX);
+            }
+            else
+            {
+                var ProfileToChange =
+                    (from p in ProfileX.Descendants(ns + "profile")
+                     where new Guid(p.Attribute("GUID").Value) == Profile.ProfileID
+                     select p).Single();
+                ProfileToChange.ReplaceWith(CreateProfileXElement(Profile));
+
+            }
+            ProfileX.Save(SettingsPath);
+            ProfileX = null;            
+        }
+
+        public ProfileClass GetProfileByID(Guid ProfID)
+        {
+            var Profile =
+                    (from p in GetProfilesList
+                     where p.ProfileID == ProfID
+                     select p).Single();
+            return (ProfileClass)Profile;
+        }
+
+        public XElement CreateProfileXElement(ProfileClass ProfileItem)
+        {
+            if (ProfileItem.ProfileID == Guid.Empty)
+            {
+                ProfileItem.ProfileID = Guid.NewGuid();
+            }
+            XElement ProfileElement = new XElement(ns + "profile",
+                new XAttribute("GUID", ProfileItem.ProfileID),
+                new XAttribute("name", ProfileItem.Name)
+            );            
+            return ProfileElement;
+        }
+
+        //public IList<ProfileClass> GetProfilesList()
+        //{
+        //    XDocument ProfileX = SettingsXMLDoc;
+        //    IEnumerable<XElement> ProfilesList = ProfileX.XPathSelectElements("//prefix:Dobrofilm/prefix:profiles/prefix:profile", GetDefNameSpaceManager());
+        //    IList<ProfileClass> ProfileList = new List<ProfileClass>();
+        //    ProfileClass profileClass = new ProfileClass();
+        //    profileClass.Name = "Default";
+        //    ProfileList.Add(profileClass);
+        //    foreach (XElement Profile in ProfilesList)
+        //    {
+        //        profileClass = new ProfileClass();
+        //        profileClass.ProfileID = new Guid(Profile.Attribute("GUID").Value);
+        //        profileClass.Name = Profile.Attribute("name").Value;
+        //        ProfileList.Add(profileClass);
+        //    }
+        //    ProfileX = null;
+        //    return ProfileList;            
+        //}
+
+        public IList<ProfileClass> GetProfilesList
+        {
+            get
+            {
+                XDocument ProfileX = SettingsXMLDoc;
+                IEnumerable<XElement> ProfilesList = ProfileX.XPathSelectElements("//prefix:Dobrofilm/prefix:profiles/prefix:profile", GetDefNameSpaceManager());
+                IList<ProfileClass> ProfileList = new List<ProfileClass>();
+                ProfileClass profileClass = new ProfileClass();
+                profileClass.Name = "Default";
+                ProfileList.Add(profileClass);
+                foreach (XElement Profile in ProfilesList)
+                {
+                    profileClass = new ProfileClass();
+                    profileClass.ProfileID = new Guid(Profile.Attribute("GUID").Value);
+                    profileClass.Name = Profile.Attribute("name").Value;
+                    ProfileList.Add(profileClass);
+                }
+                ProfileX = null;
+                return ProfileList;
+            }
+        }
+
+        public void DeleteProfile(ProfileClass Profile) // TODO Add check for linked films and categoris
+        {
+            if (Profile == null) return;
+            if (ProfileIsBusy(Profile)) return;
+            XDocument ProfileX = SettingsXMLDoc;
+            var ProfileToDelete =
+                    (from p in ProfileX.Descendants(ns + "profile")
+                     where new Guid(p.Attribute("GUID").Value) == Profile.ProfileID
+                     select p).Single();
+            ProfileToDelete.Remove();
+            ProfileX.Save(SettingsPath);
+            ProfileX = null;
+        }
+
+        public bool ProfileIsBusy(ProfileClass Profile)
+        {
+            FilmFilesList filmFilesList = new FilmFilesList();
+            ListCollectionView FilmList = filmFilesList.GetFilmListByProfile(Profile);
+            CategoryList categoryList = new CategoryList();
+            ListCollectionView CaterorisList = categoryList.GetCategorisListByProfile(Profile);
+            if (FilmList.Count > 0 || CaterorisList.Count > 0)
+            {
+                Utils.ShowWarningDialog("Linked films or categoris exists!!!");
+                return true;
+            }
+            return false;
+        }
+
+        #endregion
 
     }
 }

@@ -18,20 +18,22 @@ namespace Dobrofilm
     {
         public MainWindow()
         {
-            InitializeComponent();            
+            InitializeComponent();             
             XMLConverter xMLConverter = new XMLConverter();
             if (xMLConverter.IsNeedConvert()) xMLConverter.MakeConversion();            
             FilmFilesList.ShowCryptFilms = false;
             HomeFolders homeFolders = new HomeFolders();
             homeFolders.CheckHomeFolders();
+            ProfilesComboBox.DataContext = new XMLEdit();
+            ProfilesComboBox.SelectedIndex = 0;
             MainGridData.DataContext = new FilmFilesList();
-            CategoryListBox.DataContext = new CategoryList();
+            CategoryListBox.DataContext = new CategoryList();            
             //XMLEdit xMLEdit = new XMLEdit();
             //xMLEdit.GetFilmFileFromXML(FilmFilesList.ShowCryptFilms);
-        }
-                
+        }               
 
         public static List<string> OpenedCryptedFiles { get; set; }
+        public static ProfileClass CurrentProfile { get; set; }
 
         private void AddFilesClick(object sender, RoutedEventArgs e)
         {
@@ -45,8 +47,8 @@ namespace Dobrofilm
         {            
             CategoryItem categoryWindow = new CategoryItem();
             categoryWindow.ShowDialog();
-            CategoryListBox.DataContext = new CategoryList(); 
-            CategoryListBox.Items.Refresh();
+            CategoryList categoryList = new CategoryList();
+            CategoryListBox.ItemsSource = categoryList.Category;            
         }
 
         private void ListBox1_MouseDoubleClick(object sender, RoutedEventArgs e)        {
@@ -163,7 +165,7 @@ namespace Dobrofilm
             MainWindow mainWindow = sender as MainWindow;            
             double WinHeight = e.NewSize.Height;
             double WinWidth = e.NewSize.Width;
-            CategoryListBox.Height = WinHeight - 150;            
+            CategoryListBox.Height = WinHeight - 179;             
             MainGridData.Height = WinHeight - 150;
             MainGridData.Width = WinWidth - 240;
             MenuBar.Width = WinWidth;
@@ -232,11 +234,13 @@ namespace Dobrofilm
         {
             SettingsWindow settingsWindow = new SettingsWindow();
             settingsWindow.ShowDialog();
-            CategoryList categoryList = new CategoryList();
-            FilmFilesList filmFilesList = new FilmFilesList();
+            CategoryList categoryList = new CategoryList();            
             CategoryListBox.ItemsSource = categoryList.Category;
             UpdateMainGridData();
-            //MainGridData.ItemsSource = filmFilesList.FilmFiles;
+            XMLEdit xMLEdit = new XMLEdit();
+            int SelIndex = ProfilesComboBox.SelectedIndex;
+            ProfilesComboBox.ItemsSource = xMLEdit.GetProfilesList;
+            ProfilesComboBox.SelectedIndex = SelIndex;            
         }
 
         private void AddBtn_Click(object sender, RoutedEventArgs e)
@@ -524,6 +528,23 @@ namespace Dobrofilm
                     MainWindow.OpenedCryptedFiles.Remove(Utils.GenerateTempFilePath(filmFile.Path));
                 } 
             }
+        }
+
+        private void SelectChange(object sender, SelectionChangedEventArgs e)
+        {
+            if (ProfilesComboBox.SelectedItem == null) return;
+
+            if (ProfilesComboBox.SelectedItem.GetType() == typeof(ProfileClass))
+            {
+                ProfileClass SelProfile = (ProfileClass)ProfilesComboBox.SelectedItem;
+                CurrentProfile = SelProfile;
+                UpdateMainGridData();
+                CategoryList categoryList = new CategoryList();
+                CategoryListBox.ItemsSource = categoryList.Category;
+                //FilmFilesList filmFilesList = new FilmFilesList();
+                //ListCollectionView FilteredSource = filmFilesList.GetFilmListByProfile(SelProfile);
+                //MainGridData.ItemsSource = FilteredSource;
+            }            
         }
     }
 }

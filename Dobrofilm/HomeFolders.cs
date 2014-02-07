@@ -46,7 +46,7 @@ namespace Dobrofilm
         public void AskToAddNewFilm(string FilePath)
         {
             string FilmName = System.IO.Path.GetFileNameWithoutExtension(FilePath);
-            if (!Utils.ShowYesNoDialog(string.Format("New file {0} found is home folders, add to filmList?", FilmName))) return;
+            if (!Utils.ShowSimpleYesNoDialog(string.Format("New file {0} found is home folders, add to filmList?", FilmName))) return;
             XMLEdit xMLEdit = new XMLEdit();
             xMLEdit.AddFilmToXML(new FilmFile
             {
@@ -64,20 +64,26 @@ namespace Dobrofilm
         {
             // run all background tasks here            
             IList<DirectoryInfo> homeFolderList = HomeFoldersList;
-            FilmFilesList filmFilesList = new FilmFilesList();
-            ListCollectionView filmFiles = filmFilesList.FilmFiles;
+            XMLEdit xMLEdit = new XMLEdit();
+            IList<FilmFile> filmFiles = xMLEdit.GetFilmFileFromXML(true, null, true);
+            var FilmFilesList = (ListCollectionView)CollectionViewSource.GetDefaultView(filmFiles);
+            //FilmFilesList filmFilesList = new FilmFilesList();
+            //ListCollectionView filmFiles = filmFilesList.FilmFiles;
             foreach (DirectoryInfo HomeFolder in homeFolderList)
             {
-                var allfiles = Directory.GetFiles(HomeFolder.FullName, "*.*", SearchOption.AllDirectories)
-                    .Where(s => s.EndsWith(".mp4") || s.EndsWith(".wmv") || s.EndsWith(".avi") || s.EndsWith(".flv") || s.EndsWith(".mpg") || s.EndsWith(".mov"));
-                string[] AllFilesArray = allfiles.ToArray();
-                foreach (string FilePath in AllFilesArray)
+                if (HomeFolder.Exists)
                 {
-                    GlobalFilePath = FilePath;
-                    filmFiles.Filter = new Predicate<object>(IsFileInLibtary);
-                    if (filmFiles.Count == 0)
+                    var allfiles = Directory.GetFiles(HomeFolder.FullName, "*.*", SearchOption.AllDirectories)
+                        .Where(s => s.EndsWith(".mp4") || s.EndsWith(".wmv") || s.EndsWith(".avi") || s.EndsWith(".flv") || s.EndsWith(".mpg") || s.EndsWith(".mov"));
+                    string[] AllFilesArray = allfiles.ToArray();
+                    foreach (string FilePath in AllFilesArray)
                     {
-                        AskToAddNewFilm(FilePath);
+                        GlobalFilePath = FilePath;
+                        FilmFilesList.Filter = new Predicate<object>(IsFileInLibtary);
+                        if (FilmFilesList.Count == 0)
+                        {
+                            AskToAddNewFilm(FilePath);
+                        }
                     }
                 }
             }                        

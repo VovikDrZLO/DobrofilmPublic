@@ -5,8 +5,8 @@
         KeyDown="MainWindow1_KeyDown" ResizeMode="CanResize" Icon="Resources/MainIcon.ico">
     <!--Icon="pack://siteoforigin:,,,/Resources/MainIcon.ico"sources/MainIcon.ico"-->
     <Window.Resources>
-           
-        
+
+
 
         <LinearGradientBrush x:Key="Brush_DataGridHeaderBackground" StartPoint="0,0" EndPoint="0,1">
             <GradientStop Color="#FF1C7CB1" Offset="0" />
@@ -56,18 +56,18 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-        </Style>        
+        </Style>
 
         <Style TargetType="{x:Type DataGridColumnHeader}">
             <Setter Property="SnapsToDevicePixels" Value="True" />
             <Setter Property="MinWidth" Value="0" />
-            <Setter Property="MinHeight" Value="28" />            
+            <Setter Property="MinHeight" Value="28" />
             <Setter Property="Foreground" Value="White" />
             <!--Setter Property="Cursor" Value="Hand" /-->
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
-                        <Grid>                           
+                        <Grid>
                             <Border x:Name="BackgroundBorder" BorderThickness="0,1,0,1" Background="{StaticResource Brush_DataGridHeaderSortedBackground}" BorderBrush="{StaticResource Brush_DataGridHeaderSortedBorder}" Grid.ColumnSpan="2" />
                             <ContentPresenter Margin="6,3,6,3" VerticalAlignment="Center"/>
                             <Path x:Name="SortArrow" Visibility="Collapsed" Data="M0,0 L1,0 0.5,1 z" Stretch="Fill" Grid.Column="1" Width="8" Height="6" Fill="White" Margin="0,0,8,0" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.4" HorizontalAlignment="Right"/>
@@ -84,7 +84,7 @@
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="BackgroundBorder" Property="Background" Value="{StaticResource Brush_DataGridHeaderMouseOverBackground}" />
                                 <Setter TargetName="BackgroundBorder" Property="BorderBrush" Value="{StaticResource Brush_DataGridHeaderBorder}" />
-                            </Trigger>                            
+                            </Trigger>
                             <Trigger Property="SortDirection" Value="Ascending">
                                 <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
                                 <Setter TargetName="SortArrow" Property="RenderTransform">
@@ -95,7 +95,7 @@
                             </Trigger>
                             <Trigger Property="SortDirection" Value="Descending">
                                 <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
-                            </Trigger>                            
+                            </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -124,31 +124,31 @@
                     <ControlTemplate TargetType="{x:Type DataGridRow}">
                         <Border x:Name="DGR_Border" Background="{TemplateBinding Background}" SnapsToDevicePixels="True"
                           BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                        <SelectiveScrollingGrid x:Name="selectiveScrollingGrid">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <DataGridCellsPresenter x:Name="dataGridCellsPresenter" Grid.Column="1" ItemsPanel="{TemplateBinding ItemsPanel}" 
+                            <SelectiveScrollingGrid x:Name="selectiveScrollingGrid">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <DataGridCellsPresenter x:Name="dataGridCellsPresenter" Grid.Column="1" ItemsPanel="{TemplateBinding ItemsPanel}" 
                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                             <DataGridRowHeader x:Name="dataGridRowHeader" 
+                                <DataGridRowHeader x:Name="dataGridRowHeader" 
                                   SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical" Grid.RowSpan="2"
                                   Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, 
                                   Path=HeadersVisibility, Converter={x:Static DataGrid.HeadersVisibilityConverter}, 
                                   ConverterParameter={x:Static DataGridHeadersVisibility.Row}}"/>
                                 <Grid Grid.Column="1" Grid.Row="1" Name="Details" Visibility="Collapsed" Background="Gray">
-                                <DataGridDetailsPresenter x:Name="dataGridDetailsPresenter" />
+                                    <DataGridDetailsPresenter x:Name="dataGridDetailsPresenter" />
                                 </Grid>
-                             <DataGridDetailsPresenter Grid.Row="1" Grid.Column="1" SelectiveScrollingGrid.SelectiveScrollingOrientation="{Binding 
+                                <DataGridDetailsPresenter Grid.Row="1" Grid.Column="1" SelectiveScrollingGrid.SelectiveScrollingOrientation="{Binding 
                                  AreRowDetailsFrozen, ConverterParameter={x:Static SelectiveScrollingOrientation.Vertical},
 			                     Converter={x:Static DataGrid.RowDetailsScrollingConverter},
 			                     RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
 			                     Visibility="{TemplateBinding DetailsVisibility}" />
-                            </SelectiveScrollingGrid>                            
+                            </SelectiveScrollingGrid>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -163,7 +163,7 @@
                                 <Setter Property="Visibility" TargetName="dataGridDetailsPresenter" Value="Hidden"/>
                                 <Setter Property="FontSize" TargetName="dataGridCellsPresenter" Value="14.667"/>
                                 <Setter Property="Background" TargetName="DGR_Border" Value="{DynamicResource Brush_DataGridSelected}"/>
-                            </Trigger>                             
+                            </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -189,7 +189,7 @@
             <Setter Property="SelectionUnit" Value="FullRow"/>
             <Setter Property="CanUserResizeColumns" Value="True"/>
             <Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
-            <Setter Property="SnapsToDevicePixels" Value="True" />            
+            <Setter Property="SnapsToDevicePixels" Value="True" />
             <Setter Property="AlternatingRowBackground" Value="{StaticResource Brush_DataGridAltRowBackground}" />
             <Setter Property="Template">
                 <Setter.Value>
@@ -228,7 +228,7 @@
                                                 </Button.Template>
                                             </Button>
                                             <DataGridColumnHeadersPresenter Grid.Column="1"                         
-                                                Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=HeadersVisibility, Converter={x:Static DataGrid.HeadersVisibilityConverter}, ConverterParameter={x:Static DataGridHeadersVisibility.Column}}"/>    
+                                                Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=HeadersVisibility, Converter={x:Static DataGrid.HeadersVisibilityConverter}, ConverterParameter={x:Static DataGridHeadersVisibility.Column}}"/>
                                             <ScrollContentPresenter Grid.Row="1" Grid.ColumnSpan="2" 
                                                 CanContentScroll="{TemplateBinding CanContentScroll}" />
                                             <!--ScrollBar 
@@ -240,12 +240,12 @@
                                                  ViewportSize="{TemplateBinding ViewportHeight}"
                                                  Value="{Binding Path=VerticalOffset, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"
                                                  Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"/-->
-                                                 <Grid Grid.Row="2" Grid.Column="1">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=NonFrozenColumnsViewportHorizontalOffset}"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <!--ScrollBar 
+                                            <Grid Grid.Row="2" Grid.Column="1">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=NonFrozenColumnsViewportHorizontalOffset}"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <!--ScrollBar 
                                                   Grid.Column="1"
                                                   Name="PART_HorizontalScrollBar"
                                                   Orientation="Horizontal"
@@ -269,7 +269,7 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        
+
         <Style TargetType="{x:Type Button}">
             <Setter Property="Background">
                 <Setter.Value>
@@ -302,6 +302,8 @@
                 <GradientStop Color="#FFC7EECE" Offset="0.283"/>
             </LinearGradientBrush>
         </Canvas.Background>
+        <ComboBox ItemsSource="{Binding Path=GetProfilesList}" x:Name="ProfilesComboBox" Canvas.Left="10" Canvas.Top="6" Width="193"
+            DisplayMemberPath="Name" SelectedValuePath="ProfileID" SelectionChanged="SelectChange"/>
         <DataGrid x:Name="MainGridData" Canvas.Left="208" Canvas.Top="1" Width="581"
                    AutoGenerateColumns ="False" CanUserAddRows="False" ItemsSource="{Binding FilmFiles}"
                   MouseDoubleClick="FileBtn_DbClick" 
@@ -309,22 +311,22 @@
             <!--RowDetailsTemplate="{DynamicResource RowDetailTemplate}" RowDetailsVisibilityChanged="MainDataGrid_RowDetailsVisibilityChanged" -->
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
-                <Grid x:Name="RowDetailGrid"	                
+                    <Grid x:Name="RowDetailGrid"	                
 	                 Height="Auto">
-                    <Border HorizontalAlignment="Left"
+                        <Border HorizontalAlignment="Left"
 		            VerticalAlignment="Top"
 		            CornerRadius="5">
-                        <!--<Border.Background>
+                            <!--<Border.Background>
                             <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                                 <GradientStop Offset="0" Color="WhiteSmoke" />
                                 <GradientStop Offset="0.75" Color="#AAFFFFAA" />
                                 <GradientStop Offset="1" Color="#AAFFD455" />
                             </LinearGradientBrush>
                         </Border.Background>-->
-                        <Canvas x:Name="DetailCanvas"/>                        
-                    </Border>                    
-                </Grid>
-              </DataTemplate>
+                            <Canvas x:Name="DetailCanvas"/>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
             </DataGrid.RowDetailsTemplate>
             <!--<VisualStateManager.VisualStateGroups>
                 <VisualStateGroup x:Name="CheckStates">
@@ -356,14 +358,14 @@
                     <VisualState x:Name="Unchecked" />
                 </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>-->
-            <DataGrid.Columns>                
+            <DataGrid.Columns>
                 <DataGridCheckBoxColumn Header="IsCheked" Binding="{Binding Path=IsCheked}" IsReadOnly="False"/>
                 <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}" Width="*" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Hint" Binding="{Binding Path=Hint}" Width="*" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Rate" Binding="{Binding Path=Rate}" Width="50" IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>
-        <ListBox x:Name="CategoryListBox" Canvas.Left="10" Canvas.Top="1" Width="193"
+        <ListBox x:Name="CategoryListBox" Canvas.Left="10" Canvas.Top="30" Width="193"
                  SelectedValuePath="ID" DisplayMemberPath="Name" ItemsSource="{Binding Category}"
                  MouseDoubleClick="ListBox1_MouseDoubleClick" SelectionChanged="CategoryListBox_SelectionChange" 
                  Background="Transparent" BorderBrush="Transparent"/>
@@ -371,16 +373,16 @@
             <Menu.Background>
                 <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
                     <GradientStop Color="#FFC7EECE" Offset="0.522"/>
-                    <GradientStop Color="#FFD1DEF0" Offset="0.283"/>  
+                    <GradientStop Color="#FFD1DEF0" Offset="0.283"/>
                 </LinearGradientBrush>
-            </Menu.Background>            
+            </Menu.Background>
             <Button Height="70" Width="80" Click="FilmBtn_Click" Margin="0,5,0,5">
                 <Button.ContextMenu>
                     <ContextMenu>
                         <MenuItem Foreground="Black" Header="Add Films" Click="AddFilesClick" />
                         <!--MenuItem Foreground="Black" Header="Open File" Click="OpenFileBtn_Click"/-->
-                        <MenuItem Foreground="Black" Header="Add Cheked Films to Playlist" Click="AddToPL_Click"/>                        
-                        <!--MenuItem Foreground="Black" Header="Open film settings" Click="FilmGridData_DbClick"/-->                        
+                        <MenuItem Foreground="Black" Header="Add Cheked Films to Playlist" Click="AddToPL_Click"/>
+                        <!--MenuItem Foreground="Black" Header="Open film settings" Click="FilmGridData_DbClick"/-->
                         <MenuItem Foreground="Black" Header="Add Online Film Link" Click="OpenAddLinkBtn_Click"/>
                         <MenuItem Foreground="Black" Header="Delete Film" Click="DelFilm_Click"/>
                         <MenuItem Foreground="Black" Header="Move Cheked Films" Click="MoveChekedFilms_Click"/>
@@ -393,7 +395,7 @@
             </Button>
             <Button  Height="70" HorizontalAlignment="Left"  x:Name="button1" Width="80" Click="AddBtn_Click" Margin="0,5,0,5">
                 <Button.ContextMenu>
-                    <ContextMenu>                                                
+                    <ContextMenu>
                         <MenuItem Foreground="Black" Header="Add Category" Click="OpenCategoryWindow_Click"/>
                         <MenuItem Foreground="Black" Header="Delete Category" Click="DelCategory_Click"/>
                     </ContextMenu>
@@ -407,7 +409,7 @@
                 <Button.ContextMenu>
                     <ContextMenu>
                         <MenuItem Foreground="Black" Header="Show Encripted Films" Click="ShowEncriptedFilms_Click"/>
-                        <MenuItem Foreground="Black" Header="Decrypt Cheked Films" Click="DecodeAllSelectedFiles_Click"/>                        
+                        <MenuItem Foreground="Black" Header="Decrypt Cheked Films" Click="DecodeAllSelectedFiles_Click"/>
                         <MenuItem Foreground="Black" Header="Encrypt Cheked Films" Click="EncodeAllSelectedFiles_Click"/>
                         <MenuItem Foreground="Black" Header="Encrypt Files In Folder" Click="EncrFlsInFolder_Click"/>
                         <MenuItem Foreground="Black" Header="Decrypt Files In Folder" Click="DecrFlsInFolder_Click"/>
@@ -424,7 +426,6 @@
             <Button Content="Link" Click="LinkBtn_Click" Width="80"  Margin="0,5,0,5"/>
             <Button Content="Exit App" Click="ExitApp_Click" Width="80"  Margin="0,5,0,5"/>
         </Menu>
-       
-
+        
     </Canvas>
 </Window>

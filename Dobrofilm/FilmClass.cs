@@ -14,8 +14,7 @@ using System.Xml.Linq;
 namespace Dobrofilm
 {
     public class FilmFilesList
-    {
-
+    {        
         public ListCollectionView FilmFiles_v1
         {
             get
@@ -78,7 +77,7 @@ namespace Dobrofilm
             get
             {
                 XMLEdit xMLEdit = new XMLEdit();
-                IList<FilmFile> _films = xMLEdit.GetFilmFileFromXML(ShowCryptFilms);
+                IList<FilmFile> _films = xMLEdit.GetFilmFileFromXML(ShowCryptFilms, MainWindow.CurrentProfile, false);
                 var FilmFilesList = (ListCollectionView)CollectionViewSource.GetDefaultView(_films);
                 return FilmFilesList;
             }
@@ -181,7 +180,8 @@ namespace Dobrofilm
                         Rate = 0,
                         Categoris = CategorisStartArray,
                         IsCrypted = (FilmExt.EndsWith("CrypDobFilm")),
-                        IsOnline = false
+                        IsOnline = false,
+                        Profile = MainWindow.CurrentProfile.ProfileID
                     }, DialogResult);
                     //AddSaveFilmItemToXML(new FilmFile
                     //{
@@ -233,7 +233,7 @@ namespace Dobrofilm
                     DirectoryInfo dInfo = new DirectoryInfo(Dir);
                     DirectoryInfo[] subdirs = dInfo.GetDirectories();
                     var allfiles = Directory.GetFiles(Dir, "*.*", SearchOption.AllDirectories)
-                        .Where(s => s.EndsWith(".mp4") || s.EndsWith(".wmv") || s.EndsWith(".avi") || s.EndsWith(".flv") || s.EndsWith(".mpg") || s.EndsWith(".mov"));
+                        .Where(s => s.EndsWith(".mp4") || s.EndsWith(".wmv") || s.EndsWith(".avi") || s.EndsWith(".flv") || s.EndsWith(".mpg") || s.EndsWith(".mov") || s.EndsWith("CrypDobFilm"));
                     string[] AllFilesArray = allfiles.ToArray();
                     return AllFilesArray;
                 }
@@ -327,6 +327,7 @@ namespace Dobrofilm
         public AndOrEnum ChosenLogicType { get; set; }
         public int[] CategorisIDArray { get; set; }
         public Guid SFilmID { get; set; }
+        
 
         public bool Contains(object de)
         {
@@ -348,6 +349,25 @@ namespace Dobrofilm
             }
             
         return false;
+        }
+
+        public ListCollectionView GetFilmListByProfile(ProfileClass Profile)
+        {
+            if (Profile == null) return FilmFiles;
+            ListCollectionView FilteredFileList = FilmFiles;
+            MainWindow.CurrentProfile = Profile;
+            FilteredFileList.Filter = new Predicate<object>(CurProfile);
+            return FilteredFileList;
+        }
+
+        public bool CurProfile(object de)
+        {
+            FilmFile Film = de as FilmFile;
+            if (Film.Profile == MainWindow.CurrentProfile.ProfileID)
+            {
+                return true;
+            }            
+            return false;
         }
 
         public bool IsArrayValuesInArray(int[] SoursArray, int[] FindArray)
@@ -391,8 +411,9 @@ namespace Dobrofilm
         public bool IsCheked { get; set; }
         public bool IsCrypted { get; set; }
         public bool IsOnline { get; set; }
+        public Guid Profile { get; set; }
         public XElement filmsScr { get; set; }
-        public XElement links { get; set; }
+        public XElement links { get; set; }        
     }
 
 

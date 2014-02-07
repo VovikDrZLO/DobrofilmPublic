@@ -28,6 +28,10 @@ namespace Dobrofilm
             InitializeComponent();           
             CategoryName.Text = ExistingCategotyItem.Name;
             CategoryHint.Text = ExistingCategotyItem.Hint;
+            XMLEdit xMLEdit = new XMLEdit();
+            ProfileClass CatProfile = xMLEdit.GetProfileByID(ExistingCategotyItem.Profile);
+            ProfileNameLable.Content = CatProfile.Name;
+
             _id = ExistingCategotyItem.ID;
             if (ExistingCategotyItem.Icon.Length > 0)
             {
@@ -39,6 +43,7 @@ namespace Dobrofilm
         {
             InitializeComponent();
             CategoryIcon.Source = Utils.ConvertBitmapToBitmapImage(Dobrofilm.Properties.Resources.BaseImage);
+            ProfileNameLable.Content = MainWindow.CurrentProfile.Name;
             _id = 0;
         }
 
@@ -69,7 +74,7 @@ namespace Dobrofilm
                 ImageBytes = new byte[0];
             }
             XMLEdit xMLEdit = new XMLEdit();
-            xMLEdit.AddCategoryToXML(new CategoryClass { Name = CategoryName.Text, Hint = CategoryHint.Text, Icon = ImageBytes, ID = _id });
+            xMLEdit.AddCategoryToXML(new CategoryClass { Name = CategoryName.Text, Hint = CategoryHint.Text, Icon = ImageBytes, ID = _id, Profile = MainWindow.CurrentProfile.ProfileID });
             CloseWindow();
         }
 
