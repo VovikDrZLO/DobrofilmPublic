@@ -29,17 +29,19 @@ namespace Dobrofilm
             string CategoryListXMLFile = Dobrofilm.Properties.Settings.Default.CategoryListXMLFile;
             string LinksListXMLFile = Dobrofilm.Properties.Settings.Default.LinksListXMLFile;
             string ScreenShotXMLFile = Dobrofilm.Properties.Settings.Default.ScreenShotXMLFile;
+            bool IsNew = false;
             XMLEdit xMLEdit = new XMLEdit();
             if (!Utils.IsFileExists(FilmListXMLFile) || !Utils.IsFileExists(CategoryListXMLFile) || !Utils.IsFileExists(LinksListXMLFile) || !Utils.IsFileExists(ScreenShotXMLFile))
             {
-                Utils.ShowErrorDialog("Not all file path set correctly");
-                return;
+                Utils.ShowWarningDialog("No source files found, empty settings file will by created");
+                IsNew = true;
             }
             string SettingsPath = Dobrofilm.Properties.Settings.Default.SettingsPath;
             if (!Utils.IsFileExists(SettingsPath))
             {                
                 xMLEdit.CreateNewXML();
             }
+            if (IsNew) return;
             Dobrofilm.Properties.Settings.Default.SettingsPath = 
                 string.Concat(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "\\Dobrofilm\\DobrofilmSettings.xml");
             Dobrofilm.Properties.Settings.Default.Save();

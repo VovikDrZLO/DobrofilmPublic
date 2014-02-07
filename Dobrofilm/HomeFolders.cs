@@ -71,16 +71,19 @@ namespace Dobrofilm
             //ListCollectionView filmFiles = filmFilesList.FilmFiles;
             foreach (DirectoryInfo HomeFolder in homeFolderList)
             {
-                var allfiles = Directory.GetFiles(HomeFolder.FullName, "*.*", SearchOption.AllDirectories)
-                    .Where(s => s.EndsWith(".mp4") || s.EndsWith(".wmv") || s.EndsWith(".avi") || s.EndsWith(".flv") || s.EndsWith(".mpg") || s.EndsWith(".mov"));
-                string[] AllFilesArray = allfiles.ToArray();
-                foreach (string FilePath in AllFilesArray)
+                if (HomeFolder.Exists)
                 {
-                    GlobalFilePath = FilePath;
-                    FilmFilesList.Filter = new Predicate<object>(IsFileInLibtary);
-                    if (FilmFilesList.Count == 0)
+                    var allfiles = Directory.GetFiles(HomeFolder.FullName, "*.*", SearchOption.AllDirectories)
+                        .Where(s => s.EndsWith(".mp4") || s.EndsWith(".wmv") || s.EndsWith(".avi") || s.EndsWith(".flv") || s.EndsWith(".mpg") || s.EndsWith(".mov"));
+                    string[] AllFilesArray = allfiles.ToArray();
+                    foreach (string FilePath in AllFilesArray)
                     {
-                        AskToAddNewFilm(FilePath);
+                        GlobalFilePath = FilePath;
+                        FilmFilesList.Filter = new Predicate<object>(IsFileInLibtary);
+                        if (FilmFilesList.Count == 0)
+                        {
+                            AskToAddNewFilm(FilePath);
+                        }
                     }
                 }
             }                        

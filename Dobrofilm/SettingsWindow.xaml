@@ -69,7 +69,7 @@
         <Button Content="+" Canvas.Left="442" Canvas.Top="174" Width="29" Height="77" Click="AddHomeFolder_Click" />
         <Button Content="-" Canvas.Left="442" Canvas.Top="256" Width="29" Height="48" Click="RemHomeFolder_Click" />
 
-        <DataGrid Canvas.Left="11" Canvas.Top="323" Height="101" Width="424" x:Name="ProfileDataGrid"  AutoGenerateColumns ="False" MouseDoubleClick="ProfileBtn_DbClick">
+        <DataGrid Canvas.Left="11" Canvas.Top="323" Height="101" Width="424" x:Name="ProfileDataGrid"  AutoGenerateColumns ="False" MouseDoubleClick="ProfileBtn_DbClick" CanUserAddRows="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Profiles" Binding="{Binding Path=Name}" Width="*" IsReadOnly="True"/>
             </DataGrid.Columns>

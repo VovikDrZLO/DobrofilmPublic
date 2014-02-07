@@ -100,8 +100,13 @@ namespace Dobrofilm
                     writer.WriteEndAttribute();                    
                     writer.WriteAttributeString("nextnumber", "1");                    
                     writer.WriteEndElement();
-                    writer.WriteStartElement("categoris"); // <categoris nextid="1">                    
-                    writer.WriteAttributeString("nextid", "1");                    
+                    writer.WriteStartElement("categoris"); // <categoris nextid="1">
+                    writer.WriteAttributeString("nextid", "1");
+                    //<category id="0">No Category</category>
+                    writer.WriteStartElement("category");
+                    writer.WriteAttributeString("id", "0");
+                    writer.WriteValue("No Category");
+                    writer.WriteEndElement();
                     writer.WriteEndElement();
                     writer.WriteStartElement("profiles");                    
                     writer.WriteEndElement();

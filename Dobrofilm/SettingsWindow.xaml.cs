@@ -253,7 +253,7 @@ namespace Dobrofilm
         {
             if (sender is DataGrid)
             {
-                DataGrid ProfilesDataGrid = (DataGrid)sender;
+                DataGrid ProfilesDataGrid = (DataGrid)sender;                
                 ProfileClass Profile = (ProfileClass)ProfilesDataGrid.SelectedItem;
                
                 ProfilesList profilesList = new ProfilesList();
