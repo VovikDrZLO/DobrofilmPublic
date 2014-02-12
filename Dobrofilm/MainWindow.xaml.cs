@@ -18,7 +18,7 @@ namespace Dobrofilm
     {
         public MainWindow()
         {
-            InitializeComponent();             
+            InitializeComponent();           
             XMLConverter xMLConverter = new XMLConverter();
             if (xMLConverter.IsNeedConvert()) xMLConverter.MakeConversion();            
             FilmFilesList.ShowCryptFilms = false;

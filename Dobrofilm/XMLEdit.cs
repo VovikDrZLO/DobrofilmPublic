@@ -114,6 +114,7 @@ namespace Dobrofilm
                     writer.WriteEndDocument();
                 }
                 SettingsPath = path;
+                Dobrofilm.Properties.Settings.Default.SettingsPath = SettingsPath;
                 Dobrofilm.Properties.Settings.Default.Save();
             }
             catch (Exception ex)
