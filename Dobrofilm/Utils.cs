@@ -381,4 +381,267 @@ namespace Dobrofilm
          }
 
     }
+
+    public class SaltedHash
+    {
+        #region Fields
+
+        /// <summary>
+        /// Delimiter character
+        /// </summary>
+        private string delimiter = " ";
+
+        /// <summary>
+        /// Hash Provider
+        /// </summary>
+        private HashAlgorithm hashProvider;
+
+        /// <summary>
+        /// Salth length
+        /// </summary>
+        private int salthLength;
+
+        #endregion Fields
+
+        #region Constructors
+
+        /// <summary>
+        /// Initializes a new instance of the SaltedHash class.
+        /// </summary>
+        /// <param name="hashAlgorithm">A <see cref="HashAlgorithm"/> HashAlgorihm which is derived from HashAlgorithm. C# provides
+        /// the following classes: SHA1Managed,SHA256Managed, SHA384Managed, SHA512Managed and MD5CryptoServiceProvider</param>
+        /// <param name="theSaltLength">Length in bytes</param>
+        public SaltedHash(HashAlgorithm hashAlgorithm, int theSaltLength)
+        {
+            this.hashProvider = hashAlgorithm;
+            this.salthLength = theSaltLength;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the SaltedHash class.
+        /// </summary>
+        public SaltedHash()
+            : this(new SHA256Managed(), 4)
+        {
+        }
+
+        #endregion Constructors
+
+        #region Methods
+
+        /// <summary>
+        /// Gets the hashed string with salt
+        /// </summary>
+        /// <param name="data">The data to hash</param>
+        /// <returns> The hashed string </returns>
+        public string GetHashedString(string data)
+        {
+            string hash, salt;
+            this.GetHashAndSaltString(data, out hash, out salt);
+            return hash.Replace(this.delimiter, String.Empty) + this.delimiter + salt.Replace(this.delimiter, string.Empty);
+        }
+
+        /// <summary>
+        /// Verifies the data and hash
+        /// </summary>
+        /// <param name="data">The data to compare</param>
+        /// <param name="hashedData">The hash to compare with</param>
+        /// <returns>Returns bool flag</returns>
+        public bool VerifyHashString(string data, string hashedData)
+        {
+            if (String.IsNullOrEmpty(hashedData))
+            {
+                return false;
+            }
+
+            string[] split = hashedData.Split(this.delimiter.ToCharArray());
+
+            if (split == null || split.Length != 2)
+            {
+                return false;
+            }
+
+            return this.VerifyHashString(data, split[0], split[1]);
+        }
+
+        /// <summary>
+        /// The actual hash calculation is shared by both GetHashAndSalt and the VerifyHash functions
+        /// </summary>
+        /// <param name="data">The data byte array</param>
+        /// <param name="salt">The salt byte array</param>
+        /// <returns>
+        /// A byte array with the calculated hash
+        /// </returns>
+        private byte[] ComputeHash(byte[] data, byte[] salt)
+        {
+            // Allocate memory to store both the Data and Salt together
+            byte[] dataAndSalt = new byte[data.Length + this.salthLength];
+
+            // Copy both the data and salt into the new array
+            Array.Copy(data, dataAndSalt, data.Length);
+            Array.Copy(salt, 0, dataAndSalt, data.Length, this.salthLength);
+
+            // Calculate the hash
+            // Compute hash value of our plain text with appended salt.
+            return this.hashProvider.ComputeHash(dataAndSalt);
+        }
+
+        /// <summary>
+        /// Given a data block this routine returns both a Hash and a Salt
+        /// </summary>
+        /// <param name="data">The data byte array</param>
+        /// <param name="hash">The hash byte array</param>
+        /// <param name="salt">The salt byte array</param>
+        private void GetHashAndSalt(byte[] data, out byte[] hash, out byte[] salt)
+        {
+            // Allocate memory for the salt
+            salt = new byte[this.salthLength];
+
+            // Strong runtime pseudo-random number generator, on Windows uses CryptAPI
+            // on Unix /dev/urandom
+            RNGCryptoServiceProvider random = new RNGCryptoServiceProvider();
+
+            // Create a random salt
+            random.GetNonZeroBytes(salt);
+
+            // Compute hash value of our data with the salt.
+            hash = this.ComputeHash(data, salt);
+
+            random.Dispose();
+        }
+
+        /// <summary>
+        /// The routine provides a wrapper around the GetHashAndSalt function providing conversion
+        /// from the required byte arrays to strings. Both the Hash and Salt are returned as Base-64 encoded strings.
+        /// </summary>
+        /// <param name="data">The data byte array</param>
+        /// <param name="hash">The hash byte array</param>
+        /// <param name="salt">The salt byte array</param>
+        private void GetHashAndSaltString(string data, out string hash, out string salt)
+        {
+            byte[] hashOut;
+            byte[] saltOut;
+
+            // Obtain the Hash and Salt for the given string
+            this.GetHashAndSalt(Encoding.UTF8.GetBytes(data), out hashOut, out saltOut);
+
+            // Transform the byte[] to Base-64 encoded strings
+            hash = Convert.ToBase64String(hashOut);
+            salt = Convert.ToBase64String(saltOut);
+        }
+
+        /// <summary>
+        /// This routine verifies whether the data generates the same hash as we had stored previously
+        /// </summary>
+        /// <param name="data">The data byte array</param>
+        /// <param name="hash">The hash byte array</param>
+        /// <param name="salt">The salt byte array</param>
+        /// <returns>
+        /// True on a succesful match
+        /// </returns>
+        private bool VerifyHash(byte[] data, byte[] hash, byte[] salt)
+        {
+            byte[] newHash = this.ComputeHash(data, salt);
+
+            //// Compare hash
+            if (newHash.Length != hash.Length)
+            {
+                return false;
+            }
+
+            for (int lp = 0; lp < hash.Length; lp++)
+            {
+                if (!hash[lp].Equals(newHash[lp]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// This routine provides a wrapper around VerifyHash converting the strings containing the
+        /// data, hash and salt into byte arrays before calling VerifyHash.
+        /// </summary>
+        /// <param name="data">The data byte array</param>
+        /// <param name="hash">The hash byte array</param>
+        /// <param name="salt">The salt byte array</param>
+        /// <returns>
+        /// Returns bool flag
+        /// </returns>
+        private bool VerifyHashString(string data, string hash, string salt) 
+        {
+            byte[] hashToVerify = Convert.FromBase64String(hash);
+            byte[] saltToVerify = Convert.FromBase64String(salt);
+            byte[] dataToVerify = Encoding.UTF8.GetBytes(data);
+            return this.VerifyHash(dataToVerify, hashToVerify, saltToVerify);
+        }
+
+        #endregion Methods
+
+
+    }
+
+    class Simple3Des
+     {
+        TripleDESCryptoServiceProvider tripleDes = new TripleDESCryptoServiceProvider();
+ 
+        public Simple3Des(string key)
+         {
+         // Initialize the crypto provider.
+         tripleDes.Key = TruncateHash(key, tripleDes.KeySize / 8);
+         tripleDes.IV = TruncateHash("", tripleDes.BlockSize / 8);
+         }
+ 
+        private byte[] TruncateHash(string key, int length)
+         {
+         SHA1CryptoServiceProvider sha1 = new SHA1CryptoServiceProvider();
+         // Hash the key.
+         byte[] keyBytes = System.Text.Encoding.Unicode.GetBytes(key);
+         byte[] hash = sha1.ComputeHash(keyBytes);
+ 
+        // Truncate or pad the hash.
+         Array.Resize(ref hash, length);
+         return hash;
+         }
+ 
+        public string EncryptData(string plaintext)
+         {
+ 
+        // Convert the plaintext string to a byte array.
+         byte[] plaintextBytes = System.Text.Encoding.Unicode.GetBytes(plaintext);
+ 
+        // Create the stream.
+         System.IO.MemoryStream ms = new System.IO.MemoryStream();
+         // Create the encoder to write to the stream.
+         CryptoStream encStream = new CryptoStream(ms, tripleDes.CreateEncryptor(), System.Security.Cryptography.CryptoStreamMode.Write);
+ 
+        // Use the crypto stream to write the byte array to the stream.
+         encStream.Write(plaintextBytes, 0, plaintextBytes.Length);
+         encStream.FlushFinalBlock();
+ 
+        // Convert the encrypted stream to a printable string.
+         return Convert.ToBase64String(ms.ToArray());
+         }
+ 
+        public string DecryptData(string encryptedtext)
+         {
+ 
+        // Convert the encrypted text string to a byte array.
+         byte[] encryptedBytes = Convert.FromBase64String(encryptedtext);
+ 
+        // Create the stream.
+         System.IO.MemoryStream ms = new System.IO.MemoryStream();
+         // Create the decoder to write to the stream.
+         CryptoStream decStream = new CryptoStream(ms, tripleDes.CreateDecryptor(), System.Security.Cryptography.CryptoStreamMode.Write);
+ 
+        // Use the crypto stream to write the byte array to the stream.
+         decStream.Write(encryptedBytes, 0, encryptedBytes.Length);
+         decStream.FlushFinalBlock();
+ 
+        // Convert the plaintext stream to a string.
+         return System.Text.Encoding.Unicode.GetString(ms.ToArray());
+         }
+    }
 }

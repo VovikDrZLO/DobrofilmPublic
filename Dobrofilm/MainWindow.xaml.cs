@@ -9,6 +9,8 @@ using System.IO;
 using System.Windows.Media;
 using System.Windows.Controls.Primitives;
 
+using System.Security.Cryptography;
+
 namespace Dobrofilm
 {
     /// <summary>
@@ -27,7 +29,11 @@ namespace Dobrofilm
             ProfilesComboBox.DataContext = new XMLEdit();
             ProfilesComboBox.SelectedIndex = 0;
             MainGridData.DataContext = new FilmFilesList();
-            CategoryListBox.DataContext = new CategoryList();            
+            CategoryListBox.DataContext = new CategoryList();
+            //SaltedHash saltedHash = new SaltedHash();
+            //var test = saltedHash.GetHashedString("P@ssw0rd");
+            //bool test2 = saltedHash.VerifyHashString("P@ssw0rd", test);
+            
             //XMLEdit xMLEdit = new XMLEdit();
             //xMLEdit.GetFilmFileFromXML(FilmFilesList.ShowCryptFilms);
         }               
