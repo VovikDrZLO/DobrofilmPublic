@@ -31,7 +31,7 @@ namespace Dobrofilm
             MainGridData.DataContext = new FilmFilesList();
             CategoryListBox.DataContext = new CategoryList();
             //SaltedHash saltedHash = new SaltedHash();
-            //var test = saltedHash.GetHashedString("P@ssw0rd");
+            //string test = saltedHash.GetHashedString("P@ssw0rd");
             //bool test2 = saltedHash.VerifyHashString("P@ssw0rd", test);
             
             //XMLEdit xMLEdit = new XMLEdit();

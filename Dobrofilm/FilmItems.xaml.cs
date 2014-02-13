@@ -67,9 +67,10 @@ namespace Dobrofilm
                 ChangePathBtn.Visibility = 
                     CryptFile.Visibility = 
                     Btn_Play.Visibility = 
-                    SeekBar.Visibility = 
-                    Btn_Screen.Visibility = 
+                    SeekBar.Visibility =                     
                     Complete_Decrypt.Visibility =
+                    Btn_Screen.Visibility = 
+                    VolumeBar.Visibility = 
                     MoveToBtn.Visibility = System.Windows.Visibility.Collapsed;
             }
             else
@@ -99,6 +100,8 @@ namespace Dobrofilm
                 MoveToBtn.Visibility =
                 CryptFile.Visibility =
                 Complete_Decrypt.Visibility =
+                Btn_Screen.Visibility =
+                VolumeBar.Visibility = 
                 ChangePathBtn.Visibility = 
                 System.Windows.Visibility.Collapsed;  
         }
@@ -653,8 +656,9 @@ namespace Dobrofilm
             Canvas.SetTop(SeekBar, WinHeight - 209);            
             SeekBar.Width = WinWidth -730; //!!!
 
+            Canvas.SetLeft(VolumeBar, WinWidth - 120);
             Canvas.SetTop(VolumeBar, WinHeight - 209);
-            VolumeBar.Width = WinWidth - 840;
+            //VolumeBar.Width = WinWidth - 840;
 
             Canvas.SetLeft(MoveToBtn, WinWidth - 210);
             Canvas.SetLeft(ProfileComboBox, WinWidth - 390);

@@ -195,7 +195,13 @@ namespace Dobrofilm
 
          private const string Salt = "d5fg4df5sg4ds5fg45sdfg4";
          private const int SizeOfBuffer = 1024 * 8;
-         private const string Pass = "P@ssw0rd";
+         private const string Pass = "rbfgIerNu6O0Xuyv24x3+YES2BeN4GRxCrsBa7PERJY= RBVM0g==";
+
+         internal static bool IsPassValid(string Password)
+         {
+             SaltedHash saltedHash = new SaltedHash();
+             return saltedHash.VerifyHashString(Password, Pass);
+         }
 
          internal static void EncryptFile(string inputPath, string outputPath)
          {
@@ -583,7 +589,7 @@ namespace Dobrofilm
 
     }
 
-    class Simple3Des
+    class Simple3Des // fore safe. don't used in project
      {
         TripleDESCryptoServiceProvider tripleDes = new TripleDESCryptoServiceProvider();
  

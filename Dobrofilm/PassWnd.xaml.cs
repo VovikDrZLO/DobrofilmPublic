@@ -95,9 +95,28 @@ namespace Dobrofilm
             Multworker.RunWorkerCompleted += worker_RunWorkerCompleted;
             if (ActionType == ActionTypeEnum.DecryptFile)
             {
-                PassStr = Password_Box.Password;                                
-                Utils.ShowLoadingWindow("Decoding", FromFilePath);
-                worker.RunWorkerAsync();
+                PassStr = Password_Box.Password;
+                if (Utils.IsPassValid(PassStr))
+                {
+                    Utils.ShowLoadingWindow("Decoding", FromFilePath);
+                    worker.RunWorkerAsync();
+                }
+                else
+                {                    
+                    if (Utils.ShowYesNoDialog("Password invalid. Try to decrypt?"))
+                    {
+                        Utils.ShowLoadingWindow("Decoding", FromFilePath);
+                        worker.RunWorkerAsync();
+                    }                
+                }
+                
+            }
+            else if (ActionType == ActionTypeEnum.DecryptFileList)
+            {
+                PassStr = Password_Box.Password;
+                Utils.ShowLoadingWindow("Decoding", "Selected Films");
+                Multworker.RunWorkerAsync(chekedFiles);
+                CloseWindow = true;
             }
             else if (ActionType == ActionTypeEnum.ShowCryptedFiles)
             {
@@ -130,13 +149,6 @@ namespace Dobrofilm
                     }
                     Close();
                 }
-            }
-            else if (ActionType == ActionTypeEnum.DecryptFileList)
-            {
-                PassStr = Password_Box.Password;
-                Utils.ShowLoadingWindow("Decoding", "Selected Films");
-                Multworker.RunWorkerAsync(chekedFiles);
-                CloseWindow = true;                
             }
         }
 
