@@ -158,7 +158,7 @@ namespace Dobrofilm
             FileClass.Rate = (int)file.Attribute("rate");
             FileClass.IsCrypted = ((string)file.Attribute("isCrypted") == "1");
             FileClass.IsOnline = ((string)file.Attribute("isOnline") == "1");
-            
+            FileClass.IsFTP = ((string)file.Attribute("isFTP") == "1");
             FileClass.Profile = ((string)file.Attribute("profile") == null)? Guid.Empty : new Guid((string)file.Attribute("profile"));
             FileClass.Categoris = filmFilesList.CategorisArray((string)file.Attribute("categoris"));
             FileClass.filmsScr = file.XPathSelectElement(@"./prefix:filmsScr", GetDefNameSpaceManager());
@@ -240,6 +240,7 @@ namespace Dobrofilm
                 new XAttribute("categoris", GetStringFromIntArray(FilmItem.Categoris)),
                 new XAttribute("isCrypted", Convert.ToInt32(FilmItem.IsCrypted)),
                 new XAttribute("isOnline", Convert.ToInt32(FilmItem.IsOnline)),
+                new XAttribute("isFTP", Convert.ToInt32(FilmItem.IsFTP)),
                 new XAttribute("profile", FilmItem.Profile),
                 (FilmItem.filmsScr == null) ? new XElement(ns + "filmsScr", new XAttribute("nextid", "1")) : FilmItem.filmsScr,
                 (FilmItem.links == null) ? new XElement(ns + "links") : FilmItem.links

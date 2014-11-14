@@ -96,19 +96,19 @@ namespace Dobrofilm
             if (ActionType == ActionTypeEnum.DecryptFile)
             {
                 PassStr = Password_Box.Password;
-                if (Utils.IsPassValid(PassStr))
-                {
+                //if (Utils.IsPassValid(PassStr))
+                //{
                     Utils.ShowLoadingWindow("Decoding", FromFilePath);
                     worker.RunWorkerAsync();
-                }
-                else
+                /*}
+                //else
                 {                    
                     if (Utils.ShowYesNoDialog("Password invalid. Try to decrypt?"))
                     {
                         Utils.ShowLoadingWindow("Decoding", FromFilePath);
                         worker.RunWorkerAsync();
                     }                
-                }
+                } */
                 
             }
             else if (ActionType == ActionTypeEnum.DecryptFileList)

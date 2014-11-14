@@ -45,6 +45,7 @@ namespace Dobrofilm
                                     FilmFileClass.Rate = int.Parse(reader.GetAttribute("rate"));
                                     FilmFileClass.IsCrypted = (reader.GetAttribute("isCrypted") == "1");
                                     FilmFileClass.IsOnline = (reader.GetAttribute("isOnline") == "1");
+                                    FilmFileClass.IsFTP = (reader.GetAttribute("isFTP") == "1");
                                     FilmFileClass.Categoris = CategorisArray(reader.GetAttribute("categoris"));
                                 }
                                 break;
@@ -181,6 +182,7 @@ namespace Dobrofilm
                         Categoris = CategorisStartArray,
                         IsCrypted = (FilmExt.EndsWith("CrypDobFilm")),
                         IsOnline = false,
+                        IsFTP = false,
                         Profile = MainWindow.CurrentProfile.ProfileID
                     }, DialogResult);
                     //AddSaveFilmItemToXML(new FilmFile
@@ -411,6 +413,7 @@ namespace Dobrofilm
         public bool IsCheked { get; set; }
         public bool IsCrypted { get; set; }
         public bool IsOnline { get; set; }
+        public bool IsFTP { get; set; }
         public Guid Profile { get; set; }
         public XElement filmsScr { get; set; }
         public XElement links { get; set; }        

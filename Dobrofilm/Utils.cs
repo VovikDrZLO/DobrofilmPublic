@@ -15,10 +15,12 @@ using System.Diagnostics;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Linq;
+using System.Net;
 
 namespace Dobrofilm
 {
     public enum AndOrEnum {And, Or};
+    public enum FTPMethod { GetDirList, Upload, Download };
     public enum XMLFile {Files, Categoris, Links, Screens };
     public enum MessageType {Warning, Error, Question};
     static public class Utils
@@ -195,7 +197,7 @@ namespace Dobrofilm
 
          private const string Salt = "d5fg4df5sg4ds5fg45sdfg4";
          private const int SizeOfBuffer = 1024 * 8;
-         private const string Pass = "rbfgIerNu6O0Xuyv24x3+YES2BeN4GRxCrsBa7PERJY= RBVM0g==";
+         private const string Pass = "P@ssw0rd";
 
          internal static bool IsPassValid(string Password)
          {
@@ -300,6 +302,30 @@ namespace Dobrofilm
             img.Source = myBitmapImage;
             return img;
              
+         }
+
+         public static FtpWebResponse GetFtpResponse(FTPMethod fTPMethod, string FileName)
+         {
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://176.38.154.212/" + FileName);
+            if (fTPMethod == FTPMethod.GetDirList)
+            {
+                request.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
+            }
+            else if (fTPMethod == FTPMethod.Download)
+            {
+                request.Method = WebRequestMethods.Ftp.DownloadFile;
+            }
+            else if (fTPMethod == FTPMethod.Upload)
+            {
+                request.Method = WebRequestMethods.Ftp.UploadFile;
+            }
+            else
+            {
+                return null;
+            }            
+            request.Credentials = new NetworkCredential("givc", "givc");
+            FtpWebResponse response = (FtpWebResponse)request.GetResponse();
+            return response;
          }
 
          public static bool ValidateSettings()

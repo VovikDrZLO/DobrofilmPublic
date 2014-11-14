@@ -17,6 +17,7 @@
                 <xs:attribute name="categoris" type="xs:string" use="required" />
                 <xs:attribute name="isCrypted" type="xs:integer" use="required" />
                 <xs:attribute name="isOnline" type="xs:integer" use="required" />
+                <xs:attribute name="isFTP" type="xs:integer" use="required" />
               </xs:extension>
             </xs:simpleContent>
           </xs:complexType>

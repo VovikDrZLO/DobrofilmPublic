@@ -28,6 +28,7 @@ namespace Dobrofilm
             XMLEdit xMLEdit = new XMLEdit();
             FilmMaskTB.Text = xMLEdit.GetFilmMask();
             FilmNextIDTB.Text = xMLEdit.GetFileMaskNextID();
+            TempFilePathFTP.Text = Dobrofilm.Properties.Settings.Default.TempFilePathFTP;
             CategoryNextIDTB.Text = xMLEdit.GetCategoryNextID();
             //CategoryList categoryList = new CategoryList();
             //CategoryNextIDTB.Text = categoryList.GetCategoryNextID();
@@ -37,7 +38,6 @@ namespace Dobrofilm
             HomeFolders homeFolders = new HomeFolders();
             HomeFoldersDataGrid.ItemsSource = homeFolders.HomeFoldersList;                        
             ProfileDataGrid.ItemsSource = xMLEdit.GetProfilesList;
-
         }
 
         private void DelMarkedFilmsBtn_Click(object sender, RoutedEventArgs e)

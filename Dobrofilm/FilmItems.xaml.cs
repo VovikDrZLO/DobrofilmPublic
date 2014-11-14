@@ -27,6 +27,7 @@ namespace Dobrofilm
         private string FilePath {get; set;}   
         private string NewFileName{get;set;}
         private bool IsOnline { get; set; }
+        private bool IsFTP { get; set; }
         private FilmFile FilmPublic { get; set; }
 
         public FilmItem(FilmFile SelectedFilm)
@@ -39,6 +40,7 @@ namespace Dobrofilm
             IsCrypted = SelectedFilm.IsCrypted;
             FilePath = SelectedFilm.Path;
             IsOnline = false;
+            IsFTP = false;
             DrawCategoryButtons(SelectedFilm);
             FilmRate.Value = SelectedFilm.Rate;
             XMLEdit xMLEdit = new XMLEdit();
@@ -72,9 +74,15 @@ namespace Dobrofilm
                     Btn_Screen.Visibility = 
                     VolumeBar.Visibility = 
                     MoveToBtn.Visibility = System.Windows.Visibility.Collapsed;
+            } else
+            if (SelectedFilm.IsFTP)
+            {
+                MainTabControl.Margin = new Thickness(1, 1, 1, 1);
+                FilmPlayer.Visibility = System.Windows.Visibility.Collapsed;
+                Button GetFilmBtn = new Button();
             }
             else
-            {                
+            {
                 timer = new DispatcherTimer();
                 timer.Interval = TimeSpan.FromMilliseconds(200);
                 timer.Tick += new EventHandler(timer_tick);
@@ -93,7 +101,8 @@ namespace Dobrofilm
             IsCrypted = false;
             FilmName.Text = "Type web addresse here";
             FilmHint.Text = "Короткая характеристика";
-            IsOnline = true;            
+            IsOnline = true;
+            IsFTP = false;
             DrawCategoryButtons(new FilmFile { Categoris = new int[1] {0} });
             Btn_Play.Visibility = 
                 SeekBar.Visibility = 
@@ -383,6 +392,7 @@ namespace Dobrofilm
             NewFilm.ID = FilmID;            
             NewFilm.IsCrypted = IsCrypted;
             NewFilm.IsOnline = IsOnline;
+            NewFilm.IsFTP = IsFTP;
             if (IsOnline)
             {
                 if (!Utils.IsStringUriValid(FilmName.Text))

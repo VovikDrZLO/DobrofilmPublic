@@ -32,31 +32,33 @@
     <Canvas Margin="0,0,0,2">
         <!--<TextBox x:Name="CategotyPathTB" Height="23" Canvas.Left="171" TextWrapping="Wrap" Text="CategotyPath" Canvas.Top="20" Width="300"/>
         <TextBox x:Name="FilmPathTB" Height="23" Canvas.Left="171" TextWrapping="Wrap" Text="FilmsPath" Canvas.Top="59" Width="300"/>-->
-        <TextBox x:Name="SettingsFilePath" Height="23" Canvas.Left="171" TextWrapping="Wrap" Text="SettingsFilePath" Canvas.Top="10" Width="300"/>
-        <TextBox x:Name="MPCRath" Width="300" Canvas.Left="171" Canvas.Top="113" TextWrapping="Wrap"/>
-        <TextBox x:Name="CategoryNextIDTB" Height="24" Canvas.Left="171" TextWrapping="Wrap" Text="NextCategoryID" Canvas.Top="44" Width="120" />
+        <TextBox x:Name="SettingsFilePath" Height="23" Canvas.Left="175" TextWrapping="Wrap" Text="SettingsFilePath" Canvas.Top="10" Width="300"/>
+        <TextBox x:Name="MPCRath" Width="300" Canvas.Left="174" Canvas.Top="134" TextWrapping="Wrap"/>
+        <TextBox x:Name="CategoryNextIDTB" Height="24" Canvas.Left="174" TextWrapping="Wrap" Text="NextCategoryID" Canvas.Top="65" Width="120" />
         <TextBox x:Name="FilmNextIDTB" Height="24" Canvas.Left="174" TextWrapping="Wrap" Text="NextFilmID" Canvas.Top="494" Width="120"/>
         <TextBox x:Name="FilmMaskTB" Height="24" Canvas.Left="174" TextWrapping="Wrap" Text="FilmMask" Canvas.Top="453" Width="120"/>
+        <TextBox x:Name="TempFilePathFTP" Height="24" Canvas.Left="174" TextWrapping="Wrap" Text="TempFilePathFTP" Canvas.Top="38" Width="297"/>
         <!--<TextBox x:Name="LinkPath" Height="24" Canvas.Left="171" TextWrapping="Wrap" Text="LinkPath" Canvas.Top="100" Width="300"/>
         <TextBox x:Name="ScreenPath" Height="24" Canvas.Left="171" TextWrapping="Wrap" Text="ScreenPath" Canvas.Top="137" Width="300"/>-->
         <Button Content="Delete Marked Films" Canvas.Left="13" Canvas.Top="561" Width="115" Click="DelMarkedFilmsBtn_Click" Height="23"/>
         <Button Content="Ok" Canvas.Left="295" Canvas.Top="596" Width="75" Click="OKBtn_Click" Height="23"/>
         <Button Content="Cancel" Canvas.Left="392" Canvas.Top="596" Width="75" Click="CancelBtn_Click" Height="23"/>
-        <Label Content="SettingsFilePath" Canvas.Left="10" Canvas.Top="10" Width="147" Height="26"/>
+        <Label Content="SettingsFilePath" Canvas.Left="15" Canvas.Top="10" Width="142" Height="26"/>
+        <Label Content="TempPathForFTP" Canvas.Left="15" Canvas.Top="41" Width="142"/>
         <!--<Label Content="CategoryDictXMLFilePath" Canvas.Left="10" Canvas.Top="20" Height="26" Width="147"/>
         <Label Content="LinkXMLFilePath" Canvas.Left="10" Canvas.Top="100" Height="26" Width="147"/>
         <Label Content="FilmDictXMLFilePath" Canvas.Left="10" Canvas.Top="59" Width="147" Height="26"/>
         <Label Content="ScreensXMLFilePath" Canvas.Left="10" Canvas.Top="137" Width="147" Height="26"/>-->
-        <Label Content="CategoryDictNextID" Canvas.Left="10" Canvas.Top="44" Height="27" Width="147"/>
+        <Label Content="CategoryDictNextID" Canvas.Left="13" Canvas.Top="65" Height="27" Width="147"/>
         <Label Content="FilmMask" Canvas.Left="13" Canvas.Top="454" Height="28" Width="147" />
         <Label Content="FilmMaskNextID" Canvas.Left="13" Canvas.Top="494" Width="147" Height="27"/>
         <GroupBox Header="ForAutoFileNameGeneration" Height="106" Canvas.Left="7" Canvas.Top="429" Width="460"/>
-        <Label Content="Path to MPC" Canvas.Left="10" Canvas.Top="112" Width="147"/>
+        <Label Content="Path to MPC" Canvas.Left="13" Canvas.Top="133" Width="147"/>
         <Button x:Name="SecretButton" Canvas.Left="15" Canvas.Top="143" Width="25" Height="25" BorderBrush="White" Foreground="White"
                 Click="SecretButton_Click" MouseEnter="SecretButton_MouseEnter" 
                 MouseLeave="SecretButton_MouseLeave" Style="{StaticResource SecretButtonStyle}"/>
-        <TextBox x:Name="DefBrowserTB" Height="23" Canvas.Left="171" TextWrapping="Wrap" Text="explorer.exe" Canvas.Top="79" Width="300"/>
-        <Label Content="Default Browser" Canvas.Left="10" Canvas.Top="79" Width="147"/>
+        <TextBox x:Name="DefBrowserTB" Height="23" Canvas.Left="174" TextWrapping="Wrap" Text="explorer.exe" Canvas.Top="100" Width="300"/>
+        <Label Content="Default Browser" Canvas.Left="13" Canvas.Top="100" Width="147"/>
         <GroupBox Height="40" Canvas.Left="7" Canvas.Top="551" Width="460"/>
         <Button Content="Move All Films" Canvas.Left="150" Canvas.Top="561" Width="83" Click="MoveAllFilms_Click"/>
         <Button Content="Del forgotten films" ToolTip="Delete all decripted files" Canvas.Left="253" Canvas.Top="562" Width="113" Click="DelForgottenFilms_Click"/>

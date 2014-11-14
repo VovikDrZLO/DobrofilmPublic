@@ -74,6 +74,7 @@ namespace Dobrofilm
                 new XAttribute("categoris", xMLEdit.GetStringFromIntArray(File.Categoris)),
                 new XAttribute("isCrypted", File.IsCrypted ? "1" : "0"),
                 new XAttribute("isOnline", File.IsOnline ? "1" : "0"),
+                new XAttribute("isFTP", File.IsFTP ? "1" : "0"),
                 new XAttribute("name", File.Name)
                 );                  
             FilmScreenShot filmScreenShot = new FilmScreenShot();

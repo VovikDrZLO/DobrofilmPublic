@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -8,8 +9,8 @@ using System.Windows.Input;
 using System.IO;
 using System.Windows.Media;
 using System.Windows.Controls.Primitives;
-
 using System.Security.Cryptography;
+using System.Text;
 
 namespace Dobrofilm
 {
@@ -124,6 +125,24 @@ namespace Dobrofilm
                     {
                         Utils.ShowErrorDialog("Error occurred while trying to open browser, default browser may be not correct.");
                     }
+                }
+                else if (SelectedFilm.IsFTP)
+                {                       
+                    string FilePath = SelectedFilm.Path;
+                    string DownloadedFilePath = @"D:\temp\" + SelectedFilm.Path;
+                    //FtpWebRequest req = (FtpWebRequest)FtpWebRequest.Create("ftp://176.38.154.212/" + SelectedFilm.Path);
+                    FtpWebResponse response = Utils.GetFtpResponse(FTPMethod.Download, SelectedFilm.Path);                    
+                    Stream stream = response.GetResponseStream();
+                    byte[] buffer = new byte[2048];
+                    FileStream fs = new FileStream(DownloadedFilePath, FileMode.Create);
+                    int ReadCount = stream.Read(buffer, 0, buffer.Length);
+                    while (ReadCount > 0)
+                    {
+                        fs.Write(buffer, 0, ReadCount);
+                        ReadCount = stream.Read(buffer, 0, buffer.Length);
+                    }                    
+                    fs.Close();
+                    stream.Close();
                 }
                 else if (Utils.IsFileExists(SelectedFilm.Path))
                 {
@@ -377,12 +396,12 @@ namespace Dobrofilm
         private void DecodeAllSelectedFiles_Click(object sender, RoutedEventArgs e)
         {
             IEnumerable<FilmFile> CheckList = ListOfChekedFilms();
-            List<FilmFile> SelectedCryptedFilms = new List<FilmFile> { };           
+            List<FilmFile> SelectedCryptedFilms = new List<FilmFile> { };
             foreach (FilmFile CryptedFilm in CheckList) 
             {
                 if (CryptedFilm.IsCrypted)
                 {                 
-                    SelectedCryptedFilms.Add(CryptedFilm);                
+                    SelectedCryptedFilms.Add(CryptedFilm);
                 } 
             }
             if (SelectedCryptedFilms.Count > 0)
@@ -551,6 +570,46 @@ namespace Dobrofilm
                 //ListCollectionView FilteredSource = filmFilesList.GetFilmListByProfile(SelProfile);
                 //MainGridData.ItemsSource = FilteredSource;
             }            
+        }
+
+        private void OpenAddFTPLinkBtn_Click(object sender, RoutedEventArgs e)
+        {
+            /*TODO 
+             1. Open FTP Connect
+             2. Save FTP link
+             3. Get FTP List Files
+             4. Download files from FTP
+             5. Upload files (Modify "Move To" dialog)
+             */
+
+            FtpWebResponse response = Utils.GetFtpResponse(FTPMethod.GetDirList, "");
+            StringBuilder result = new StringBuilder();
+            StreamReader reader = new StreamReader(response.GetResponseStream());
+            string line = reader.ReadLine();
+            while (line != null)
+            {
+                if (!line.StartsWith("d") && !line.EndsWith("."))
+                {
+                    //result.Append(line.Substring(line.LastIndexOf(":") + 3).Trim());
+                    //result.Append("\n");
+                    XMLEdit xMLEdit = new XMLEdit();
+                    xMLEdit.AddFilmToXML(new FilmFile
+                    {
+                        Name = line.Substring(line.LastIndexOf(":") + 3).Trim(),
+                        Path = line.Substring(line.LastIndexOf(":") + 3).Trim(),
+                        Rate = 0,
+                        Categoris = new int[1],
+                        IsCrypted = false,
+                        IsOnline = false,
+                        IsFTP = true,                       
+                        Profile = MainWindow.CurrentProfile.ProfileID
+                    }, false);
+                }
+                line = reader.ReadLine();
+            }
+            //result.Remove(result.ToString().LastIndexOf("\n"), 1);
+            reader.Close();
+            response.Close();            
         }
     }
 }

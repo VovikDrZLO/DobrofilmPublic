@@ -384,6 +384,7 @@
                         <MenuItem Foreground="Black" Header="Add Cheked Films to Playlist" Click="AddToPL_Click"/>
                         <!--MenuItem Foreground="Black" Header="Open film settings" Click="FilmGridData_DbClick"/-->
                         <MenuItem Foreground="Black" Header="Add Online Film Link" Click="OpenAddLinkBtn_Click"/>
+                        <MenuItem Foreground="Black" Header="Add FTP Film Link" Click="OpenAddFTPLinkBtn_Click"/>
                         <MenuItem Foreground="Black" Header="Delete Film" Click="DelFilm_Click"/>
                         <MenuItem Foreground="Black" Header="Move Cheked Films" Click="MoveChekedFilms_Click"/>
                     </ContextMenu>

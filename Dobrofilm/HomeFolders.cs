@@ -55,7 +55,8 @@ namespace Dobrofilm
                 Rate = 0,
                 Categoris = new int[1]{0},
                 IsCrypted = false,
-                IsOnline  = false
+                IsOnline  = false,
+                IsFTP = false
             }, false);
             
         }
