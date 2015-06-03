@@ -54,7 +54,7 @@
         <Label Content="FilmMaskNextID" Canvas.Left="13" Canvas.Top="494" Width="147" Height="27"/>
         <GroupBox Header="ForAutoFileNameGeneration" Height="106" Canvas.Left="7" Canvas.Top="429" Width="460"/>
         <Label Content="Path to MPC" Canvas.Left="13" Canvas.Top="133" Width="147"/>
-        <Button x:Name="SecretButton" Canvas.Left="15" Canvas.Top="143" Width="25" Height="25" BorderBrush="White" Foreground="White"
+        <Button x:Name="SecretButton" Canvas.Left="442" Canvas.Top="217" Width="25" Height="25" BorderBrush="White" Foreground="White"
                 Click="SecretButton_Click" MouseEnter="SecretButton_MouseEnter" 
                 MouseLeave="SecretButton_MouseLeave" Style="{StaticResource SecretButtonStyle}"/>
         <TextBox x:Name="DefBrowserTB" Height="23" Canvas.Left="174" TextWrapping="Wrap" Text="explorer.exe" Canvas.Top="100" Width="300"/>
@@ -63,20 +63,27 @@
         <Button Content="Move All Films" Canvas.Left="150" Canvas.Top="561" Width="83" Click="MoveAllFilms_Click"/>
         <Button Content="Del forgotten films" ToolTip="Delete all decripted files" Canvas.Left="253" Canvas.Top="562" Width="113" Click="DelForgottenFilms_Click"/>
 
-        <DataGrid x:Name="HomeFoldersDataGrid"  Height="130" Canvas.Left="11" Canvas.Top="174" Width="424" AutoGenerateColumns ="False">
+        <DataGrid x:Name="HomeFoldersDataGrid"  Height="85" Canvas.Left="11" Canvas.Top="247" Width="424" AutoGenerateColumns ="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="HomeFolder" Binding="{Binding Path=FullName}" Width="*" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Home Folders" Binding="{Binding Path=FullName}" Width="*" IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>
-        <Button Content="+" Canvas.Left="442" Canvas.Top="174" Width="29" Height="77" Click="AddHomeFolder_Click" />
-        <Button Content="-" Canvas.Left="442" Canvas.Top="256" Width="29" Height="48" Click="RemHomeFolder_Click" />
+        <Button Content="+" Canvas.Left="442" Canvas.Top="247" Width="29" Height="55" Click="AddHomeFolder_Click" />
+        <Button Content="-" Canvas.Left="442" Canvas.Top="307" Width="29" Height="25" Click="RemHomeFolder_Click" />
 
-        <DataGrid Canvas.Left="11" Canvas.Top="323" Height="101" Width="424" x:Name="ProfileDataGrid"  AutoGenerateColumns ="False" MouseDoubleClick="ProfileBtn_DbClick" CanUserAddRows="False">
+        <DataGrid Canvas.Left="11" Canvas.Top="337" Height="87" Width="424" x:Name="ProfileDataGrid"  AutoGenerateColumns ="False" MouseDoubleClick="ProfileBtn_DbClick" CanUserAddRows="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Profiles" Binding="{Binding Path=Name}" Width="*" IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>
-        <Button Content="+" Canvas.Left="442" Canvas.Top="323" Width="29" Click="AddProfile_Click" Height="46"/>
-        <Button Content="-" Canvas.Left="442" Canvas.Top="378" Width="29" Click="DelProfile_Click" Height="46"/>
+        <Button Content="+" Canvas.Left="442" Canvas.Top="337" Width="29" Click="AddProfile_Click" Height="57"/>
+        <Button Content="-" Canvas.Left="442" Canvas.Top="399" Width="29" Click="DelProfile_Click" Height="25"/>
+        <GroupBox Header="Ftp Settings" Height="78" Canvas.Left="10" Canvas.Top="153" Width="425"/>
+        <Label Content="FTP URL" Canvas.Left="15" Canvas.Top="171" Width="52"/>
+        <Label Content="FTP User" Canvas.Left="15" Canvas.Top="199" Width="62"/>
+        <Label Content="FTP Pass" Canvas.Left="222" Canvas.Top="199" Width="55"/>
+        <TextBox x:Name="FtpURl" Width="345" Canvas.Left="72" Canvas.Top="175" TextWrapping="Wrap"/>
+        <TextBox x:Name="FtpUser" Width="150" Canvas.Left="72" Canvas.Top="203" TextWrapping="Wrap"/>
+        <TextBox x:Name="FtpPass" Width="140" Canvas.Left="277" Canvas.Top="203" TextWrapping="Wrap"/>
     </Canvas>
 </Window>

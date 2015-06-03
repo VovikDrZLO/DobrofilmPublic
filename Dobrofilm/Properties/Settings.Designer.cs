@@ -130,5 +130,41 @@ namespace Dobrofilm.Properties {
                 this["TempFilePathFTP"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string FTPURL {
+            get {
+                return ((string)(this["FTPURL"]));
+            }
+            set {
+                this["FTPURL"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string FTPUser {
+            get {
+                return ((string)(this["FTPUser"]));
+            }
+            set {
+                this["FTPUser"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string FTPPass {
+            get {
+                return ((string)(this["FTPPass"]));
+            }
+            set {
+                this["FTPPass"] = value;
+            }
+        }
     }
 }

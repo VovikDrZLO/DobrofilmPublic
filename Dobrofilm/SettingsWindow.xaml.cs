@@ -24,7 +24,10 @@ namespace Dobrofilm
             InitializeComponent();
             SettingsFilePath.Text = Dobrofilm.Properties.Settings.Default.SettingsPath;            
             MPCRath.Text = Dobrofilm.Properties.Settings.Default.MPCPath;
-            DefBrowserTB.Text = Dobrofilm.Properties.Settings.Default.DefaultBrowser;                        
+            DefBrowserTB.Text = Dobrofilm.Properties.Settings.Default.DefaultBrowser;
+            FtpURl.Text = Dobrofilm.Properties.Settings.Default.FTPURL;
+            FtpUser.Text = Dobrofilm.Properties.Settings.Default.FTPUser;
+            FtpPass.Text = Dobrofilm.Properties.Settings.Default.FTPPass;
             XMLEdit xMLEdit = new XMLEdit();
             FilmMaskTB.Text = xMLEdit.GetFilmMask();
             FilmNextIDTB.Text = xMLEdit.GetFileMaskNextID();
@@ -42,6 +45,8 @@ namespace Dobrofilm
 
         private void DelMarkedFilmsBtn_Click(object sender, RoutedEventArgs e)
         {
+            //Type myType = Type.GetTypeFromProgID("AddIn.ROM-Asterisk");
+            //object obj = Activator.CreateInstance(myType);           
             bool DelogResult  = Utils.ShowYesNoDialog("DeleteFromDisk?");
             FilmFilesList filmFilesList = new FilmFilesList();
             ListCollectionView FilteredFilmCollection = filmFilesList.FilmFiles;
@@ -97,7 +102,11 @@ namespace Dobrofilm
             {
                 Dobrofilm.Properties.Settings.Default.SettingsPath = SettingsFilePath.Text;                
                 Dobrofilm.Properties.Settings.Default.MPCPath = MPCRath.Text;                
-                Dobrofilm.Properties.Settings.Default.DefaultBrowser = DefBrowserTB.Text;                
+                Dobrofilm.Properties.Settings.Default.DefaultBrowser = DefBrowserTB.Text;
+                Dobrofilm.Properties.Settings.Default.TempFilePathFTP = TempFilePathFTP.Text;
+                Dobrofilm.Properties.Settings.Default.FTPURL = FtpURl.Text;
+                Dobrofilm.Properties.Settings.Default.FTPUser = FtpUser.Text;
+                Dobrofilm.Properties.Settings.Default.FTPPass = FtpPass.Text;
                 Dobrofilm.Properties.Settings.Default.Save();
                 CategoryList categoryList = new CategoryList();
                 XMLEdit xMLEdit = new XMLEdit();

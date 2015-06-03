@@ -306,7 +306,11 @@ namespace Dobrofilm
 
          public static FtpWebResponse GetFtpResponse(FTPMethod fTPMethod, string FileName)
          {
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://176.38.154.212/" + FileName);
+            if (FileName == string.Empty)
+            {
+                FileName = "ftp://176.38.154.212/" + FileName;
+            }            
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(FileName);
             if (fTPMethod == FTPMethod.GetDirList)
             {
                 request.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
@@ -324,9 +328,92 @@ namespace Dobrofilm
                 return null;
             }            
             request.Credentials = new NetworkCredential("givc", "givc");
+            request.EnableSsl = false;
+            request.KeepAlive = false;
+            request.UseBinary = true;
+            request.UsePassive = true;            
             FtpWebResponse response = (FtpWebResponse)request.GetResponse();
             return response;
          }
+
+         public static string DownloadFromFTP(string FilePath)
+         {
+             string TempDirectory = Dobrofilm.Properties.Settings.Default.TempFilePathFTP;
+             string DownloadedFilePath = TempDirectory + "\\" + Path.GetFileName(FilePath);
+             try
+             {
+                 FtpWebResponse response = Utils.GetFtpResponse(FTPMethod.Download, FilePath);
+                 Stream stream = response.GetResponseStream();
+                 byte[] buffer = new byte[2048];
+                 FileStream fs = new FileStream(DownloadedFilePath, FileMode.Create);
+                 int ReadCount = stream.Read(buffer, 0, buffer.Length);
+                 while (ReadCount > 0)
+                 {
+                     fs.Write(buffer, 0, ReadCount);
+                     ReadCount = stream.Read(buffer, 0, buffer.Length);
+                 }
+                 fs.Close();
+                 stream.Close();
+             }
+             catch (Exception e)
+             {
+                 return null;   
+             }
+             return DownloadedFilePath;
+
+         }
+
+         public static void DownloadFileNames(string ftpAddress)
+         {             
+             FtpWebResponse response = Utils.GetFtpResponse(FTPMethod.GetDirList, ftpAddress);
+             Stream responseStream = response.GetResponseStream();
+             List<string> files = new List<string>();
+             StreamReader reader = new StreamReader(responseStream);
+             while (!reader.EndOfStream)
+                 files.Add(reader.ReadLine());
+             reader.Close();
+             responseStream.Dispose();
+
+             //Loop through the resulting file names.
+             foreach (var fileName in files)
+             {
+                 var parentDirectory = "";
+
+                 //If the filename has an extension, then it actually is 
+                 //a file and should be added to 'fnl'.            
+                 if (!fileName.StartsWith("d") && !fileName.EndsWith("."))
+                 {                     
+                     XMLEdit xMLEdit = new XMLEdit();
+                     xMLEdit.AddFilmToXML(new FilmFile
+                     {
+                         Name = fileName.Substring(fileName.LastIndexOf(":") + 3).Trim(),
+                         Path = response.ResponseUri.AbsoluteUri + fileName.Substring(fileName.LastIndexOf(":") + 3).Trim(),
+                         Rate = 0,
+                         Categoris = new int[1],
+                         IsCrypted = false,
+                         IsOnline = false,
+                         IsFTP = true,
+                         Profile = MainWindow.CurrentProfile.ProfileID
+                     }, false);
+                 }
+                 else if (!fileName.EndsWith("."))
+                 {
+                     //If the filename has no extension, then it is just a folder. 
+                     //Run this method again as a recursion of the original:
+                     string DirName = fileName.Substring(fileName.LastIndexOf(":") + 3).Trim();
+                     parentDirectory += DirName + "/";
+                     try
+                     {
+                         DownloadFileNames(ftpAddress + parentDirectory);
+                     }
+                     catch (Exception)
+                     {
+                         //throw;
+                     }
+                 }
+             }
+         }
+
 
          public static bool ValidateSettings()
          {             

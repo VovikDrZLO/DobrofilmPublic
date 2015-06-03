@@ -77,9 +77,25 @@ namespace Dobrofilm
             } else
             if (SelectedFilm.IsFTP)
             {
-                MainTabControl.Margin = new Thickness(1, 1, 1, 1);
-                FilmPlayer.Visibility = System.Windows.Visibility.Collapsed;
-                Button GetFilmBtn = new Button();
+                if (MainWindow.OpenedCryptedFiles == null) MainWindow.OpenedCryptedFiles = new List<string>();        
+                if (MainWindow.OpenedCryptedFiles.Contains(FilePath))
+                {
+                    MainTabControl.Margin = new Thickness(1, 1, 1, 1);                    
+                }
+                else
+                {    
+                    FilmPlayer.Visibility = System.Windows.Visibility.Collapsed;
+                    CryptFile.Visibility = System.Windows.Visibility.Collapsed;
+                    Button GetFileBtn = new Button();
+                    GetFileBtn.Content = "DownloadFile";
+                    GetFileBtn.Height = 22; 
+                    GetFileBtn.Width = 75;
+                    Canvas.SetLeft(GetFileBtn, 10);
+                    Canvas.SetTop(GetFileBtn, 49);
+                    MainTabCanvas.Children.Add(GetFileBtn);
+                    GetFileBtn.Click += CryptFile_Click;
+                }
+                //x:Name="CryptFile" Height="22" Width="75" Canvas.Left="10" Canvas.Top="434" Content="CryptFile"
             }
             else
             {
@@ -571,11 +587,17 @@ namespace Dobrofilm
             NewFileName = Utils.GenerateCryptFilePath(FilePath);
             Utils.ShowLoadingWindow("Encoding...", FilePath);
             worker.RunWorkerAsync();          
+        }
+
+        private void FTPDownload_Click(object sender, RoutedEventArgs e)
+        {
+            string DownloadedFilePath = Utils.DownloadFromFTP(FilePath);
         }        
+
 
         private readonly BackgroundWorker worker = new BackgroundWorker();
 
-        private void worker_DoWork(object sender, DoWorkEventArgs e)
+                private void worker_DoWork(object sender, DoWorkEventArgs e)
         {
             // run all background tasks here                 
             try
@@ -737,6 +759,9 @@ namespace Dobrofilm
                 openedCryptedFiles.Remove(NewFileName);                
             }            
         }
+
+
+
 
         private void ChangeMediaVolume(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
