@@ -16,7 +16,7 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Linq;
 using System.Net;
-
+using System.Windows.Threading;
 namespace Dobrofilm
 {
     public enum AndOrEnum {And, Or};
@@ -304,42 +304,99 @@ namespace Dobrofilm
              
          }
 
-         public static FtpWebResponse GetFtpResponse(FTPMethod fTPMethod, string FileName)
+         public static FtpWebResponse GetFtpResponse(FTPMethod fTPMethod, string FileName) 
          {
             if (FileName == string.Empty)
             {
-                FileName = "ftp://176.38.154.212/" + FileName;
-            }            
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(FileName);
+                return null;
+            }
+            FtpWebRequest request;
             if (fTPMethod == FTPMethod.GetDirList)
             {
-                request.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
+                request = FtpRequestForDowmload(WebRequestMethods.Ftp.ListDirectoryDetails, FileName);
             }
             else if (fTPMethod == FTPMethod.Download)
             {
-                request.Method = WebRequestMethods.Ftp.DownloadFile;
+                request = FtpRequestForDowmload(WebRequestMethods.Ftp.DownloadFile, FileName);     
             }
             else if (fTPMethod == FTPMethod.Upload)
             {
-                request.Method = WebRequestMethods.Ftp.UploadFile;
+                request = FtpRequestUpload(FileName);
             }
             else
             {
                 return null;
-            }            
-            request.Credentials = new NetworkCredential("givc", "givc");
-            request.EnableSsl = false;
-            request.KeepAlive = false;
-            request.UseBinary = true;
-            request.UsePassive = true;            
+            }
+                      
             FtpWebResponse response = (FtpWebResponse)request.GetResponse();
             return response;
          }
 
-         public static string DownloadFromFTP(string FilePath)
+         private static FtpWebRequest FtpRequestUpload(string FTPFileName)
          {
-             string TempDirectory = Dobrofilm.Properties.Settings.Default.TempFilePathFTP;
-             string DownloadedFilePath = TempDirectory + "\\" + Path.GetFileName(FilePath);
+             string FileName = Path.GetFileName(FTPFileName);
+             string FTPURL = Dobrofilm.Properties.Settings.Default.FTPURL;
+
+             FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://" + FTPURL + "//" + FileName);
+             request.Method = WebRequestMethods.Ftp.UploadFile;
+             request.Credentials = new NetworkCredential(Dobrofilm.Properties.Settings.Default.FTPUser, Dobrofilm.Properties.Settings.Default.FTPPass);
+             request.UseBinary = true;
+             request.KeepAlive = true;
+             System.IO.FileInfo fi = new System.IO.FileInfo(FTPFileName);
+             request.ContentLength = fi.Length;
+             byte[] buffer = new byte[4097];
+             int bytes = 0;
+             int total_bytes = (int)fi.Length;
+             System.IO.FileStream fs = fi.OpenRead();
+             System.IO.Stream rs = request.GetRequestStream();
+             while (total_bytes > 0)
+             {
+                 bytes = fs.Read(buffer, 0, buffer.Length);
+                 rs.Write(buffer, 0, bytes);
+                 total_bytes = total_bytes - bytes;
+             }             
+             fs.Close();
+             rs.Close();
+             //StreamReader sourceStream = new StreamReader(FTPFileName);
+             //byte[] fileContents = Encoding.UTF8.GetBytes(sourceStream.ReadToEnd());
+             //sourceStream.Close();
+             //request.ContentLength = fileContents.Length;
+
+             //Stream requestStream = request.GetRequestStream();
+             //requestStream.Write(fileContents, 0, fileContents.Length);
+             //requestStream.Close();
+
+             return request;
+         }
+
+         private static FtpWebRequest FtpRequestForDowmload(string FTPMethod, string FTPFileName)
+         {
+             FtpWebRequest request;
+             if (FTPFileName.ToLower().Substring(0, 3) == "ftp")
+             {                 
+                  request = (FtpWebRequest)WebRequest.Create(FTPFileName);
+             }
+             else
+             {
+                  request = (FtpWebRequest)WebRequest.Create("ftp://" + FTPFileName);
+             }
+             request.Method = FTPMethod;
+             request.Credentials = new NetworkCredential(Dobrofilm.Properties.Settings.Default.FTPUser, Dobrofilm.Properties.Settings.Default.FTPPass);
+             request.EnableSsl = false;
+             request.KeepAlive = false;
+             request.UseBinary = true;
+             request.UsePassive = true;
+             return request;
+         }
+
+
+         public static string DownloadFromFTP(string FilePath, string DownloadDir)
+         {
+             if (DownloadDir == String.Empty)
+             {
+                 DownloadDir = Dobrofilm.Properties.Settings.Default.TempFilePathFTP;
+             }             
+             string DownloadedFilePath = DownloadDir + "\\" + Path.GetFileName(FilePath);
              try
              {
                  FtpWebResponse response = Utils.GetFtpResponse(FTPMethod.Download, FilePath);
@@ -370,10 +427,8 @@ namespace Dobrofilm
              List<string> files = new List<string>();
              StreamReader reader = new StreamReader(responseStream);
              while (!reader.EndOfStream)
-                 files.Add(reader.ReadLine());
-             reader.Close();
-             responseStream.Dispose();
-
+                files.Add(reader.ReadLine());
+             reader.Close();             
              //Loop through the resulting file names.
              foreach (var fileName in files)
              {

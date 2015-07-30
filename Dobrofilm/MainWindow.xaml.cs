@@ -12,6 +12,8 @@ using System.Windows.Controls.Primitives;
 using System.Security.Cryptography;
 using System.Text;
 using BuckSoft.Controls.FtpBrowseDialog;
+using System.Windows.Threading;
+using System.ComponentModel;
 
 namespace Dobrofilm
 {
@@ -22,12 +24,20 @@ namespace Dobrofilm
     {
         public MainWindow()
         {
-            InitializeComponent();           
+            /*TODO              
+           * Upload files (Modify "Move To" dialog)
+           * Waiting circle while working with FTP moving files 
+           * FilmItems window
+           * Button in Grid 
+           */
+            InitializeComponent(); 
+            //LoadSubNodes();
             XMLConverter xMLConverter = new XMLConverter();
             if (xMLConverter.IsNeedConvert()) xMLConverter.MakeConversion();            
             FilmFilesList.ShowCryptFilms = false;
             HomeFolders homeFolders = new HomeFolders();
             homeFolders.CheckHomeFolders();
+            homeFolders.CheckFTP();
             ProfilesComboBox.DataContext = new XMLEdit();
             ProfilesComboBox.SelectedIndex = 0;
             MainGridData.DataContext = new FilmFilesList();
@@ -38,10 +48,46 @@ namespace Dobrofilm
             
             //XMLEdit xMLEdit = new XMLEdit();
             //xMLEdit.GetFilmFileFromXML(FilmFilesList.ShowCryptFilms);
-        }               
+        }
+
+
+        private void LoadSubNodes()
+        {
+            FtpWebRequest req = (FtpWebRequest)FtpWebRequest.Create("ftp://" + Dobrofilm.Properties.Settings.Default.FTPURL);
+            req.Credentials = new NetworkCredential(Dobrofilm.Properties.Settings.Default.FTPUser, Dobrofilm.Properties.Settings.Default.FTPPass);
+            req.UsePassive = true;
+            req.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
+            try
+            {
+                FtpWebResponse rsp = (FtpWebResponse)req.GetResponse();
+                StreamReader rsprdr = new StreamReader(rsp.GetResponseStream());
+                String[] rsptokens = rsprdr.ReadToEnd().Split(new String[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (String str in rsptokens)
+                {
+                    if (str.Contains("<DIR>") == true)
+                    {
+                        String[] directorytokens = str.Split(new String[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                        string test = directorytokens[directorytokens.Length - 1].Trim();
+                    }
+                    else
+                    {
+                        string TestStr = "-rw-r--r--   1 givc     playgod     68161 Jun  3 12:59 Вопрос по НЭКу 200115.docx";                        
+                        string Test2 = TestStr.Substring(TestStr.IndexOf(":") + 3);
+                        string Test3 = str.Substring(str.IndexOf(":") + 3);
+                        //String[] filetokens = str.Split(new String[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                        //string test = filetokens[filetokens.Length - 1].Trim();
+                    }
+                }
+            }
+            catch (WebException wEx)
+            {
+
+            }
+        }
 
         public static List<string> OpenedCryptedFiles { get; set; }
-        public static ProfileClass CurrentProfile { get; set; }
+        public static ProfileClass CurrentProfile { get; set; }     
+        
 
         private void AddFilesClick(object sender, RoutedEventArgs e)
         {
@@ -107,6 +153,39 @@ namespace Dobrofilm
             }
         }
 
+        private readonly BackgroundWorker FTPWorker = new BackgroundWorker();
+
+        private void FTPWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            // run all background tasks here                 
+            try
+            {                
+                string FTPDownloadedFilePath = Utils.DownloadFromFTP((String)e.Argument, "");
+                e.Result = FTPDownloadedFilePath;
+            }
+            catch (OutOfMemoryException err)
+            {
+                Utils.ShowErrorDialog(string.Concat("FTP Error", err.Source));
+                return;
+            }
+        }
+
+        private void FTPWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            //update ui once worker complete his work            
+            Window LoadingWindow = Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.Title == "wnd_Loading");
+            if (LoadingWindow != null)
+            {
+                LoadingWindow.Close();
+            }
+            string FTPDownloadedFilePath = (String)e.Result;
+            if (FTPDownloadedFilePath != null)
+            {
+                OpenedCryptedFiles.Add(FTPDownloadedFilePath);
+                System.Diagnostics.Process.Start(FTPDownloadedFilePath);
+            }
+        }
+
         private void FileBtn_DbClick(object sender, MouseButtonEventArgs e)
         {
             if (MainGridData.SelectedItem == null)
@@ -128,23 +207,24 @@ namespace Dobrofilm
                     }
                 }
                 else if (SelectedFilm.IsFTP)
-                {                       
+                {
                     string FilePath = SelectedFilm.Path;
                     string TempDirectory = Dobrofilm.Properties.Settings.Default.TempFilePathFTP;
-                    string DownloadedFilePath = TempDirectory + "\\" + Path.GetFileName(SelectedFilm.Path); 
+                    string FTPDownloadedFilePath = TempDirectory + "\\" + Path.GetFileName(SelectedFilm.Path); 
                     if (OpenedCryptedFiles == null) OpenedCryptedFiles = new List<string>();
-                    if (OpenedCryptedFiles.Contains(DownloadedFilePath))
+                    if (OpenedCryptedFiles.Contains(FTPDownloadedFilePath))
                     {
-                        System.Diagnostics.Process.Start(DownloadedFilePath);
+                        System.Diagnostics.Process.Start(FTPDownloadedFilePath);
                     }
-                    else
+                    else if (Utils.ShowYesNoDialog("It's FTP link, want download?"))                     
                     {
-                        DownloadedFilePath = Utils.DownloadFromFTP(FilePath);
-                        if (DownloadedFilePath != null)
-                        {
-                            OpenedCryptedFiles.Add(DownloadedFilePath);
-                            System.Diagnostics.Process.Start(DownloadedFilePath);
-                        }
+                        FTPWorker.DoWork += FTPWorker_DoWork;
+                        FTPWorker.RunWorkerCompleted += FTPWorker_RunWorkerCompleted;                        
+                        Utils.ShowLoadingWindow("Downloading from FTP...", FilePath);
+                        FTPWorker.RunWorkerAsync(FilePath);          
+                        
+                        //DownloadedFilePath = Utils.DownloadFromFTP(FilePath, "");
+                        
                     }                    
                 }
                 else if (Utils.IsFileExists(SelectedFilm.Path))
@@ -186,7 +266,8 @@ namespace Dobrofilm
                 UpdateMainGridData();
             }
         }
-            
+        
+    
 
         private void MainWindow_Resize(object sender, SizeChangedEventArgs e)
         {
@@ -496,20 +577,143 @@ namespace Dobrofilm
             UpdateMainGridData();
         }
 
-        private void MoveChekedFilms_Click(object sender, RoutedEventArgs e)
+        private readonly BackgroundWorker FTPMassiveWorker = new BackgroundWorker();
+
+        private void FTPMassiveWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            string NewFolder = Utils.SelectFolderDlg;
+            // run all background tasks here                 
+            try
+            {
+                string FTPDownloadedFilePath = Utils.DownloadFromFTP((String)e.Argument, "");
+                e.Result = FTPDownloadedFilePath;
+            }
+            catch (OutOfMemoryException err)
+            {
+                Utils.ShowErrorDialog(string.Concat("FTP Error", err.Source));
+                return;
+            }
+        }
+
+        private void FTPMassiveWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            //update ui once worker complete his work            
+            Window LoadingWindow = Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.Title == "wnd_Loading");
+            if (LoadingWindow != null)
+            {
+                LoadingWindow.Close();
+            }
+            string FTPDownloadedFilePath = (String)e.Result;
+            if (FTPDownloadedFilePath != null)
+            {
+                OpenedCryptedFiles.Add(FTPDownloadedFilePath);
+                System.Diagnostics.Process.Start(FTPDownloadedFilePath);
+            }
+        }
+
+        private void MoveChekedFilms_Click(object sender, RoutedEventArgs e)
+        {         
+            bool IsAllFilmsOnFTP = true;
+            bool IsAllFilmsLocal = true;
             IEnumerable<FilmFile> CheckList = ListOfChekedFilms();
+            CheckList = CheckList.Where(u => u.IsOnline == false).ToList(); // Do Not Move Online Links
             foreach (FilmFile Film in CheckList)
             {
-                string Exten = System.IO.Path.GetExtension(Film.Path);
-                string NewPath = string.Concat(NewFolder, @"\", Film.Name, Exten);
-                Utils.MoveFile(Film.Path, NewPath);
-                Film.Path = NewPath;
-                XMLEdit xMLEdit = new XMLEdit();
-                xMLEdit.AddFilmToXML(Film, false);
-                //FilmFilesList filmFilesList = new FilmFilesList();
-                //filmFilesList.AddSaveFilmItemToXML(Film, false);
+                if (Film.IsFTP)
+                {
+                    IsAllFilmsLocal = false;
+                }
+                else 
+                {
+                    IsAllFilmsOnFTP = false;
+                }
+            }
+            if (IsAllFilmsOnFTP && !IsAllFilmsLocal) //Move All From FTP
+            {
+                string NewFolder = Utils.SelectFolderDlg;
+                foreach (FilmFile Film in CheckList)
+                {
+                    FTPMassiveWorker.RunWorkerAsync(new {Film = Film, Folder = NewFolder});
+                    string DownloadedFilePath = Utils.DownloadFromFTP(Film.Path, NewFolder);
+                    if (DownloadedFilePath != null)
+                    {
+                        Film.IsFTP = false;
+                        Film.Path = DownloadedFilePath;
+                        XMLEdit xMLEdit = new XMLEdit();
+                        xMLEdit.AddFilmToXML(Film, false);
+                    }                    
+                }
+            }
+            else if (!IsAllFilmsOnFTP && IsAllFilmsLocal) //All Files Are Local
+            {
+                if (Utils.ShowYesNoDialog("Move to FTP?")) //Move All Files To FTP
+                {
+                    foreach (FilmFile Film in CheckList)
+                    {                        
+                        FtpWebResponse response = Utils.GetFtpResponse(FTPMethod.Upload, Film.Path);
+                        if (OpenedCryptedFiles == null) OpenedCryptedFiles = new List<string>();
+                        OpenedCryptedFiles.Add(Film.Path);
+                        Film.IsFTP = true;
+                        Film.Path = response.ResponseUri.OriginalString;
+                        XMLEdit xMLEdit = new XMLEdit();
+                        xMLEdit.AddFilmToXML(Film, false);                        
+                    }
+
+                }
+                else //Move All Files Local
+                {
+                    string NewFolder = Utils.SelectFolderDlg;
+                    foreach (FilmFile Film in CheckList)
+                    {                        
+                        string Exten = System.IO.Path.GetExtension(Film.Path);
+                        string NewPath = string.Concat(NewFolder, @"\", Film.Name, Exten);
+                        Utils.MoveFile(Film.Path, NewPath);
+                        Film.Path = NewPath;
+                        XMLEdit xMLEdit = new XMLEdit();
+                        xMLEdit.AddFilmToXML(Film, false);                        
+                    }
+                }
+            }
+            else //Files Are Local and FTP, Ask Separately
+            {
+                foreach (FilmFile Film in CheckList)
+                {
+                    if (Film.IsFTP)
+                    {
+                        string NewFolder = Utils.SelectFolderDlg;
+                        string DownloadedFilePath = Utils.DownloadFromFTP(Film.Path, NewFolder);
+                        if (DownloadedFilePath != null)
+                        {
+                            Film.IsFTP = false;
+                            Film.Path = DownloadedFilePath;
+                            XMLEdit xMLEdit = new XMLEdit();
+                            xMLEdit.AddFilmToXML(Film, false);
+                        }     
+                    }
+                    else
+                    {
+                        if (Utils.ShowYesNoDialog("Move to FTP File " + Film.Name + "?")) //Move All Files To FTP
+                        {                            
+                            FtpWebResponse response = Utils.GetFtpResponse(FTPMethod.Upload, Film.Path);
+                            if (OpenedCryptedFiles == null) OpenedCryptedFiles = new List<string>();
+                            OpenedCryptedFiles.Add(Film.Path);
+                            Film.IsFTP = true;
+                            Film.Path = response.ResponseUri.OriginalString;
+                            XMLEdit xMLEdit = new XMLEdit();
+                            xMLEdit.AddFilmToXML(Film, false);                            
+
+                        }
+                        else //Move All Files Local
+                        {
+                            string NewFolder = Utils.SelectFolderDlg;                            
+                            string Exten = System.IO.Path.GetExtension(Film.Path);
+                            string NewPath = string.Concat(NewFolder, @"\", Film.Name, Exten);
+                            Utils.MoveFile(Film.Path, NewPath);
+                            Film.Path = NewPath;
+                            XMLEdit xMLEdit = new XMLEdit();
+                            xMLEdit.AddFilmToXML(Film, false);                            
+                        }
+                    }                    
+                }
             }
         }
 
@@ -575,19 +779,25 @@ namespace Dobrofilm
             }            
         }
 
-        private void OpenAddFTPLinkBtn_Click(object sender, RoutedEventArgs e)
-        {
-            /*TODO 
-             1. Open FTP Connect             
-             3. Get FTP List Files             
-             5. Upload files (Modify "Move To" dialog)
-             */
-            string FTPURL = Dobrofilm.Properties.Settings.Default.FTPURL; //@"ftp://playgod.pro/";
+        private void OpenAddFTPLinkBtn_Click(object FTPsender, RoutedEventArgs e)
+        {          
+
+            string FTPURL = Dobrofilm.Properties.Settings.Default.FTPURL; //@"playgod.pro";
             string FTPUsr = Dobrofilm.Properties.Settings.Default.FTPUser;
             string FTPPass = Dobrofilm.Properties.Settings.Default.FTPPass;
             FtpBrowseDialog ftpBrowseDialog = new FtpBrowseDialog(FTPURL, "", 21, FTPUsr, FTPPass, false);            
-            ftpBrowseDialog.ShowDialog();            
-            Utils.DownloadFileNames(ftpBrowseDialog.SelectedFile);
+            ftpBrowseDialog.ShowDialog();
+            if (ftpBrowseDialog.DialogResult == System.Windows.Forms.DialogResult.OK)
+            {
+                var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) };
+                timer.Start();
+                timer.Tick += (sender, args) =>
+                {
+                    timer.Stop();
+                    Utils.DownloadFileNames(ftpBrowseDialog.SelectedFile);
+                };                
+                
+            }            
         }
     }
 }			

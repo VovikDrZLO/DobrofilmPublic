@@ -77,6 +77,7 @@ namespace Dobrofilm
             } else
             if (SelectedFilm.IsFTP)
             {
+                IsFTP = true;
                 if (MainWindow.OpenedCryptedFiles == null) MainWindow.OpenedCryptedFiles = new List<string>();        
                 if (MainWindow.OpenedCryptedFiles.Contains(FilePath))
                 {
@@ -371,8 +372,8 @@ namespace Dobrofilm
         }
 
         private void MoveToBtn_Click(object sender, RoutedEventArgs e)
-        {
-            string NewFolder = Utils.SelectFolderDlg;                        
+        {            
+            string NewFolder = Utils.SelectFolderDlg;
             var Exten = System.IO.Path.GetExtension(FilePath);
             string NewPath = string.Concat(NewFolder, @"\", FilmName.Text, Exten);
             Utils.MoveFile(FilePath, NewPath);
@@ -591,13 +592,13 @@ namespace Dobrofilm
 
         private void FTPDownload_Click(object sender, RoutedEventArgs e)
         {
-            string DownloadedFilePath = Utils.DownloadFromFTP(FilePath);
+            string DownloadedFilePath = Utils.DownloadFromFTP(FilePath, "");
         }        
 
 
         private readonly BackgroundWorker worker = new BackgroundWorker();
 
-                private void worker_DoWork(object sender, DoWorkEventArgs e)
+        private void worker_DoWork(object sender, DoWorkEventArgs e)
         {
             // run all background tasks here                 
             try
@@ -608,8 +609,7 @@ namespace Dobrofilm
             {
                 Utils.ShowErrorDialog(string.Concat("Not enough memory, close unused programs and try again ", err.Source));
                 return;
-            }
-            
+            }            
         }
 
         private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)

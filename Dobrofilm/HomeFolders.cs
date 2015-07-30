@@ -6,12 +6,14 @@ using System.IO;
 using System.Xml.Linq;
 using System.Windows.Data;
 using System.ComponentModel;
+using System.Net;
 
 namespace Dobrofilm
 {
     class HomeFolders
     {
         private readonly BackgroundWorker worker = new BackgroundWorker();
+        private readonly BackgroundWorker FTPworker = new BackgroundWorker();
         public IList<DirectoryInfo> HomeFoldersList
         {
             get
@@ -37,13 +39,21 @@ namespace Dobrofilm
             worker.RunWorkerAsync();
         }
 
+        public void CheckFTP()
+        {
+            bool IsNeedCheck = Dobrofilm.Properties.Settings.Default.CheckFTPOnStart;
+            if (!IsNeedCheck) return;
+            FTPworker.DoWork += FTPworker_DoWork;
+            FTPworker.RunWorkerAsync();
+        }
+
         public bool IsFileInLibtary(object de)
         {
             FilmFile film = de as FilmFile;
             return film.Path == GlobalFilePath;
         }
 
-        public void AskToAddNewFilm(string FilePath)
+        public void AskToAddNewFilm(string FilePath, bool IsOnFTP)
         {
             string FilmName = System.IO.Path.GetFileNameWithoutExtension(FilePath);
             if (!Utils.ShowSimpleYesNoDialog(string.Format("New file {0} found is home folders, add to filmList?", FilmName))) return;
@@ -56,9 +66,61 @@ namespace Dobrofilm
                 Categoris = new int[1]{0},
                 IsCrypted = false,
                 IsOnline  = false,
-                IsFTP = false
+                IsFTP = IsOnFTP
             }, false);
             
+        }
+
+        private void FTPworker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            XMLEdit xMLEdit = new XMLEdit();
+            IList<FilmFile> filmFiles = xMLEdit.GetFilmFileFromXML(true, null, true);
+            var FilmFilesList = (ListCollectionView)CollectionViewSource.GetDefaultView(filmFiles);
+            DownloadFileNames(Dobrofilm.Properties.Settings.Default.FTPURL, FilmFilesList);
+        }
+
+        private void DownloadFileNames(string FTPAdress, ListCollectionView FilmFilesList)
+        {
+            FtpWebResponse response = Utils.GetFtpResponse(FTPMethod.GetDirList, FTPAdress);
+            Stream responseStream = response.GetResponseStream();
+            List<string> files = new List<string>();
+            StreamReader reader = new StreamReader(responseStream);
+            while (!reader.EndOfStream)
+                files.Add(reader.ReadLine());
+            reader.Close();
+            //Loop through the resulting file names.
+            foreach (string fileName in files)
+            {
+                string parentDirectory = "";
+
+                //If the filename has an extension, then it actually is 
+                //a file and should be added to 'fnl'.            
+                if (!fileName.StartsWith("d") && !fileName.EndsWith("."))
+                {
+                    string FilePath = response.ResponseUri.AbsoluteUri + @"/" + fileName.Substring(fileName.LastIndexOf(":") + 3).Trim();                    
+                    GlobalFilePath = FilePath;
+                    FilmFilesList.Filter = new Predicate<object>(IsFileInLibtary);
+                    if (FilmFilesList.Count == 0)
+                    {
+                        AskToAddNewFilm(FilePath, true);
+                    }
+                }
+                else if (!fileName.EndsWith("."))
+                {
+                    //If the filename has no extension, then it is just a folder. 
+                    //Run this method again as a recursion of the original:
+                    string DirName = fileName.Substring(fileName.LastIndexOf(":") + 3).Trim();
+                    parentDirectory += "/" + DirName;
+                    try
+                    {
+                        DownloadFileNames(FTPAdress + parentDirectory, FilmFilesList);
+                    }
+                    catch (Exception)
+                    {
+                        //throw;
+                    }
+                }
+            }
         }
 
         private void worker_DoWork(object sender, DoWorkEventArgs e)
@@ -83,7 +145,7 @@ namespace Dobrofilm
                         FilmFilesList.Filter = new Predicate<object>(IsFileInLibtary);
                         if (FilmFilesList.Count == 0)
                         {
-                            AskToAddNewFilm(FilePath);
+                            AskToAddNewFilm(FilePath, false);
                         }
                     }
                 }

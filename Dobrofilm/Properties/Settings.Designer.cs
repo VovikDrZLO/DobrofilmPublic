@@ -109,7 +109,7 @@ namespace Dobrofilm.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\v.dobrotvorskyy\\AppData\\Roaming\\Dobrofilm\\DobrofilmSettings.xml")]
         public string SettingsPath {
             get {
                 return ((string)(this["SettingsPath"]));
@@ -164,6 +164,18 @@ namespace Dobrofilm.Properties {
             }
             set {
                 this["FTPPass"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool CheckFTPOnStart {
+            get {
+                return ((bool)(this["CheckFTPOnStart"]));
+            }
+            set {
+                this["CheckFTPOnStart"] = value;
             }
         }
     }

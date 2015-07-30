@@ -78,11 +78,13 @@
         </DataGrid>
         <Button Content="+" Canvas.Left="442" Canvas.Top="337" Width="29" Click="AddProfile_Click" Height="57"/>
         <Button Content="-" Canvas.Left="442" Canvas.Top="399" Width="29" Click="DelProfile_Click" Height="25"/>
-        <GroupBox Header="Ftp Settings" Height="78" Canvas.Left="10" Canvas.Top="153" Width="425"/>
+        <GroupBox Header="Ftp Settings" Height="78" Canvas.Left="10" Canvas.Top="153" Width="425">
+            <CheckBox  x:Name ="CheckFTPOnStart"  Content="Check FTP On Start?" HorizontalAlignment="Left" Height="17" VerticalAlignment="Top" Width="124" Margin="278,10,0,0"/>
+        </GroupBox>
         <Label Content="FTP URL" Canvas.Left="15" Canvas.Top="171" Width="52"/>
         <Label Content="FTP User" Canvas.Left="15" Canvas.Top="199" Width="62"/>
         <Label Content="FTP Pass" Canvas.Left="222" Canvas.Top="199" Width="55"/>
-        <TextBox x:Name="FtpURl" Width="345" Canvas.Left="72" Canvas.Top="175" TextWrapping="Wrap"/>
+        <TextBox x:Name="FtpURl" Width="205" Canvas.Left="72" Canvas.Top="175" TextWrapping="Wrap"/>
         <TextBox x:Name="FtpUser" Width="150" Canvas.Left="72" Canvas.Top="203" TextWrapping="Wrap"/>
         <TextBox x:Name="FtpPass" Width="140" Canvas.Left="277" Canvas.Top="203" TextWrapping="Wrap"/>
     </Canvas>

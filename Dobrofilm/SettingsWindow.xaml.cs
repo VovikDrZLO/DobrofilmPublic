@@ -28,6 +28,7 @@ namespace Dobrofilm
             FtpURl.Text = Dobrofilm.Properties.Settings.Default.FTPURL;
             FtpUser.Text = Dobrofilm.Properties.Settings.Default.FTPUser;
             FtpPass.Text = Dobrofilm.Properties.Settings.Default.FTPPass;
+            CheckFTPOnStart.IsChecked = Dobrofilm.Properties.Settings.Default.CheckFTPOnStart;
             XMLEdit xMLEdit = new XMLEdit();
             FilmMaskTB.Text = xMLEdit.GetFilmMask();
             FilmNextIDTB.Text = xMLEdit.GetFileMaskNextID();
@@ -107,6 +108,7 @@ namespace Dobrofilm
                 Dobrofilm.Properties.Settings.Default.FTPURL = FtpURl.Text;
                 Dobrofilm.Properties.Settings.Default.FTPUser = FtpUser.Text;
                 Dobrofilm.Properties.Settings.Default.FTPPass = FtpPass.Text;
+                Dobrofilm.Properties.Settings.Default.CheckFTPOnStart = (bool)CheckFTPOnStart.IsChecked;
                 Dobrofilm.Properties.Settings.Default.Save();
                 CategoryList categoryList = new CategoryList();
                 XMLEdit xMLEdit = new XMLEdit();
